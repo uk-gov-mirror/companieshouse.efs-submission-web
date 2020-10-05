@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <title></title>
+    </head>
+    <body>
+        <div th:fragment="alphaBanner" class="govuk-phase-banner">
+            <p class="govuk-phase-banner__content">
+                <strong class="govuk-tag govuk-phase-banner__content__tag" th:text="#{banner.beta}"></strong>
+                <span class="govuk-phase-banner__text">
+                    <span th:text="#{banner.feedback.start.text}"></span>
+                    <a id="feedback-link piwik-event" data-event-id="alpha-banner-feedback-link" th:href="${@environment.getProperty('feedback.url')}" target="_blank">
+                        <span class="govuk-visually-hidden" th:text="#{banner.feedback.start.text}"></span>
+                        <span th:text="#{banner.feedback.link}"></span>
+                        <span class="govuk-visually-hidden" th:text="#{banner.feedback.end.text}"></span>
+                    </a>
+                    <span th:text="#{banner.feedback.end.text}"></span>
+                </span>
+            </p>
+        </div>
+    </body>
+</html>

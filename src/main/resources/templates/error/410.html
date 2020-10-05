@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/baseLayout}"
+      lang="en">
+<head>
+    <title th:text="#{410.title}"></title>
+</head>
+<body class="govuk-template__body" layout:fragment="content">
+<main class="govuk-main-wrapper govuk-main-wrapper--l" id="main-content" role="main">
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+            <h1 class="govuk-heading-l" th:text="#{410.title}"></h1>
+            <p>
+                <span th:text="#{410.link.text1}"> </span>
+                <a th:href="${@environment.getProperty('start.page.url')}">
+                    <span th:text="#{410.link.text2}"></span>
+                </a>
+            </p>
+        </div>
+    </div>
+</main>
+</body>
+</html>

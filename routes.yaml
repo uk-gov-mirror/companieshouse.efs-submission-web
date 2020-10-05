@@ -1,0 +1,5 @@
+app_name: efs-submission-web
+group: web
+weight: 900
+routes:
+   1: /efs-submission.*

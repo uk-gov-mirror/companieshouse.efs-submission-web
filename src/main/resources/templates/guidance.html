@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/baseLayout}"
+      lang="en">
+<head>
+    <title th:text="#{guidance.title}"></title>
+</head>
+<body class="govuk-template__body js-enabled" layout:fragment="content">
+<div class="govuk-width-container">
+    <a th:href="${@environment.getProperty('start.page.url')}" class="govuk-back-link" th:text="#{link.back}"></a>
+    <main class="govuk-main-wrapper govuk-main-wrapper--auto-spacing" id="main-content" role="main">
+        <div class="govuk-grid-row">
+            <div class="govuk-grid-column-two-thirds">
+                <span class="govuk-caption-xl" th:text="#{guidance.text}"></span>
+                <h1 class="govuk-heading-xl" th:text="#{guidance.page.title}"></h1>
+                <p class="govuk-body-l" th:text="#{guidance.how.to}"></p>
+                <div class="govuk-inset-text">
+                    <span th:text="#{guidance.inset.text}"></span>
+                </div>
+                <hr class="govuk-section-break govuk-section-break--xl govuk-section-break--visible govuk-!-margin-bottom-3">
+                <p class="govuk-body-s govuk-!-margin-bottom-1" th:text="#{guidance.published.date}"></p>
+                <p class="govuk-body-s">
+                    <span th:text="#{guidance.from}"></span>
+                    <a class="govuk-link govuk-!-font-weight-bold" th:href="${@environment.getProperty('govuk.ch.url')}">
+                        <span th:text="#{header.organisation}"></span>
+                    </a>
+                </p>
+                <p class="govuk-body-s govuk-!-margin-bottom-2" th:text="#{guidance.contents}"></p>
+                <ul class="govuk-list govuk-list--bullet govuk-!-margin-bottom-8">
+                    <li>
+                        <a class="govuk-link govuk-body-s" href="#documents-you-can-upload">
+                            <span th:text="#{guidance.documents.you.can.upload}"></span>
+                        </a>
+                    </li>
+                    <li>
+                        <a class="govuk-link govuk-body-s" href="#how-to-prepare-the-document">
+                            <span th:text="#{guidance.how.to.prepare.the.document}"></span>
+                        </a>
+                    </li>
+                    <li>
+                        <a class="govuk-link govuk-body-s" href="#documents-that-need-evidence">
+                            <span th:text="#{guidance.documents.that.need.evidence}"></span>
+                        </a>
+                    </li>
+                    <li>
+                        <a class="govuk-link govuk-body-s" href="#documents-that-have-a-fee">
+                            <span th:text="#{guidance.documents.that.have.a.fee}"></span>
+                        </a>
+                    </li>
+                    <li>
+                        <a class="govuk-link govuk-body-s" href="#what-happens-next">
+                            <span th:text="#{guidance.what.happens.next}"></span>
+                        </a>
+                    </li>
+                    <li>
+                        <a class="govuk-link govuk-body-s" href="#contact-us">
+                            <span th:text="#{guidance.contact.us}"></span>
+                        </a>
+                    </li>
+                </ul>
+                <h2 class="govuk-heading-l" id="documents-you-can-upload" th:text="#{guidance.documents.you.can.upload}"></h2>
+                <div class="govuk-accordion" data-module="govuk-accordion" id="accordion-default">
+                    <div class="govuk-accordion__section">
+                        <div class="govuk-accordion__section-header">
+                            <h2 class="govuk-accordion__section-heading">
+                                <span class="govuk-accordion__section-button" id="accordion-default-heading-1" th:text="#{guidance.documents.you.can.upload.insolvency.title}"></span>
+                            </h2>
+                        </div>
+                        <div id="accordion-default-content-1" class="govuk-accordion__section-content" aria-labelledby="accordion-default-heading-1">
+                            <p class="govuk-body" th:text="#{guidance.documents.you.can.upload.insolvency.description}"></p>
+                            <p class="govuk-body">
+                                <span th:text="#{guidance.documents.you.can.upload.insolvency.linkDescriptionText}"></span>
+                                <a th:href="${@environment.getProperty('company.registration.filing.forms')}" class="govuk-link"
+                                   th:text="#{guidance.documents.you.can.upload.insolvency.linkText}">
+                                </a>
+                            </p>
+                            <p class="govuk-body">
+                                <span th:text="#{guidance.documents.you.can.upload.insolvency.ad01.text1}"></span>
+                                <a href="https://www.gov.uk/government/publications/change-a-registered-office-address-ad01"
+                                   th:text="#{guidance.documents.you.can.upload.insolvency.ad01.linkText}" class="govuk-link"></a>
+                                <span th:text="#{guidance.documents.you.can.upload.insolvency.ad01.text2}"></span>
+                            </p>
+                        </div>
+                    </div>
+                    <div class="govuk-accordion__section">
+                        <div class="govuk-accordion__section-header">
+                            <h2 class="govuk-accordion__section-heading">
+                                <span class="govuk-accordion__section-button" id="accordion-default-heading-2" th:text="#{guidance.documents.you.can.upload.sh.title}"></span>
+                            </h2>
+                            <div class="govuk-accordion__section-summary govuk-body" id="accordion-default-summary-2">
+                                <span th:text="#{guidance.documents.you.can.upload.sh.forms}"></span>
+                            </div>
+                        </div>
+                        <div id="accordion-default-content-2" class="govuk-accordion__section-content" aria-labelledby="accordion-default-heading-2">
+                            <p class="govuk-body">
+                                <a href="https://www.gov.uk/government/publications/consolidate-sub-divide-redeem-shares-or-re-convert-stock-into-shares-sh02"
+                                   th:text="#{guidance.documents.you.can.upload.sh02}" class="govuk-link"></a>
+                            </p>
+                            <p class="govuk-body">
+                                <a href="https://www.gov.uk/government/publications/notify-a-sale-or-transfer-of-treasury-shares-sh04"
+                                   th:text="#{guidance.documents.you.can.upload.sh04}" class="govuk-link"></a>
+                            </p>
+                            <p class="govuk-body">
+                                <a href="https://www.gov.uk/government/publications/notify-a-cancellation-of-treasury-shares-sh05"
+                                   th:text="#{guidance.documents.you.can.upload.sh05}" class="govuk-link"></a>
+                            </p>
+                            <p class="govuk-body">
+                                <a href="https://www.gov.uk/government/publications/notify-a-cancellation-of-shares-sh06"
+                                   th:text="#{guidance.documents.you.can.upload.sh06}" class="govuk-link"></a>
+                            </p>
+                            <p class="govuk-body">
+                                <a href="https://www.gov.uk/government/publications/notify-a-cancellation-of-shares-public-company-sh07"
+                                   th:text="#{guidance.documents.you.can.upload.sh07}" class="govuk-link"></a>
+                            </p>
+                            <p class="govuk-body">
+                                <a href="https://www.gov.uk/government/publications/notify-a-name-or-other-designation-of-class-of-shares-sh08"
+                                   th:text="#{guidance.documents.you.can.upload.sh08}" class="govuk-link"></a>
+                            </p>
+                            <p class="govuk-body">
+                                <a href="https://www.gov.uk/government/publications/allotting-a-new-class-of-shares-by-an-unlimited-company-sh09"
+                                   th:text="#{guidance.documents.you.can.upload.sh09}" class="govuk-link"></a>
+                            </p>
+                            <p class="govuk-body">
+                                <a href="https://www.gov.uk/government/publications/give-notice-of-particulars-of-variation-of-rights-attached-to-shares-sh10"
+                                   th:text="#{guidance.documents.you.can.upload.sh10}" class="govuk-link"></a>
+                            </p>
+                            <p class="govuk-body">
+                                <a href="https://www.gov.uk/government/publications/give-notice-of-a-new-class-of-members-sh11"
+                                   th:text="#{guidance.documents.you.can.upload.sh11}" class="govuk-link"></a>
+                            </p>
+                            <p class="govuk-body">
+                                <a href="https://www.gov.uk/government/publications/give-notice-of-particulars-of-variation-of-class-rights-sh12"
+                                   th:text="#{guidance.documents.you.can.upload.sh12}" class="govuk-link"></a>
+                            </p>
+                            <p class="govuk-body">
+                                <a href="https://www.gov.uk/government/publications/give-notice-of-name-or-other-designation-of-class-of-members-sh13"
+                                   th:text="#{guidance.documents.you.can.upload.sh13}" class="govuk-link"></a>
+                            </p>
+                            <p class="govuk-body">
+                                <a href="https://www.gov.uk/government/publications/notify-a-redenomination-of-shares-sh14"
+                                   th:text="#{guidance.documents.you.can.upload.sh14}" class="govuk-link"></a>
+                            </p>
+                            <p class="govuk-body">
+                                <a href="https://www.gov.uk/government/publications/notify-a-reduction-of-capital-following-redenomination-sh15"
+                                   th:text="#{guidance.documents.you.can.upload.sh15}" class="govuk-link"></a>
+                            </p>
+                            <p class="govuk-body">
+                                <a href="https://www.gov.uk/government/publications/give-notice-of-application-to-court-to-cancel-special-resolution-sh16"
+                                   th:text="#{guidance.documents.you.can.upload.sh16}" class="govuk-link"></a>
+                            </p>
+                            <p class="govuk-body">
+                                <a href="https://www.gov.uk/government/publications/give-notice-by-the-company-of-application-to-cancel-special-resolution-sh17"
+                                   th:text="#{guidance.documents.you.can.upload.sh17}" class="govuk-link"></a>
+                            </p>
+                        </div>
+                    </div>
+                    <div class="govuk-accordion__section">
+                        <div class="govuk-accordion__section-header">
+                            <h2 class="govuk-accordion__section-heading">
+                                <span class="govuk-accordion__section-button" id="accordion-default-heading-3" th:text="#{guidance.documents.you.can.upload.rp.title}"></span>
+                            </h2>
+                            <div class="govuk-accordion__section-summary govuk-body" id="accordion-default-summary-3">
+                                <span th:text="#{guidance.documents.you.can.upload.rp.forms}"></span>
+                            </div>
+                        </div>
+                        <div id="accordion-default-content-3" class="govuk-accordion__section-content" aria-labelledby="accordion-default-heading-3">
+                            <p class="govuk-body">
+                                <a href="https://www.gov.uk/government/publications/apply-for-rectification-by-the-registrar-of-companies-rp02a"
+                                   th:text="#{guidance.documents.you.can.upload.rp02a}" class="govuk-link"></a>
+                            </p>
+                            <p class="govuk-body">
+                                <a href="https://www.gov.uk/government/publications/apply-for-rectification-of-a-change-of-registered-address-rp02b"
+                                   th:text="#{guidance.documents.you.can.upload.rp02b}" class="govuk-link"></a>
+                            </p>
+                            <p class="govuk-body">
+                                <a href="https://www.gov.uk/government/publications/object-to-a-request-to-rectify-the-register-rp03"
+                                   th:text="#{guidance.documents.you.can.upload.rp03}" class="govuk-link"></a>
+                            </p>
+                            <p class="govuk-body">
+                                <a href="https://www.gov.uk/government/publications/apply-to-remove-material-about-a-director-rp06"
+                                   th:text="#{guidance.documents.you.can.upload.rp06}" class="govuk-link"></a>
+                            </p>
+                            <p class="govuk-body">
+                                <a href="https://www.gov.uk/government/publications/apply-to-change-a-companys-disputed-registered-office-address-rp07"
+                                   th:text="#{guidance.documents.you.can.upload.rp07}" class="govuk-link"></a>
+                            </p>
+                            <p class="govuk-body">
+                                <a href="https://www.gov.uk/government/publications/correct-a-directors-date-of-birth-rp-ch01"
+                                   th:text="#{guidance.documents.you.can.upload.rpch01}" class="govuk-link"></a>
+                            </p>
+                            <p class="govuk-body">
+                                <a href="https://www.gov.uk/government/publications/apply-for-rectification-by-the-registrar-for-a-limited-liability-partnership-ll-rp02a"
+                                   th:text="#{guidance.documents.you.can.upload.llrp02a}" class="govuk-link"></a>
+                            </p>
+                            <p class="govuk-body">
+                                <a href="https://www.gov.uk/government/publications/apply-for-rectification-of-change-of-registered-address-of-a-limited-liability-partnership-ll-rp02b"
+                                   th:text="#{guidance.documents.you.can.upload.llrp02b}" class="govuk-link"></a>
+                            </p>
+                            <p class="govuk-body">
+                                <a href="https://www.gov.uk/government/publications/apply-to-change-a-disputed-registered-office-address-of-a-limited-liability-partnership-ll-rp07"
+                                   th:text="#{guidance.documents.you.can.upload.llrp07}" class="govuk-link"></a>
+                            </p>
+                            <p class="govuk-body">
+                                <a href="https://www.gov.uk/government/publications/correct-birthdate-of-member-of-a-limited-liability-partnership-ll-rp-ch01"
+                                   th:text="#{guidance.documents.you.can.upload.llrpch01}" class="govuk-link"></a>
+                            </p>
+                        </div>
+                    </div>
+                    <div class="govuk-accordion__section">
+                        <div class="govuk-accordion__section-header">
+                            <h2 class="govuk-accordion__section-heading">
+                                <span class="govuk-accordion__section-button" id="accordion-default-heading-4" th:text="#{guidance.documents.you.can.upload.cc.title}"></span>
+                            </h2>
+                            <div class="govuk-accordion__section-summary govuk-body" id="accordion-default-summary-4">
+                                <span th:text="#{guidance.documents.you.can.upload.cc.forms}"></span>
+                            </div>
+                        </div>
+                        <div id="accordion-default-content-4" class="govuk-accordion__section-content" aria-labelledby="accordion-default-heading-4">
+                            <p class="govuk-body">
+                                <a href="https://www.gov.uk/government/publications/give-notice-of-restriction-on-the-companys-articles-cc01"
+                                   th:text="#{guidance.documents.you.can.upload.cc01}" class="govuk-link"></a>
+                            </p>
+                            <p class="govuk-body">
+                                <a href="https://www.gov.uk/government/publications/give-notice-of-removal-of-restriction-on-companys-articles-cc02"
+                                   th:text="#{guidance.documents.you.can.upload.cc02}" class="govuk-link"></a>
+                            </p>
+                            <p class="govuk-body">
+                                <a href="https://www.gov.uk/government/publications/notify-the-change-of-companys-objects-cc04"
+                                   th:text="#{guidance.documents.you.can.upload.cc04}" class="govuk-link"></a>
+                            </p>
+                            <p class="govuk-body">
+                                <a href="https://www.gov.uk/government/publications/change-constitution-by-enactment-cc05"
+                                   th:text="#{guidance.documents.you.can.upload.cc05}" class="govuk-link"></a>
+                            </p>
+                            <p class="govuk-body">
+                                <a href="https://www.gov.uk/government/publications/change-constitution-by-order-of-court-or-other-authority-cc06"
+                                   th:text="#{guidance.documents.you.can.upload.cc06}" class="govuk-link"></a>
+                            </p>
+                            <p class="govuk-body" th:text="#{guidance.documents.you.can.upload.articles.title}"></p>
+                            <p class="govuk-body" th:text="#{guidance.documents.you.can.upload.resolutions.title}"></p>
+                            <p class="govuk-body govuk-!-font-weight-bold" th:text="#{guidance.documents.you.can.upload.resolutions.exceptions}"></p>
+                            <ul class="govuk-list govuk-list--bullet">
+                                <li th:text="#{guidance.documents.you.can.upload.resolutions.exceptions.nameChange}"></li>
+                                <li th:text="#{guidance.documents.you.can.upload.resolutions.exceptions.cicConversion}"></li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="govuk-accordion__section">
+                        <div class="govuk-accordion__section-header">
+                            <h2 class="govuk-accordion__section-heading">
+                                <span class="govuk-accordion__section-button" id="accordion-default-heading-5" th:text="#{guidance.documents.you.can.upload.slp.title}"></span>
+                            </h2>
+                            <div class="govuk-accordion__section-summary govuk-body" id="accordion-default-summary-5">
+                                <span th:text="#{guidance.documents.you.can.upload.slp.forms}"></span>
+                            </div>
+                        </div>
+                        <div id="accordion-default-content-5" class="govuk-accordion__section-content" aria-labelledby="accordion-default-heading-5">
+                            <p class="govuk-body">
+                                <a href="https://www.gov.uk/government/publications/confirmation-statement-for-a-scottish-limited-partnership-slp-cs01"
+                                   th:text="#{guidance.documents.you.can.upload.slpcs01}" class="govuk-link"></a>
+                                <br>
+                                <span th:text="#{guidance.documents.you.can.upload.sqp.slp.fee}"></span>
+                            </p>
+                            <p class="govuk-body">
+                                <a href="https://www.gov.uk/government/publications/give-notice-of-individual-person-with-significant-control-of-a-scottish-limited-partnership-slp-psc01"
+                                   th:text="#{guidance.documents.you.can.upload.slppsc01}" class="govuk-link"></a>
+                            </p>
+                            <p class="govuk-body">
+                                <a href="https://www.gov.uk/government/publications/give-notice-of-relevant-legal-entity-with-significant-control-of-a-scottish-limited-partnership-slp-psc02"
+                                   th:text="#{guidance.documents.you.can.upload.slppsc02}" class="govuk-link"></a>
+                            </p>
+                            <p class="govuk-body">
+                                <a href="https://www.gov.uk/government/publications/give-notice-of-other-registrable-person-with-significant-control-of-a-scottish-limited-partnership-slp-psc03"
+                                   th:text="#{guidance.documents.you.can.upload.slppsc03}" class="govuk-link"></a>
+                            </p>
+                            <p class="govuk-body">
+                                <a href="https://www.gov.uk/government/publications/give-notice-to-change-details-of-a-person-with-significant-control-of-a-scottish-limited-partnership-slp-psc04"
+                                   th:text="#{guidance.documents.you.can.upload.slppsc04}" class="govuk-link"></a>
+                            </p>
+                            <p class="govuk-body">
+                                <a href="https://www.gov.uk/government/publications/give-details-of-relevant-legal-entity-with-significant-control-of-a-scottish-limited-partnership-slp-psc05"
+                                   th:text="#{guidance.documents.you.can.upload.slppsc05}" class="govuk-link"></a>
+                            </p>
+                            <p class="govuk-body">
+                                <a href="https://www.gov.uk/government/publications/give-notice-changing-details-of-other-person-with-significant-control-of-a-scottish-limited-partnership-slp-psc06"
+                                   th:text="#{guidance.documents.you.can.upload.slppsc06}" class="govuk-link"></a>
+                            </p>
+                            <p class="govuk-body">
+                                <a href="https://www.gov.uk/government/publications/give-notice-of-ceasing-to-be-a-psc-rle-or-orp-of-an-slp-slp-psc07"
+                                   th:text="#{guidance.documents.you.can.upload.slppsc07}" class="govuk-link"></a>
+                            </p>
+                            <p class="govuk-body">
+                                <a href="https://www.gov.uk/government/publications/give-notice-of-a-person-of-psc-statements-for-a-scottish-limited-partnership-slp-psc08"
+                                   th:text="#{guidance.documents.you.can.upload.slppsc08}" class="govuk-link"></a>
+                            </p>
+                            <p class="govuk-body">
+                                <a href="https://www.gov.uk/government/publications/give-notice-of-update-to-psc-statements-for-a-scottish-limited-partnership-slp-slp-psc09"
+                                   th:text="#{guidance.documents.you.can.upload.slppsc09}" class="govuk-link"></a>
+                            </p>
+                        </div>
+                    </div>
+                    <div class="govuk-accordion__section">
+                        <div class="govuk-accordion__section-header">
+                            <h2 class="govuk-accordion__section-heading">
+                                <span class="govuk-accordion__section-button" id="accordion-default-heading-6" th:text="#{guidance.documents.you.can.upload.sqp.title}"></span>
+                            </h2>
+                            <div class="govuk-accordion__section-summary govuk-body" id="accordion-default-summary-6">
+                                <span th:text="#{guidance.documents.you.can.upload.sqp.forms}"></span>
+                            </div>
+                        </div>
+                        <div id="accordion-default-content-6" class="govuk-accordion__section-content" aria-labelledby="accordion-default-heading-6">
+                            <p class="govuk-body">
+                                <a href="https://www.gov.uk/government/publications/confirmation-statement-for-a-scottish-qualifying-partnership-sqp-cs01"
+                                   th:text="#{guidance.documents.you.can.upload.sqpcs01}" class="govuk-link"></a>
+                                <br>
+                                <span th:text="#{guidance.documents.you.can.upload.sqp.slp.fee}"></span>
+                            </p>
+                            <p class="govuk-body">
+                                <a href="https://www.gov.uk/government/publications/give-notice-of-a-change-of-details-for-a-scottish-qualifying-partnership-sqp2"
+                                   th:text="#{guidance.documents.you.can.upload.sqp2}" class="govuk-link"></a>
+                            </p>
+                            <p class="govuk-body">
+                                <a href="https://www.gov.uk/government/publications/give-notice-of-ceasing-to-be-a-scottish-qualifying-partnership-sqp3"
+                                   th:text="#{guidance.documents.you.can.upload.sqp3}" class="govuk-link"></a>
+                            </p>
+                            <p class="govuk-body">
+                                <a href="https://www.gov.uk/government/publications/give-notice-of-individual-person-with-significant-control-of-a-scottish-qualifying-partnership-sqp-psc01"
+                                   th:text="#{guidance.documents.you.can.upload.sqppsc01}" class="govuk-link"></a>
+                            </p>
+                            <p class="govuk-body">
+                                <a href="https://www.gov.uk/government/publications/give-notice-of-relevant-legal-entity-with-significant-control-of-a-scottish-qualifying-partnership-sqp-psc02"
+                                   th:text="#{guidance.documents.you.can.upload.sqppsc02}" class="govuk-link"></a>
+                            </p>
+                            <p class="govuk-body">
+                                <a href="https://www.gov.uk/government/publications/give-notice-of-other-registrable-person-with-significant-control-of-a-scottish-qualifying-partnership-sqp-psc03"
+                                   th:text="#{guidance.documents.you.can.upload.sqppsc03}" class="govuk-link"></a>
+                            </p>
+                            <p class="govuk-body">
+                                <a href="https://www.gov.uk/government/publications/give-notice-to-change-details-of-a-person-with-significant-control-of-a-scottish-qualifying-partnership-sqp-psc04"
+                                   th:text="#{guidance.documents.you.can.upload.sqppsc04}" class="govuk-link"></a>
+                            </p>
+                            <p class="govuk-body">
+                                <a href="https://www.gov.uk/government/publications/give-details-of-relevant-legal-entity-with-significant-control-of-a-scottish-qualifying-partnership-sqp-psc05"
+                                   th:text="#{guidance.documents.you.can.upload.sqppsc05}" class="govuk-link"></a>
+                            </p>
+                            <p class="govuk-body">
+                                <a href="https://www.gov.uk/government/publications/give-notice-changing-details-of-other-person-with-significant-control-of-a-scottish-qualifying-partnership-sqp-psc06"
+                                   th:text="#{guidance.documents.you.can.upload.sqppsc06}" class="govuk-link"></a>
+                            </p>
+                            <p class="govuk-body">
+                                <a href="https://www.gov.uk/government/publications/give-notice-of-ceasing-to-be-a-psc-rle-or-orp-of-an-sqp-sqp-psc07"
+                                   th:text="#{guidance.documents.you.can.upload.sqppsc07}" class="govuk-link"></a>
+                            </p>
+                            <p class="govuk-body">
+                                <a href="https://www.gov.uk/government/publications/give-notice-of-a-person-of-psc-statements-for-a-scottish-qualifying-partnership-sqp-psc08"
+                                   th:text="#{guidance.documents.you.can.upload.sqppsc08}" class="govuk-link"></a>
+                            </p>
+                            <p class="govuk-body">
+                                <a href="https://www.gov.uk/government/publications/give-notice-of-update-to-psc-statements-for-a-scottish-qualifying-partnership-sqp-sqp-psc09"
+                                   th:text="#{guidance.documents.you.can.upload.sqppsc09}" class="govuk-link"></a>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <h2 class="govuk-heading-l" id="how-to-prepare-the-document" th:text="#{guidance.how.to.prepare.the.document}"></h2>
+                <p class="govuk-body" th:text="#{guidance.how.to.prepare.the.document.guide}"></p>
+                <h3 class="govuk-heading-m" th:text="#{guidance.companies.house.forms}">Companies House forms</h3>
+                <h4 class="govuk-heading-s" th:text="#{guidance.how.to.prepare.the.document.heading1}"></h4>
+                <ol class="govuk-list govuk-list--number">
+                    <li>
+                        <a th:href="${@environment.getProperty('company.registration.filing.forms')}" class="govuk-link">
+                            <span th:text="#{guidance.how.to.prepare.the.document.list.link}"></span>
+                        </a>
+                        <span th:text="#{guidance.how.to.prepare.the.document.list1.item1}"></span>
+                    </li>
+                    <li th:text="#{guidance.how.to.prepare.the.document.list1.item2}"></li>
+                    <li th:text="#{guidance.how.to.prepare.the.document.list1.item5}"></li>
+                </ol>
+                <h4 class="govuk-heading-s" th:text="#{guidance.how.to.prepare.the.document.heading2}"></h4>
+                <ul class="govuk-list govuk-list--number">
+                    <li th:text="#{guidance.how.to.prepare.the.document.list2.item1}"></li>
+                    <li th:text="#{guidance.how.to.prepare.the.document.list2.item2}"></li>
+                    <li th:text="#{guidance.how.to.prepare.the.document.list2.item3}"></li>
+                    <li th:text="#{guidance.how.to.prepare.the.document.list2.item4}"></li>
+                </ul>
+                <h3 class="govuk-heading-m" th:text="#{guidance.signatures}"></h3>
+                <p class="govuk-body" th:text="#{guidance.signatures.accepted}"></p>
+                <ul class="govuk-list govuk-list--bullet">
+                    <li th:text="#{guidance.signature.item1}"></li>
+                    <li th:text="#{guidance.signature.item2}"></li>
+                    <li th:text="#{guidance.signature.item3}"></li>
+                    <li th:text="#{guidance.signature.item4}"></li>
+                </ul>
+                <h2 class="govuk-heading-l" id="documents-that-need-evidence" th:text="#{guidance.documents.that.need.evidence}"></h2>
+                <h3 class="govuk-heading-m" th:text="#{guidance.documents.that.need.evidence.form.name}"></h3>
+                <p class="govuk-body" th:text="#{guidance.documents.that.need.evidence.guide}"></p>
+                <h4 class="govuk-heading-s" th:text="#{guidance.documents.that.need.evidence.evidence1}"></h4>
+                <p class="govuk-body" th:text="#{guidance.documents.that.need.evidence.accept}"></p>
+                <ul class="govuk-list govuk-list--bullet">
+                    <li th:text="#{guidance.documents.that.need.evidence.accept1.list.item1}"></li>
+                    <li th:text="#{guidance.documents.that.need.evidence.accept1.list.item2}"></li>
+                    <li th:text="#{guidance.documents.that.need.evidence.accept1.list.item3}"></li>
+                </ul>
+                <h4 class="govuk-heading-s" th:text="#{guidance.documents.that.need.evidence.evidence2}"></h4>
+                <p class="govuk-body" th:text="#{guidance.documents.that.need.evidence.accept}"></p>
+                <ul class="govuk-list govuk-list--bullet">
+                    <li th:text="#{guidance.documents.that.need.evidence.accept2.list.item1}"></li>
+                    <li th:text="#{guidance.documents.that.need.evidence.accept2.list.item2}"></li>
+                </ul>
+                <h2 class="govuk-heading-l" id="documents-that-have-a-fee" th:text="#{guidance.documents.that.have.a.fee}"></h2>
+                <p class="govuk-body" th:text="#{guidance.documents.that.have.a.fee.guide}"></p>
+                <h3 class="govuk-heading-m" th:text="#{guidance.documents.that.have.a.fee.how.to.pay}"></h3>
+                <p class="govuk-body" th:text="#{guidance.documents.that.have.a.fee.how.to.pay.guide}"></p>
+                <p class="govuk-body" th:text="#{guidance.documents.that.have.a.fee.how.to.pay.list}"></p>
+                <ul class="govuk-list govuk-list--number">
+                    <li th:text="#{guidance.documents.that.have.a.fee.how.to.pay.list.item1}"></li>
+                    <li th:text="#{guidance.documents.that.have.a.fee.how.to.pay.list.item2}"></li>
+                    <li th:text="#{guidance.documents.that.have.a.fee.how.to.pay.list.item3}"></li>
+                    <li th:text="#{guidance.documents.that.have.a.fee.how.to.pay.list.item4}"></li>
+                </ul>
+                <h2 class="govuk-heading-l" id="what-happens-next" th:text="#{guidance.what.happens.next}"></h2>
+                <p class="govuk-body" th:text="#{guidance.what.happens.next.text1}"></p>
+                <p class="govuk-body" th:text="#{guidance.what.happens.next.text2}"></p>
+                <p class="govuk-body" th:text="#{guidance.what.happens.next.text3}"></p>
+                <h2 class="govuk-heading-l" id="contact-us" th:text="#{guidance.contact.us}"></h2>
+                <p class="govuk-body">
+                    <p th:text="#{guidance.contact.us.text1}"></p>
+                    <h3 class="govuk-heading-s" th:text="#{guidance.contact.us.heading1}"></h3>
+                    <ul class="govuk-list">
+                        <li th:text="#{guidance.contact.us.telephone.number}"></li>
+                        <li th:text="#{guidance.contact.us.telephone.open}"></li>
+                    </ul>
+                    <p class="govuk-body">
+                        <a class="govuk-link" th:href="${@environment.getProperty('govuk.call.charges.url')}"
+                           th:text="#{guidance.contact.us.telephone.charge}"></a>
+                    </p>
+                    <h3 class="govuk-heading-s" th:text="#{guidance.contact.us.heading2}"></h3>
+                    <ul class="govuk-list">
+                        <li>
+                            <a class="govuk-link piwik-event" data-event-id="contact-us-email-link"
+                               th:href="${@environment.getProperty('enquiries.mailbox')}">
+                                <span th:text="#{guidance.contact.us.link}"></span>
+                            </a>
+                        </li>
+                    </ul>
+                </p>
+            </div>
+        </div>
+    </main>
+</div>
+</body>
+</html>

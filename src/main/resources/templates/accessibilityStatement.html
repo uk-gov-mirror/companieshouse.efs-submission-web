@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/baseLayout}"
+      lang="en">
+<head>
+    <title th:utext="#{accessibilityStatement.title}"></title>
+</head>
+    <body class="govuk-template__body js-enabled" layout:fragment="content">
+    <div class="govuk-width-container">
+        <main class="govuk-main-wrapper govuk-main-wrapper--auto-spacing" id="main-content" role="main">
+            <div class="govuk-grid-row">
+                <div class="govuk-grid-column-two-thirds">
+                    <h1 class="govuk-heading-xl" th:text="#{accessibilityStatement.heading}">
+                    </h1>
+                    <p>
+                        <span th:text="#{accessibilityStatement.runBy}"></span>
+                        <a th:href="${@environment.getProperty('govuk.ch.url')}" th:text="#{accessibilityStatement.companiesHouse}"></a>
+                        <span th:text="#{accessibilityStatement.asManyAsPossible}"></span>
+                    </p>
+                    <ul class="govuk-list govuk-list--bullet">
+                        <li th:text="#{accessibilityStatement.change}"></li>
+                        <li th:text="#{accessibilityStatement.zoom}"></li>
+                        <li th:text="#{accessibilityStatement.keyboardNavigate}"></li>
+                        <li th:text="#{accessibilityStatement.speechNavigate}"></li>
+                        <li th:text="#{accessibilityStatement.screenReader}"></li>
+                    </ul>
+                    <p th:text="#{accessibilityStatement.simpleToUnderstand}"></p>
+                    <p>
+                        <a th:href="${@environment.getProperty('abilitynet.url')}" th:text="#{accessibilityStatement.abilityNet}"></a>
+                    </p>
+
+                    <h2 class="govuk-heading-l" th:text="#{accessibilityStatement.howAccessible.service}"></h2>
+                    <p class="govuk-body" th:text="#{accessibilityStatement.accessibilityIssues}"></p>
+                    <p class="govuk-body" th:text="#{accessibilityStatement.accessibilityIssues.pdf}"></p>
+
+                    <h2 class="govuk-heading-l" th:text="#{accessibilityStatement.cantAccess}"></h2>
+                    <p class="govuk-body" th:text="#{accessibilityStatement.contactUsBy}"></p>
+                    <ul class="govuk-list govuk-list--bullet">
+                        <li>
+                            <span th:text="#{accessibilityStatement.emailAt}"></span>
+                            <a class="piwik-event" data-event-id="contact-us-email-link" th:href="${@environment.getProperty('enquiries.mailbox')}" th:text="#{accessibilityStatement.emailAddress}"></a>
+                        </li>
+                        <li th:text="#{accessibilityStatement.telephone}"></li>
+                        <li th:text="#{accessibilityStatement.telephoneWelsh}"></li>
+                        <li th:text="#{accessibilityStatement.textphoneAndMinicom}"></li>
+                    </ul>
+                    <p class="govuk-body">
+                        <a th:href="${@environment.getProperty('govuk.call.charges.url')}" th:text="#{accessibilityStatement.callCharges}"></a>
+                    </p>
+                    <p class="govuk-body" th:text="#{accessibilityStatement.writeToUs}"></p>
+                    <p class="govuk-body">
+                        <span th:text="#{accessibilityStatement.companiesHouse}"></span><br>
+                        <span th:text="#{accessibilityStatement.crownWay}"></span><br>
+                        <span th:text="#{accessibilityStatement.cardiff}"></span><br>
+                        <span th:text="#{accessibilityStatement.postcode}"></span>
+                    </p>
+                    <p class="govuk-body" th:text="#{accessibilityStatement.dx33050}"></p>
+                    <p class="govuk-body" th:text="#{accessibilityStatement.discussAssistance}"></p>
+                    <p class="govuk-body" th:text="#{accessibilityStatement.assistanceExample}"></p>
+
+                    <h2 class="govuk-heading-l" th:text="#{accessibilityStatement.reportingProblems}">
+                    </h2>
+                    <p class="govuk-body" th:text="#{accessibilityStatement.continuingToImprove}"></p>
+                    <h2 class="govuk-heading-l" th:text="#{accessibilityStatement.enforcement}"></h2>
+                    <p class="govuk-body">
+                        <span th:text="#{accessibilityStatement.EHRC}"></span>
+                        <a th:href="${@environment.getProperty('accessibility.equality.service')}" th:text="#{accessibilityStatement.contactEHRC}"></a>
+                    </p>
+                    <h2 class="govuk-heading-l" th:text="#{accessibilityStatement.technicalInformation}">
+                    </h2>
+                    <p class="govuk-body" th:text="#{accessibilityStatement.committedToAccessibility}">
+                    </p>
+                    <p class="govuk-body">
+                        <span th:text="#{accessibilityStatement.fullyCompliant}"></span>
+                        <a th:href="${@environment.getProperty('accessibility.web.guide.url')}" th:text="#{accessibilityStatement.webContentGuide}"></a>
+                        <span th:text="#{accessibilityStatement.AA}"></span>
+                    </p>
+
+                    <h2 class="govuk-heading-l" th:text="#{accessibilityStatement.pdf}">
+                    </h2>
+                    <p class="govuk-body" th:text="#{accessibilityStatement.pdf.doesntMeetStandards}"></p>
+
+                    <h2 class="govuk-heading-l" th:text="#{accessibilityStatement.tested}">
+                    </h2>
+                    <p class="govuk-body" th:text="#{accessibilityStatement.internalTests}"></p>
+                    <p class="govuk-body" th:text="#{accessibilityStatement.lastAudited}"></p>
+
+                    <h2 class="govuk-heading-l" th:text="#{accessibilityStatement.doingToImprove}">
+                    </h2>
+                    <p class="govuk-body" th:text="#{accessibilityStatement.toImprove}">
+                    </p>
+                    <ul class="govuk-list govuk-list--bullet">
+                        <li th:text="#{accessibilityStatement.realUsers}">
+                        </li>
+                        <li th:text="#{accessibilityStatement.testForCompliance}">
+                        </li>
+                        <li th:text="#{accessibilityStatement.externalAgencies}">
+                        </li>
+                        <li>
+                            <span th:text="#{accessibilityStatement.recruitCustomers}"></span>
+                            <a th:href="${@environment.getProperty('accessibility.improve.url')}" th:text="#{accessibilityStatement.userPanel}"></a>
+                            <span th:text="#{accessibilityStatement.usabilityLab}"></span>
+                        </li>
+                        <li>
+                            <span th:text="#{accessibilityStatement.buildAndTest}"></span>
+                            <a th:href="${@environment.getProperty('accessibility.service.manual.url')}" th:text="#{accessibilityStatement.accessibilityRequirements}"></a>
+                        </li>
+                        <li>
+                            <span th:text="#{accessibilityStatement.developing}"></span>
+                            <a th:href="${@environment.getProperty('accessibility.empathy.url')}" th:text="#{accessibilityStatement.assistiveLab}"></a>
+                            <span th:text="#{accessibilityStatement.inCardiffOffice}"></span>
+                            <a th:href="${@environment.getProperty('accessibility.user.research.url')}" th:text="#{accessibilityStatement.blogs}"></a>
+                            <span th:text="#{accessibilityStatement.userResearchWork}"></span>
+                        </li>
+                        <li th:text="#{accessibilityStatement.updatingPDFs}">
+                        </li>
+                        <li th:text="#{accessibilityStatement.newPDFsAccessible}">
+                        </li>
+                        <li th:text="#{accessibilityStatement.trainingStaffOnPDFs}">
+                        </li>
+                    </ul>
+                    <p class="govuk-body" th:text="#{accessibilityStatement.statement}"></p>
+                    <p class="govuk-body" th:text="#{accessibilityStatement.statement2}"></p>
+                </div>
+            </div>
+        </main>
+    </div>
+    </body>
+</html>

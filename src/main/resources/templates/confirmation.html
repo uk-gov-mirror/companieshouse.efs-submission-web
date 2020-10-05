@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/baseLayout}"
+      lang="en">
+<head>
+    <title th:text="#{confirmation.title}"></title>
+</head>
+<body class="govuk-template__body js-enabled" layout:fragment="content">
+<div th:replace="fragments/userBar :: userBar"></div>
+<div class="govuk-width-container">
+    <main class="govuk-main-wrapper govuk-main-wrapper--auto-spacing" id="main-content" role="main">
+        <div class="govuk-grid-row">
+            <div class="govuk-grid-column-two-thirds">
+                <div class="govuk-panel govuk-panel--confirmation-green">
+                    <h1 class="govuk-panel__title" th:text="#{confirmation.title}"></h1>
+                    <div class="govuk-panel__body">
+                        <span th:text="#{confirmation.banner.ref}"></span>
+                        <br/>
+                        <span id="confirmation-ref" th:text="${#strings.replace(confirmationRef,' ','&ensp;')}"></span>
+                    </div>
+                </div>
+                <br/>
+                <h2 class="govuk-heading-m" th:text="#{confirmation.happens.title}"></h2>
+                <p class="govuk-body" th:text="#{confirmation.next.emailSent}"></p>
+                <p class="govuk-body" th:text="#{confirmation.next.body1}"></p>
+                <p class="govuk-body" th:text="#{confirmation.next.body2}"></p>
+                <p class="govuk-body" th:text="#{confirmation.next.body3}"></p>
+                <div class="govuk-warning-text">
+                    <span class="govuk-warning-text__icon" aria-hidden="true">!</span>
+                    <strong class="govuk-warning-text__text" style="padding-left: 65px;">
+                        <span class="govuk-warning-text__assistive">Warning</span>
+                        <span th:text="#{confirmation.happens.warning.text}"></span>
+                    </strong>
+                </div>
+                <h2 class="govuk-heading-m" th:text="#{confirmation.next.steps}"></h2>
+                <ul class="govuk-list">
+                    <li>
+                        <a class="govuk-link" th:href="*{newSubmissionUri}" th:text="#{confirmation.upload.same.company(*{companyName})}"></a>
+                    </li>
+                    <li>
+                        <a class="govuk-link" th:href="@{/efs-submission/new-submission}" th:text="#{confirmation.upload.different.company}"></a>
+                    </li>
+                    <li>
+                        <a class="govuk-link" th:href="@{{chsAccountUrl}/signout(chsAccountUrl=${@environment.getProperty('account.url')})}" th:text="#{confirmation.sign.out}"></a>
+                    </li>
+                </ul>
+                <p class="govuk-body govuk-!-margin-top-7">
+                    <span th:text="#{confirmation.new.service}"></span>
+                    <a class="piwik-event" data-event-id="confirmation-feedback-link" th:href="${@environment.getProperty('feedback.url')}" target="_blank">
+                        <span class="govuk-visually-hidden" th:text="#{confirmation.new.service}"></span>
+                        <span th:text="#{confirmation.survey.link}"></span>
+                    </a>
+                </p>
+            </div>
+        </div>
+    </main>
+</div>
+</body>
+</html>

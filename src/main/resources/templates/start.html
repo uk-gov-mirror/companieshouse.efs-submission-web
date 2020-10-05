@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/baseLayout}"
+      lang="en">
+<head>
+    <title th:text="#{start.title}"></title>
+</head>
+<body class="govuk-template__body js-enabled" layout:fragment="content">
+    <div class="govuk-width-container">
+        <main class="govuk-main-wrapper govuk-main-wrapper--auto-spacing" id="main-content" role="main">
+            <div class="govuk-grid-row">
+                <div class="govuk-grid-column-two-thirds">
+                    <h1 class="govuk-heading-xl" th:text="#{start.title}"></h1>
+                    <p class="govuk-body-lead" th:text="#{start.service.description}"></p>
+                    <p class="govuk-body" th:text="#{start.upload.certain.documents}"></p>
+                    <ul class="govuk-list govuk-list--bullet">
+                        <li th:text="#{start.upload.certain.documents.insolvency}"></li>
+                        <li th:text="#{start.upload.certain.documents.share.capital}"></li>
+                        <li th:text="#{start.upload.certain.documents.rp}"></li>
+                        <li th:text="#{start.upload.certain.documents.cc}"></li>
+                        <li th:text="#{start.upload.certain.documents.slp}"></li>
+                        <li th:text="#{start.upload.certain.documents.sqp}"></li>
+                    </ul>
+                    <p>
+                        <a class="govuk-link piwik-event" data-event-id="guidance-link-top" th:href="${@environment.getProperty('guidance.page.url')}" th:text="#{start.list.of.documents}"></a>
+                        <span th:text="#{start.service.text}"></span>
+                    </p>
+                    <div class="govuk-inset-text" th:text="#{start.interim.service.covid.description}"></div>
+                    <p class="govuk-body" th:text="#{start.list.title}"></p>
+                    <ul class="govuk-list govuk-list--bullet">
+                        <li>
+                            <span th:text="#{start.list.item1}"></span>
+                            <a th:href="${@environment.getProperty('start.registration.form')}"><span th:text="#{start.companies.house.form}"></span></a>
+                        </li>
+                        <li th:text="#{start.list.item2}"></li>
+                    </ul>
+                    <p class="govuk-body" th:text="#{start.list.document.types}"></p>
+                    <ul class="govuk-list govuk-list--bullet">
+                        <li th:text="#{start.list.document.types.item1}"></li>
+                        <li th:text="#{start.list.document.types.item2}"></li>
+                        <li th:text="#{start.list.document.types.item3}"></li>
+                    </ul>
+                    <a href="/efs-submission/new-submission" th:onclick="javascript:_paq.push(['trackGoal', /*[[${@environment.getProperty('efs.piwik.start.goal.id')}]]*/]);" role="button" draggable="false" class="govuk-button govuk-!-margin-top-2 govuk-!-margin-bottom-8 govuk-button--start piwik-event" data-module="govuk-button" id="start-button">
+                        <span th:text="#{start.now.button}"></span>
+                        <svg class="govuk-button__start-icon" xmlns="http://www.w3.org/2000/svg" width="17.5" height="19" viewBox="0 0 33 40" aria-hidden="true" focusable="false">
+                            <path fill="currentColor" d="M0 0h13l20 20-20 20H0l20-20z"></path>
+                        </svg>
+                    </a>
+                    <h2 class="govuk-heading-m" th:text="#{start.before.text}"></h2>
+                    <p class="govuk-body" th:text="#{start.different.services.list}"></p>
+                    <ul class="govuk-list govuk-list--bullet">
+                        <li>
+                            <a th:href="${@environment.getProperty('start.register.company')}">
+                                <span th:text="#{start.different.services.list.item1}"></span>
+                            </a>
+                        </li>
+                        <li>
+                            <a th:href="${@environment.getProperty('start.file.accounts')}">
+                                <span th:text="#{start.different.services.list.item2}"></span>
+                            </a>
+                        </li>
+                        <li>
+                            <a th:href="${@environment.getProperty('start.file.statement')}">
+                                <span th:text="#{start.different.services.list.item3}"></span>
+                            </a>
+                        </li>
+                        <li>
+                            <a th:href="${@environment.getProperty('start.make.change')}">
+                                <span th:text="#{start.different.services.list.item4}"></span>
+                            </a>
+                        </li>
+                        <li>
+                            <a th:href="${@environment.getProperty('start.close.company')}">
+                                <span th:text="#{start.different.services.list.item5}"></span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </main>
+    </div>
+</body>
+</html>

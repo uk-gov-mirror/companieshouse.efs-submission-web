@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/baseLayout}"
+      lang="en">
+<head>
+    <title th:text="#{resolutionsInfo.title}"></title>
+</head>
+<body class="govuk-template__body js-enabled" layout:fragment="content">
+    <div class="govuk-width-container">
+        <form class="form" id="resolutions-info" th:object="${formTemplate}"
+              th:action="@{/efs-submission/{id}/company/{companyNumber}/resolutions-info(id=*{submissionId}, companyNumber=*{companyNumber})}" method="post">
+            <a class="govuk-back-link"
+               th:href="@{/efs-submission/{id}/company/{companyNumber}/document-selection?category={category}
+               (id=*{submissionId}, companyNumber=*{companyNumber},category=*{details.formCategory})}" th:text="#{link.back}"></a>
+            <main class="govuk-main-wrapper govuk-main-wrapper--auto-spacing" id="main-content" role="main">
+                <div class="govuk-grid-row">
+                    <div class="govuk-grid-column-two-thirds">
+                        <h1 class="govuk-heading-xl" th:text="#{resolutionsInfo.header}"></h1>
+                        <h2 class="govuk-heading-m" th:text="#{resolutionsInfo.cannot}"></h2>
+                        <ul class="govuk-list govuk-list--bullet">
+                            <li th:text="#{resolutionsInfo.cannot.list1}"></li>
+                            <li th:text="#{resolutionsInfo.cannot.list2}"></li>
+                        </ul>
+                        <div>
+                            <button data-prevent-double-click="true" id="submit-all" type="submit"
+                                    class="govuk-button" name="action" value="submit" th:text="#{button.continue}"></button>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </form>
+    </div>
+</body>
+</html>
