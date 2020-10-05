@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>User Bar</title>
+</head>
+<body>
+<div th:fragment="userBar" th:classappend="${userEmail == null ? 'hidden' : ''}" class="js-toggle-nav" id="global-nav">
+
+    <nav class="content" role="navigation">
+        <ul id="navigation" class="mobile-hidden">
+            <li class="user" id="signed-in-user"th:text="${userEmail + ':'}"></li>
+            <li><a th:href="@{{chsAccountUrl}/signout(chsAccountUrl=${@environment.getProperty('account.url')})}"
+                   id="user-signout" class="piwik-event" data-event-id="Sign out" th:text="#{userBar.sign.out}"></a></li>
+        </ul>
+    </nav>
+</div>
+</body>
+</html>

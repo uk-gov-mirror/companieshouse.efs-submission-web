@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/baseLayout}"
+      lang="en">
+<head>
+    <title th:text="#{checkDetails.title}"></title>
+</head>
+<body class="govuk-template__body" layout:fragment="content">
+<div class="govuk-width-container">
+    <form id="lookup-form" th:action="@{/efs-submission/{id}/company/{number}/check-your-details(id=*{submissionId},number=*{companyNumber})}" th:object="${checkDetails}" class="form" method="post">
+        <a class="govuk-back-link" th:href="@{/efs-submission/{id}/company/{companyNumber}/document-upload(id=*{submissionId},companyNumber=*{companyNumber})}" th:text="#{link.back}"></a>
+        <main class="govuk-main-wrapper govuk-main-wrapper--auto-spacing" id="main-content" role="main">
+        <div class="govuk-grid-row">
+            <div class="govuk-grid-column-two-thirds-from-desktop">
+                <div th:replace="fragments/errorSummary :: errorSummary"></div>
+                <fieldset class="govuk-fieldset" aria-describedby="page-heading">
+                    <legend class="govuk-fieldset__legend govuk-fieldset__legend--xl">
+                        <h1 id="page-heading" class="govuk-heading-l" th:text="#{checkDetails.title}"></h1>
+                    </legend>
+                    <h2 class="govuk-heading-m" th:text="#{checkDetails.company.heading}"></h2>
+                    <dl class="govuk-summary-list govuk-!-margin-bottom-9">
+                        <div class="govuk-summary-list__row">
+                            <dt th:text="#{checkDetails.company.name}" class="govuk-summary-list__key"></dt>
+                            <dd class="govuk-summary-list__value"  id="companyName"
+                                th:utext="*{#strings.replace(companyName,'&#10;','&lt;br&gt;')}">
+                            </dd>
+                        </div>
+                        <div class="govuk-summary-list__row">
+                            <dt th:text="#{checkDetails.company.number}" class="govuk-summary-list__key"></dt>
+                            <dd class="govuk-summary-list__value"  id="companyNumber"
+                                th:utext="*{#strings.replace(companyNumber,'&#10;','&lt;br&gt;')}">
+                            </dd>
+                        </div>
+                    </dl>
+
+                    <h2 class="govuk-heading-m" th:text="#{checkDetails.document.heading}"></h2>
+                    <dl class="govuk-summary-list govuk-!-margin-bottom-9">
+                        <div class="govuk-summary-list__row">
+                            <dt th:text="#{checkDetails.document.type}" class="govuk-summary-list__key"></dt>
+                            <dd class="govuk-summary-list__value"  id="documentTypeDescription"
+                                th:utext="*{#strings.replace(documentTypeDescription,'&#10;','&lt;br&gt;')}">
+                            </dd>
+                        </div>
+                        <div class="govuk-summary-list__row">
+                            <dt th:text="#{checkDetails.document.uploaded}" class="govuk-summary-list__key"></dt>
+                            <dd class="govuk-summary-list__value">
+                                <p th:each="documentUploaded : *{documentUploadedList}" id="documentUploaded" th:utext="${documentUploaded.fileName}"></p>
+                            </dd>
+                        </div>
+                        <div th:if="${checkDetails.paymentReference}" class="govuk-summary-list__row">
+                            <dt th:text="#{checkDetails.payment.reference}" class="govuk-summary-list__key"></dt>
+                            <dd class="govuk-summary-list__value"  id="paymentReference"
+                                th:utext="*{#strings.replace(paymentReference,'&#10;','&lt;br&gt;')}">
+                            </dd>
+                        </div>
+                    </dl>
+
+                    <div th:if="${showAuthStatement}" class="govuk-form-group govuk-!-margin-bottom-0 govuk-!-padding-bottom-6">
+                        <h2 class="govuk-heading-m" th:text="#{checkDetails.authorised.heading}"></h2>
+                        <div th:classappend="${#fields.hasErrors('confirmAuthorised')} ? 'govuk-form-group--error' : ''">
+                            <span id="confirmAuthorised-error" class="govuk-error-message"
+                                  th:if="${#fields.hasErrors('confirmAuthorised')}"
+                                  th:each="e: ${#fields.errors('confirmAuthorised')}" th:text="${e}">
+                            </span>
+                            <div class="govuk-checkboxes">
+                                <div class="govuk-checkboxes__item">
+                                    <input class="govuk-checkboxes__input piwik-event" id="confirmAuthorised"
+                                           name="confirmAuthorised"
+                                           type="checkbox" value="true"
+                                           data-event-id="authorised-statement-checked">
+                                    <label th:text="#{checkDetails.authorised.statement}"
+                                       class="govuk-label govuk-checkboxes__label" for="confirmAuthorised"></label>
+                                </div>
+                             </div>
+                        </div>
+                    </div>
+                </fieldset>
+                <div>
+                    <button data-prevent-double-click="true" id="next-button" type="submit" class="govuk-button" name="action" value="submit" th:text="#{checkDetails.button.submit}"></button>
+                </div>
+            </div>
+        </div>
+        </main>
+    </form>
+</div>
+</body>
+</html>

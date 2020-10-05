@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/baseLayout}"
+      lang="en">
+    <head>
+        <title th:utext="#{companyDetails.title}"></title>
+    </head>
+    <body class="govuk-template__body js-enabled" layout:fragment="content">
+        <div class="govuk-width-container">
+            <form id="lookup-form"
+                  th:action="@{/efs-submission/{id}/company/{number}/details(id=*{submissionId},number=*{companyNumber})}"
+                  th:object="${companyDetail}" class="form" method="post">
+                <a class="govuk-back-link" th:href="@{/efs-submission/{id}/companyLookup(id=*{submissionId})}"
+                   th:text="#{link.back}"></a>
+                <main class="govuk-main-wrapper govuk-main-wrapper--auto-spacing" id="main-content" role="main">
+                    <div class="govuk-grid-row">
+                        <div class="govuk-grid-column-two-thirds">
+                            <fieldset class="govuk-fieldset">
+                                <h1 class="govuk-heading-xl" id="company-details-heading" th:utext="#{companyDetails.title}"></h1>
+                                <dl class="app-check-your-answers app-check-your-answers--short">
+                                    <div class="app-check-your-answers__contents">
+                                        <dt th:text="#{companyDetails.companyName}"
+                                            class="app-check-your-answers__question">
+                                        </dt>
+                                        <dd class="app-check-your-answers__answer"  id="companyDetail-companyName"
+                                            th:utext="*{#strings.replace(companyName,'&#10;','&lt;br&gt;')}">
+                                        </dd>
+                                    </div>
+                                    <div class="app-check-your-answers__contents">
+                                        <dt th:text="#{companyDetails.companyNumber}"
+                                            class="app-check-your-answers__question">
+                                        </dt>
+                                        <dd class="app-check-your-answers__answer" id="companyDetail-companyNumber"
+                                            th:utext="*{#strings.replace(companyNumber,'&#10;','&lt;br&gt;')}">
+                                        </dd>
+                                    </div>
+                                    <div class="app-check-your-answers__contents">
+                                        <dt th:text="#{companyDetails.incorporationDate}" class="app-check-your-answers__question">
+                                        </dt>
+                                        <dd class="app-check-your-answers__answer" id="companyDetail-incorporationDate"
+                                            th:utext="*{#temporals.format(incorporationDate, 'dd MMMM yyyy')}">
+                                        </dd>
+                                    </div>
+                                    <div class="app-check-your-answers__contents">
+                                        <dt th:text="#{companyDetails.registeredOfficeAddress}"
+                                            class="app-check-your-answers__question">
+                                        </dt>
+                                        <dd class="app-check-your-answers__answer" id="companyDetail-registeredOfficeAddress"
+                                            th:utext="*{#strings.replace(registeredOfficeAddress,'&#10;','&lt;br&gt;')}">
+                                        </dd>
+                                    </div>
+                                </dl>
+                            </fieldset>
+                            <div>
+                                <button data-prevent-double-click="true" id="next-button" type="submit" class="govuk-button" name="action" value="submit" th:text="#{button.confirm}"></button>
+                            </div>
+                        </div>
+                    </div>
+                </main>
+            </form>
+        </div>
+    </body>
+</html>

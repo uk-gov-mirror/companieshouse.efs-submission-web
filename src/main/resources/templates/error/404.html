@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/baseLayout}"
+      lang="en">
+<head>
+    <title>Page not found</title>
+</head>
+<body class="govuk-template__body" layout:fragment="content">
+<main class="govuk-main-wrapper govuk-main-wrapper--l" id="main-content" role="main">
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds">
+            <h1 class="govuk-heading-l" th:text="#{404.pageNotFound}"></h1>
+            <p th:text="#{404.spelledCorrectly}"></p>
+            <p th:text="#{404.copiedAddress}"></p>
+            <p>
+                <span th:text="#{404.pageMoved}"> </span>
+                <a class="govuk-link" th:href="${@environment.getProperty('start.page.url')}" th:text="#{404.goToStart}"></a>
+            </p>
+        </div>
+    </div>
+</main>
+</body>
+</html>

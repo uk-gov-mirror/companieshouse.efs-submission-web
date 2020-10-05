@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/baseLayout}"
+      lang="en">
+<head>
+    <title th:text="${#fields.hasErrors('${documentUpload.*}')} ? #{error} + ' ' + #{documentUpload.title} : #{documentUpload.title}"></title>
+</head>
+<body class="govuk-template__body" layout:fragment="content">
+
+<form th:id="upload-form" th:action="@{/efs-submission/{id}/company/{companyNumber}/document-upload(id=*{submissionId}, companyNumber=*{companyNumber})}" th:object="${documentUpload}" method="post" enctype="multipart/form-data">
+
+    <!-- Main Content -->
+    <main class="govuk-main-wrapper" id="main-content" role="main">
+        <div class="govuk-grid-row">
+            <div class="govuk-grid-column-two-thirds">
+                <div th:replace="fragments/errorSummary :: errorSummary"></div>
+                <span class="govuk-caption-xl" th:text="#{documentUpload.companyNameLabel} + ' ' + *{#strings.replace(companyName,'&#10;','&lt;br&gt;')}"></span>
+                <h1 class="govuk-heading-xl govuk-!-margin-bottom-5" th:text="#{documentUpload.title}"></h1>
+
+                <!-- Guidance text -->
+                <p class="govuk-body" th:text="#{documentUpload.guidance.heading}"></p>
+                <ul class="govuk-list govuk-list--bullet">
+                    <li class="govuk-body" th:text="#{documentUpload.guidance.para1}"></li>
+                    <li class="govuk-body" th:text="#{documentUpload.guidance.para2(*{maximumUploadsAllowed})}"></li>
+                    <li class="govuk-body" th:text="#{documentUpload.guidance.para3}"></li>
+                </ul>
+                <div th:unless="${showCcReminder}" th:if="*{maximumUploadsAllowed} &gt; 1" class="govuk-inset-text"
+                     th:text="#{documentUpload.guidance.help}"></div>
+                <div th:unless="${showCcReminder}" th:if="*{maximumUploadsAllowed} == 1" class="govuk-inset-text"
+                     th:text="#{documentUpload.guidance.help.fes}"></div>
+                <div th:if="${showCcReminder}" class="govuk-inset-text"
+                     th:text="#{documentUpload.guidance.help.cc}"></div>
+
+                <!-- File Uploader -->
+                <div id="file-upload-panel" th:unless="*{maximumUploadLimitReached}">
+                    <div id="file-upload-wrapper" class="govuk-form-group" th:classappend="${#fields.hasErrors('*')} ? 'govuk-form-group--error' : ''">
+                        <label class="govuk-label" for="file-uploader" th:text="#{documentUpload.header}"></label>
+                        <ul class="govuk-list govuk-error-summary__list">
+                            <li th:each="e: ${#lists.sort(#fields.detailedErrors(), errorComparator)}">
+                                <span id="selectedFiles-error" th:text="${e.message}" class="govuk-error-message"></span>
+                            </li>
+                        </ul>
+                        <input id="file-uploader" name="selectedFiles" type="file" accept="application/pdf" class="govuk-file-upload" onchange="uploadFilesAndDisableSubmitButton()">
+                    </div>
+                </div>
+
+                <!-- List of File Uploads -->
+                <div id="uploaded-files-panel" class="list-group-flush" th:if="*{not #lists.isEmpty(details.getFiles())}">
+                    <table id="uploaded-files" class="govuk-table">
+                        <caption class="govuk-table__caption" th:text="#{documentUpload.table.caption(*{#lists.size(details.files)})}"></caption>
+                        <thead class="govuk-table__head">
+                        <tr class="govuk-table__row">
+                            <th class="govuk-table__header">File name</th>
+                            <th class="govuk-table__header">Size</th>
+                            <th class="govuk-table__header">Action</th>
+                        </tr>
+                        </thead>
+                        <tbody class="govuk-table__body" th:each="document: *{details.getFiles()}">
+                        <tr class="govuk-table__row">
+                            <th class="govuk-table__cell" style="word-break: break-word" th:text="${#strings.replace(document.fileName, '-', '&#8209;')}"></th>
+                            <td class="govuk-table__cell" th:text="${T(uk.gov.companieshouse.efs.web.model.DocumentUploadModel).displayFileSizeAsHuman(document)}"></td>
+                            <td class="govuk-table__cell">
+                                <a th:href="@{/efs-submission/{id}/company/{companyNumber}/remove-document/{fileId}(id=*{submissionId}, companyNumber=*{companyNumber}, fileId=${document.fileId})}">Remove<span
+                                        class="govuk-visually-hidden" th:text="${document.fileName}"></span></a>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Save and continue -->
+                <div id="save-and-continue-panel">
+                    <button data-prevent-double-click="true" id="submit-all" type="submit" class="govuk-button" name="action" value="submit" th:text="#{documentUpload.button.continue}"></button>
+                </div>
+
+            </div>
+        </div>
+    </main>
+</form>
+
+<script>
+    // Prevents the user clicking onto the submit button before the files have been uploaded to the page successfully.
+    function uploadFilesAndDisableSubmitButton() {
+        const submitButton = document.getElementById("submit-all");
+        const form = document.getElementById("upload-form");
+
+        submitButton.disabled = true;
+        submitButton.className += " govuk-button--disabled";
+        submitButton.setAttribute("aria-disabled", "true");
+        form.submit();
+    }
+</script>
+
+</body>
+</html>

@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <title>footer</title>
+    </head>
+    <body>
+        <footer th:fragment="footer" class="group js-footer" id="footer" role="contentinfo">
+            <nav>
+                <div>
+                    <ul>
+                        <li>
+                            <a id="policies-link" class="govuk-footer__link" target="_blank"
+                               th:href="${@environment.getProperty('policies.url')}"
+                               th:text="#{footer.policies}">
+                            </a>
+                        </li>
+                        <li>
+                            <a id="cookies-link" class="govuk-footer__link" target="_blank"
+                               th:href="@{{chsUrl}/help/cookies(chsUrl=${@environment.getProperty('chs.url')})}"
+                               th:text="#{footer.cookies}">
+                            </a>
+                        </li>
+                        <li>
+                            <a id="contact-us-link" class="govuk-footer__link" target="_blank"
+                               th:href="@{{chsUrl}/help/contact-us(chsUrl=${@environment.getProperty('chs.url')})}"
+                               th:text="#{footer.contactus}">
+                            </a>
+                        </li>
+                        <li>
+                            <a id="developer-link" class="govuk-footer__link" target="_blank"
+                               th:href="@{{developerUrl}/api/docs/(developerUrl=
+                                    ${@environment.getProperty('developer.url')})}"
+                               th:text="#{footer.developers}">
+                            </a>
+                        </li>
+                        <li>
+                            <a id="accessibility-statement-link" class="govuk-footer__link" target="_blank"
+                               th:href="@{/efs-submission/accessibility-statement}"
+                               th:text="#{footer.accessibilitystatement}">
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+        </footer>
+    </body>
+</html>

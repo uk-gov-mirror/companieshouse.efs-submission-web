@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <title>header</title>
+    </head>
+    <body>
+        <th:block th:fragment="header">
+            <header  role="banner" id="global-header" class="govuk-header">
+                <div class="govuk-header__container govuk-width-container">
+                    <div class="header-global">
+                        <div class="govuk-header__logo">
+                            <a th:href="@{{chsUrl}(chsUrl=${@environment.getProperty('govuk.ch.url')})}"
+                               title="Go to the companies house homepage" id="logo"
+                               class="govuk-header__link govuk-header__link--homepage">
+                                <span th:text="#{header.organisation}" class="govuk-header__logotype-text"></span>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="govuk-header__content">
+                        <a th:href="${@environment.getProperty('start.page.url')}" title="Go to the upload a document homepage"
+                           id="protect-your-details-name"
+                           class="govuk-header__link govuk-header__link--service-name"
+                           th:text="#{header.servicename}"></a>
+                    </div>
+                </div>
+            </header>
+        </th:block>
+    </body>
+</html>
