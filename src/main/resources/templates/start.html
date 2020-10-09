@@ -16,12 +16,12 @@
                     <p class="govuk-body-lead" th:text="#{start.service.description}"></p>
                     <p class="govuk-body" th:text="#{start.upload.certain.documents}"></p>
                     <ul class="govuk-list govuk-list--bullet">
-                        <li th:text="#{start.upload.certain.documents.insolvency}"></li>
                         <li th:text="#{start.upload.certain.documents.share.capital}"></li>
                         <li th:text="#{start.upload.certain.documents.rp}"></li>
                         <li th:text="#{start.upload.certain.documents.cc}"></li>
                         <li th:text="#{start.upload.certain.documents.slp}"></li>
                         <li th:text="#{start.upload.certain.documents.sqp}"></li>
+                        <li th:text="#{start.upload.certain.documents.insolvency}"></li>
                     </ul>
                     <p>
                         <a class="govuk-link piwik-event" data-event-id="guidance-link-top" th:href="${@environment.getProperty('guidance.page.url')}" th:text="#{start.list.of.documents}"></a>
@@ -30,11 +30,12 @@
                     <div class="govuk-inset-text" th:text="#{start.interim.service.covid.description}"></div>
                     <p class="govuk-body" th:text="#{start.list.title}"></p>
                     <ul class="govuk-list govuk-list--bullet">
+                        <li th:text="#{start.list.item1}"></li>
                         <li>
-                            <span th:text="#{start.list.item1}"></span>
+                            <span th:text="#{start.list.item2}"></span>
                             <a th:href="${@environment.getProperty('start.registration.form')}"><span th:text="#{start.companies.house.form}"></span></a>
                         </li>
-                        <li th:text="#{start.list.item2}"></li>
+                        <li th:text="#{start.list.item3}"></li>
                     </ul>
                     <p class="govuk-body" th:text="#{start.list.document.types}"></p>
                     <ul class="govuk-list govuk-list--bullet">
