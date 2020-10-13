@@ -1,7 +1,7 @@
 package uk.gov.companieshouse.efs.web.service.api.impl;
 
-import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.when;
@@ -38,11 +38,11 @@ import uk.gov.companieshouse.api.model.efs.submissions.CompanyApi;
 import uk.gov.companieshouse.api.model.efs.submissions.ConfirmAuthorisedApi;
 import uk.gov.companieshouse.api.model.efs.submissions.FileListApi;
 import uk.gov.companieshouse.api.model.efs.submissions.FormTypeApi;
-import uk.gov.companieshouse.api.model.efs.submissions.PaymentReferenceApi;
 import uk.gov.companieshouse.api.model.efs.submissions.PresenterApi;
 import uk.gov.companieshouse.api.model.efs.submissions.SubmissionApi;
 import uk.gov.companieshouse.api.model.efs.submissions.SubmissionResponseApi;
 import uk.gov.companieshouse.api.model.efs.submissions.SubmissionStatus;
+import uk.gov.companieshouse.api.model.paymentsession.SessionListApi;
 import uk.gov.companieshouse.efs.web.service.api.ApiClientService;
 import uk.gov.companieshouse.logging.Logger;
 
@@ -81,7 +81,7 @@ class ApiClientServiceImplTest {
     private FileListApi fileList;
 
     @Mock
-    private PaymentReferenceApi paymentReference;
+    private SessionListApi paymentSessions;
 
     @Mock
     private ConfirmAuthorisedApi confirmAuthorised;
@@ -264,13 +264,13 @@ class ApiClientServiceImplTest {
     }
 
     @Test
-    void putPayment() throws ApiErrorResponseException, URIValidationException {
+    void putPaymentSessions() throws ApiErrorResponseException, URIValidationException {
         when(resourceHandler.submissions()).thenReturn(submissionsResourceHandler);
-        when(submissionsResourceHandler.payment()).thenReturn(upsertResourceHandler);
-        when(upsertResourceHandler.upsert(SUBMISSION_URI + "/payment", paymentReference)).thenReturn(modelUpsert);
+        when(submissionsResourceHandler.paymentSessions()).thenReturn(upsertResourceHandler);
+        when(upsertResourceHandler.upsert(SUBMISSION_URI + "/payment-sessions", paymentSessions)).thenReturn(modelUpsert);
         when(modelUpsert.execute()).thenReturn(EMPTY_OK_RESPONSE);
 
-        final ApiResponse<SubmissionResponseApi> response = apiClientService.putPayment(SUBMISSION_ID, paymentReference);
+        final ApiResponse<SubmissionResponseApi> response = apiClientService.putPaymentSessions(SUBMISSION_ID, paymentSessions);
 
         assertThat(response, is(EMPTY_OK_RESPONSE));
     }

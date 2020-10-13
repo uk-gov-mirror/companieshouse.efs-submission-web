@@ -49,12 +49,6 @@
                                 <p th:each="documentUploaded : *{documentUploadedList}" id="documentUploaded" th:utext="${documentUploaded.fileName}"></p>
                             </dd>
                         </div>
-                        <div th:if="${checkDetails.paymentReference}" class="govuk-summary-list__row">
-                            <dt th:text="#{checkDetails.payment.reference}" class="govuk-summary-list__key"></dt>
-                            <dd class="govuk-summary-list__value"  id="paymentReference"
-                                th:utext="*{#strings.replace(paymentReference,'&#10;','&lt;br&gt;')}">
-                            </dd>
-                        </div>
                     </dl>
 
                     <div th:if="${showAuthStatement}" class="govuk-form-group govuk-!-margin-bottom-0 govuk-!-padding-bottom-6">

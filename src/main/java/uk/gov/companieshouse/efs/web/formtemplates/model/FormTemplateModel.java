@@ -78,12 +78,12 @@ public class FormTemplateModel {
         details.setFormCategory(formCategory);
     }
 
-    public String getFee() {
-        return details.getFee();
+    public String getPaymentCharge() {
+        return details.getPaymentCharge();
     }
 
-    public void setFee(String fee) {
-        details.setFee(fee);
+    public void setPaymentCharge(String paymentCharge) {
+        details.setPaymentCharge(paymentCharge);
     }
 
     public boolean isAuthenticationRequired() {

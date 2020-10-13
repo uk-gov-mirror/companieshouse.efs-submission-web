@@ -18,9 +18,6 @@ import uk.gov.companieshouse.efs.web.service.api.ApiClientService;
 import uk.gov.companieshouse.efs.web.service.session.SessionService;
 import uk.gov.companieshouse.logging.Logger;
 
-import javax.servlet.http.HttpServletRequest;
-import java.text.MessageFormat;
-
 @Controller
 @SessionAttributes(CompanyDetailControllerImpl.ATTRIBUTE_NAME)
 @SuppressWarnings("squid:S3753")
@@ -33,7 +30,7 @@ public class NewSubmissionControllerImpl extends BaseControllerImpl implements N
 
     @Autowired
     public NewSubmissionControllerImpl(final Logger logger, final SessionService sessionService,
-                                       final ApiClientService apiClientService) {
+        final ApiClientService apiClientService) {
         super(logger, sessionService, apiClientService);
     }
 
@@ -44,42 +41,52 @@ public class NewSubmissionControllerImpl extends BaseControllerImpl implements N
 
     @Override
     public String newSubmission(
-            @ModelAttribute(CompanyDetailControllerImpl.ATTRIBUTE_NAME) CompanyDetail companyDetailAttribute,
-            final SessionStatus sessionStatus, final HttpServletRequest request, RedirectAttributes attributes) {
+        @ModelAttribute(CompanyDetailControllerImpl.ATTRIBUTE_NAME) CompanyDetail companyDetailAttribute,
+        final SessionStatus sessionStatus, final HttpServletRequest request, RedirectAttributes attributes) {
 
         String newSubmissionId;
 
         companyDetailAttribute.clear();
-        newSubmissionId = createNewSubmission();
-        companyDetailAttribute.setSubmissionId(newSubmissionId);
-        storeOriginalSubmissionId(newSubmissionId);
+        try {
+            newSubmissionId = createNewSubmission();
+            companyDetailAttribute.setSubmissionId(newSubmissionId);
+            storeOriginalSubmissionId(newSubmissionId);
+        } catch (RuntimeException ex) {
+            logger.errorRequest(request, ex.getMessage(), ex);
+            return ViewConstants.ERROR.asView();
+        }
         attributes.addAttribute("forward",
-                String.format("/efs-submission/%s/company/{companyNumber}/details", newSubmissionId));
+            String.format("/efs-submission/%s/company/{companyNumber}/details", newSubmissionId));
 
         return ViewConstants.COMPANY_LOOKUP.asRedirectUri(chsUrl, newSubmissionId);
     }
 
     @Override
     public String newSubmissionForCompany(final String companyNumber, final CompanyDetail companyDetailAttribute,
-                                          final SessionStatus sessionStatus, final HttpServletRequest request, RedirectAttributes attributes) {
+        final SessionStatus sessionStatus, final HttpServletRequest request, RedirectAttributes attributes) {
         String newSubmissionId;
 
         if (!StringUtils.equals(companyDetailAttribute.getCompanyNumber(), companyNumber)) {
             logger.errorRequest(request, "Company number in URL does not match companyDetailAttribute.companyNumber");
             return ViewConstants.ERROR.asView();
         }
+        try {
+            newSubmissionId = createNewSubmission();
 
-        newSubmissionId = createNewSubmission();
-
-        ApiResponse<SubmissionResponseApi> response = apiClientService.putCompany(newSubmissionId,
+            ApiResponse<SubmissionResponseApi> response = apiClientService.putCompany(newSubmissionId,
                 new CompanyApi(companyDetailAttribute.getCompanyNumber(), companyDetailAttribute.getCompanyName()));
 
             logApiResponse(response, "",
                 MessageFormat.format("PUT /efs-submission-api/submission/{0}/company", newSubmissionId));
             storeOriginalSubmissionId(newSubmissionId);
 
+        } catch (RuntimeException ex) {
+            logger.errorRequest(request, ex.getMessage(), ex);
+            return ViewConstants.ERROR.asView();
+        }
+
         return ViewConstants.CATEGORY_SELECTION
-                .asRedirectUri(chsUrl, newSubmissionId, companyDetailAttribute.getCompanyNumber());
+            .asRedirectUri(chsUrl, newSubmissionId, companyDetailAttribute.getCompanyNumber());
     }
 
     private String createNewSubmission() {

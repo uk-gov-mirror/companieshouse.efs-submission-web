@@ -3,7 +3,6 @@ package uk.gov.companieshouse.efs.web.controller;
 import java.text.MessageFormat;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.Predicate;
@@ -137,28 +136,10 @@ public abstract class BaseControllerImpl implements BaseController {
                     break;
             }
             if (response.hasErrors()) {
-                response.getErrors().forEach(err -> this.logApiResponseError(
-                        applicationId, message, err));
+                response.getErrors().stream().forEach(
+                        e -> logger.errorContext(applicationId, "error=" + e, null, null));
             }
         }
-    }
-
-    private void logApiResponseError(String applicationId, String message, ApiError error) {
-        String errorMessage = String.format("Response %s has an error: %s",
-                message, error.getError());
-        logger.errorContext(applicationId, errorMessage, null, mapApiErrorToMap(error));
-    }
-
-
-    private Map<String, Object> mapApiErrorToMap(ApiError e) {
-        Map<String, Object> errorFields = new HashMap<>();
-        errorFields.put("error", e.getError());
-        errorFields.put("errorValues", e.getErrorValues());
-        errorFields.put("location", e.getLocation());
-        errorFields.put("location type", e.getLocationType());
-        errorFields.put("type", e.getType());
-
-        return errorFields;
     }
 
     protected String getChsSessionId(final ServletRequest request) {

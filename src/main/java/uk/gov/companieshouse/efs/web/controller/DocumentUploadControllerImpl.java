@@ -61,7 +61,6 @@ public class DocumentUploadControllerImpl extends BaseControllerImpl implements 
     private DocumentUploadValidator documentUploadValidator;
     private DocumentUploadModel documentUploadAttribute;
     private ResourceBundle resourceBundle;
-    private FormTemplateService formTemplateService;
 
     /**
      * Constructor used by child controllers.
@@ -121,8 +120,7 @@ public class DocumentUploadControllerImpl extends BaseControllerImpl implements 
 
     private FormTemplateApi getFormTemplateApi(final String formType) {
         ApiResponse<FormTemplateApi> formResponse = formTemplateService.getFormTemplate(formType);
-        final FormTemplateApi formTemplate = formResponse.getData();
-        return formTemplate;
+        return formResponse.getData();
     }
 
     @Override
@@ -193,8 +191,7 @@ public class DocumentUploadControllerImpl extends BaseControllerImpl implements 
             return ViewConstants.DOCUMENT_UPLOAD.asView();
         }
 
-        // PaymentRequiredController responsible for redirecting to ConfirmationController if there is no fee payable
-        return ViewConstants.PAYMENT_REQUIRED.asRedirectUri(chsUrl, id, companyNumber);
+        return ViewConstants.CHECK_DETAILS.asRedirectUri(chsUrl, id, companyNumber);
     }
 
     private FileListApi getUploadedFiles(final SubmissionApi submissionApi) {

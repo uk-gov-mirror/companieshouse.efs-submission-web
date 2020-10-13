@@ -106,7 +106,7 @@ public class CheckDetailsControllerImpl extends BaseControllerImpl implements Ch
         final ApiResponse<SubmissionResponseApi> response = apiClientService.putConfirmAuthorised(id, new ConfirmAuthorisedApi(checkDetailsAttribute.getConfirmAuthorised()));
         logApiResponse(response, id, "PUT /efs-submission-api/submission/" + id + "/confirmAuthorised");
 
-        return ViewConstants.CONFIRMATION.asRedirectUri(chsUrl, id, companyNumber);
+        return ViewConstants.PAYMENT.asRedirectUri(chsUrl, id, companyNumber);
     }
 
     private void addDataToModel(
@@ -124,7 +124,6 @@ public class CheckDetailsControllerImpl extends BaseControllerImpl implements Ch
         checkDetailsAttribute.setCompanyNumber(submission.getCompany().getCompanyNumber());
         checkDetailsAttribute.setDocumentTypeDescription(documentTypeDescription);
         checkDetailsAttribute.setDocumentUploadedList(submission.getSubmissionForm().getFileDetails().getList());
-        checkDetailsAttribute.setPaymentReference(submission.getPaymentReference());
         checkDetailsAttribute.setConfirmAuthorised(submission.getConfirmAuthorised());
         model.addAttribute("showAuthStatement", topLevelCategory == INSOLVENCY);
         addTrackingAttributeToModel(model);

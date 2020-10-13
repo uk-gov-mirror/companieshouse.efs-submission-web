@@ -4,6 +4,7 @@ import java.security.NoSuchAlgorithmException;
 import java.security.NoSuchProviderException;
 import java.security.SecureRandom;
 import java.util.Locale;
+import java.util.Objects;
 import java.util.ResourceBundle;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
@@ -18,6 +19,8 @@ import org.springframework.web.client.DefaultResponseErrorHandler;
 import org.springframework.web.client.ResponseErrorHandler;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+import uk.gov.companieshouse.efs.web.payment.service.NonceService;
+import uk.gov.companieshouse.efs.web.payment.service.NonceServiceFactoryImpl;
 import uk.gov.companieshouse.environment.EnvironmentReader;
 import uk.gov.companieshouse.environment.impl.EnvironmentReaderImpl;
 
@@ -87,6 +90,20 @@ public class SpringWebConfig implements WebMvcConfigurer {
     SecureRandom secureRandom(@Qualifier("algorithm") final String algorithm,
         @Qualifier("provider") final String provider) throws NoSuchProviderException, NoSuchAlgorithmException {
         return SecureRandom.getInstance(algorithm, provider);
+    }
+
+    @Bean
+    NonceServiceFactoryImpl nonceServiceFactory() {
+        return new NonceServiceFactoryImpl();
+    }
+
+    @Bean
+    NonceService nonceService() throws Exception {
+        final NonceService service = nonceServiceFactory().getObject();
+
+        Objects.requireNonNull(service).setSecureRandom(secureRandom(algorithm(), provider()));
+
+        return service;
     }
 
     @Bean

@@ -17,7 +17,6 @@ public class CheckDetailsModel {
     private String companyNumber;
     private String documentTypeDescription;
     private List<FileDetailApi> documentUploadedList;
-    private String paymentReference;
     private Boolean confirmAuthorised;
 
     public String getSubmissionId() {
@@ -60,14 +59,6 @@ public class CheckDetailsModel {
         this.documentUploadedList = documentUploadedList;
     }
 
-    public String getPaymentReference() {
-        return paymentReference;
-    }
-
-    public void setPaymentReference(final String paymentReference) {
-        this.paymentReference = paymentReference;
-    }
-
     public Boolean getConfirmAuthorised() {
         return confirmAuthorised;
     }
@@ -90,15 +81,13 @@ public class CheckDetailsModel {
                && Objects.equals(getCompanyNumber(), that.getCompanyNumber())
                && Objects.equals(getDocumentTypeDescription(), that.getDocumentTypeDescription())
                && Objects.equals(getDocumentUploadedList(), that.getDocumentUploadedList())
-               && Objects.equals(getPaymentReference(), that.getPaymentReference())
                && Objects.equals(getConfirmAuthorised(), that.getConfirmAuthorised());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getSubmissionId(), getCompanyName(), getCompanyNumber(),
-            getDocumentTypeDescription(), getDocumentUploadedList(), getPaymentReference(),
-            getConfirmAuthorised());
+        return Objects.hash(getSubmissionId(), getCompanyName(), getCompanyNumber(), getDocumentTypeDescription(),
+            getDocumentUploadedList(), getConfirmAuthorised());
     }
 
     @Override
@@ -108,7 +97,6 @@ public class CheckDetailsModel {
             .append("companyNumber", companyNumber)
             .append("documentTypeDescription", documentTypeDescription)
             .append("documentUploadedList", documentUploadedList)
-            .append("paymentReference", paymentReference)
             .append("confirmAuthorised", confirmAuthorised).toString();
     }
 }

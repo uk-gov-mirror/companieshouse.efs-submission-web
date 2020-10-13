@@ -43,7 +43,7 @@ import uk.gov.companieshouse.efs.web.transfer.FileTransferApiClientResponse;
 import uk.gov.companieshouse.efs.web.validation.DocumentUploadValidator;
 
 @ExtendWith(MockitoExtension.class)
-public class DocumentUploadControllerTest extends BaseControllerImplTest {
+class DocumentUploadControllerTest extends BaseControllerImplTest {
 
     private static final String CHS_URL = "chs-url";
     private static final String SIGNED_IN_USER = "test@ch.gov.uk";
@@ -457,10 +457,7 @@ public class DocumentUploadControllerTest extends BaseControllerImplTest {
 
         String viewName = toTest.finish(submissionID, companyNumber, documentUploadAttribute, binding, model, servletRequest, httpSession);
 
-        String expectedView = String.format("redirect:%s/efs-submission/%s/company/%s/payment-required",
-                CHS_URL, submissionApi.getId(), companyNumber);
-
-        assertThat(viewName, is(expectedView));
+        assertThat(viewName, is(ViewConstants.CHECK_DETAILS.asRedirectUri(CHS_URL, submissionApi.getId(), companyNumber)));
     }
 
 
