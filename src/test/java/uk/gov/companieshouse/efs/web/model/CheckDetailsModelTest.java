@@ -77,6 +77,16 @@ class CheckDetailsModelTest {
     }
 
     @Test
+    void getSetPaymentCharge() {
+        assertThat(checkDetailsModel.getPaymentCharge(), is(nullValue()));
+
+        final String paymentCharge = "99";
+
+        checkDetailsModel.setPaymentCharge(paymentCharge);
+        assertThat(checkDetailsModel.getPaymentCharge(), is(paymentCharge));
+    }
+
+    @Test
     void getSetConfirmAuthorised() {
         assertThat(checkDetailsModel.getConfirmAuthorised(), is(nullValue()));
 
@@ -97,9 +107,9 @@ class CheckDetailsModelTest {
     @Test
     void toStringTest() {
         final String stringFormat = "CheckDetailsModel[submissionId=%s,companyName=%s,companyNumber=%s," +
-                "documentTypeDescription=%s,documentUploadedList=%s,confirmAuthorised=%s]";
+                "documentTypeDescription=%s,documentUploadedList=%s,paymentCharge=%s,confirmAuthorised=%s]";
 
         assertThat(checkDetailsModel.toString(),
-                is(String.format(stringFormat, "<null>", "<null>", "<null>", "<null>", "<null>", "<null>", "<null>")));
+                is(String.format(stringFormat, "<null>", "<null>", "<null>", "<null>", "<null>", "<null>", "<null>", "<null>")));
     }
 }

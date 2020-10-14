@@ -49,6 +49,12 @@
                                 <p th:each="documentUploaded : *{documentUploadedList}" id="documentUploaded" th:utext="${documentUploaded.fileName}"></p>
                             </dd>
                         </div>
+                        <div th:if="${checkDetails.paymentCharge}" class="govuk-summary-list__row">
+                            <dt th:text="#{checkDetails.payment.charge}" class="govuk-summary-list__key"></dt>
+                            <dd class="govuk-summary-list__value"  id="paymentCharge"
+                                th:utext="*{'&pound;' + paymentCharge}">
+                            </dd>
+                        </div>
                     </dl>
 
                     <div th:if="${showAuthStatement}" class="govuk-form-group govuk-!-margin-bottom-0 govuk-!-padding-bottom-6">
@@ -72,7 +78,9 @@
                     </div>
                 </fieldset>
                 <div>
-                    <button data-prevent-double-click="true" id="next-button" type="submit" class="govuk-button" name="action" value="submit" th:text="#{checkDetails.button.submit}"></button>
+                    <button data-prevent-double-click="true" id="next-button" type="submit" class="govuk-button"
+                            name="action" value="submit"
+                            th:text="${checkDetails.paymentCharge} ? #{checkDetails.button.payAndSubmit} : #{checkDetails.button.submit}"></button>
                 </div>
             </div>
         </div>

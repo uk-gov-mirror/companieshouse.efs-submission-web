@@ -3,7 +3,7 @@ package uk.gov.companieshouse.efs.web.categorytemplates.service.api.impl;
 import static uk.gov.companieshouse.efs.web.categorytemplates.controller.CategoryTypeConstants.OTHER;
 import static uk.gov.companieshouse.efs.web.categorytemplates.controller.CategoryTypeConstants.ROOT;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;

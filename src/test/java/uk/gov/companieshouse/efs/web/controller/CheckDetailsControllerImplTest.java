@@ -73,17 +73,33 @@ class CheckDetailsControllerImplTest extends BaseControllerImplTest {
     }
 
     @Test
-    void postCheckDetailsWhenValid() {
+    void postCheckDetailsWhenValidFeeForm() {
         final SubmissionApi submission = createSubmission(SubmissionStatus.OPEN);
         when(apiClientService.getSubmission(SUBMISSION_ID)).thenReturn(
             new ApiResponse<>(200, getHeaders(), submission));
         when(bindingResult.hasErrors()).thenReturn(false);
         when(apiClientService.putConfirmAuthorised(SUBMISSION_ID, new ConfirmAuthorisedApi(false))).thenReturn(
             new ApiResponse<>(200, getHeaders(), new SubmissionResponseApi(SUBMISSION_ID)));
+        when(checkDetailsAttribute.getPaymentCharge()).thenReturn("99");
 
         final String result = testController.postCheckDetails(SUBMISSION_ID, COMPANY_NUMBER, checkDetailsAttribute, bindingResult, model, request);
 
         assertThat(result, is(ViewConstants.PAYMENT.asRedirectUri(CHS_URL, SUBMISSION_ID, COMPANY_NUMBER)));
+    }
+
+    @Test
+    void postCheckDetailsWhenValidNonFeeForm() {
+        final SubmissionApi submission = createSubmission(SubmissionStatus.OPEN);
+        when(apiClientService.getSubmission(SUBMISSION_ID)).thenReturn(
+            new ApiResponse<>(200, getHeaders(), submission));
+        when(bindingResult.hasErrors()).thenReturn(false);
+        when(apiClientService.putConfirmAuthorised(SUBMISSION_ID, new ConfirmAuthorisedApi(false))).thenReturn(
+            new ApiResponse<>(200, getHeaders(), new SubmissionResponseApi(SUBMISSION_ID)));
+        when(checkDetailsAttribute.getPaymentCharge()).thenReturn(null);
+
+        final String result = testController.postCheckDetails(SUBMISSION_ID, COMPANY_NUMBER, checkDetailsAttribute, bindingResult, model, request);
+
+        assertThat(result, is(ViewConstants.CONFIRMATION.asRedirectUri(CHS_URL, SUBMISSION_ID, COMPANY_NUMBER)));
     }
 
     @Test

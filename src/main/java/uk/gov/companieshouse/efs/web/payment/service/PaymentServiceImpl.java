@@ -56,7 +56,6 @@ public class PaymentServiceImpl implements PaymentService {
         PaymentSessionApi paymentSessionApi = new PaymentSessionApi();
         paymentSessionApi
             .setRedirectUri(ViewConstants.PAYMENT_COMPLETE.asUri(webServiceUrl, submissionId, companyNumber));
-//MessageFormat.format("http://internalapi.chs-dev.internal:4001/efs-submission-api/submission/{0}/payment", submissionId)
         paymentSessionApi
             .setResource(apiServiceUrl + getUrlWithId(BaseApiClientServiceImpl.SUB_URI + "{0}/payment", submissionId));
         paymentSessionApi.setReference(submissionId);
@@ -66,8 +65,7 @@ public class PaymentServiceImpl implements PaymentService {
         final ApiClient apiClient = apiClientService.getApiClient();
 
         try {
-            final ApiResponse<PaymentApi> apiResponse =
-                apiClient.payment().create("/payments", paymentSessionApi).execute();
+            final ApiResponse<PaymentApi> apiResponse = apiClient.payment().create("/payments", paymentSessionApi).execute();
             String sessionUrl = null;
 
             if (apiResponse.hasErrors()) {
@@ -84,6 +82,7 @@ public class PaymentServiceImpl implements PaymentService {
 
         return result;
     }
+
 
     private void logPaymentSessionDetails(final String submissionId, final PaymentSessionApi paymentSessionApi) {
         Map<String, Object> map = new HashMap<>();

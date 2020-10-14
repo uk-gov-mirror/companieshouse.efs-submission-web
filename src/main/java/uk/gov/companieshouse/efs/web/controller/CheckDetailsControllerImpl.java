@@ -5,6 +5,7 @@ import static uk.gov.companieshouse.efs.web.controller.CheckDetailsControllerImp
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -106,7 +107,9 @@ public class CheckDetailsControllerImpl extends BaseControllerImpl implements Ch
         final ApiResponse<SubmissionResponseApi> response = apiClientService.putConfirmAuthorised(id, new ConfirmAuthorisedApi(checkDetailsAttribute.getConfirmAuthorised()));
         logApiResponse(response, id, "PUT /efs-submission-api/submission/" + id + "/confirmAuthorised");
 
-        return ViewConstants.PAYMENT.asRedirectUri(chsUrl, id, companyNumber);
+        return StringUtils.isNotBlank(checkDetailsAttribute.getPaymentCharge()) ?
+            ViewConstants.PAYMENT.asRedirectUri(chsUrl, id, companyNumber) :
+            ViewConstants.CONFIRMATION.asRedirectUri(chsUrl, id, companyNumber);
     }
 
     private void addDataToModel(
@@ -124,6 +127,7 @@ public class CheckDetailsControllerImpl extends BaseControllerImpl implements Ch
         checkDetailsAttribute.setCompanyNumber(submission.getCompany().getCompanyNumber());
         checkDetailsAttribute.setDocumentTypeDescription(documentTypeDescription);
         checkDetailsAttribute.setDocumentUploadedList(submission.getSubmissionForm().getFileDetails().getList());
+        checkDetailsAttribute.setPaymentCharge(submission.getFeeOnSubmission());
         checkDetailsAttribute.setConfirmAuthorised(submission.getConfirmAuthorised());
         model.addAttribute("showAuthStatement", topLevelCategory == INSOLVENCY);
         addTrackingAttributeToModel(model);
