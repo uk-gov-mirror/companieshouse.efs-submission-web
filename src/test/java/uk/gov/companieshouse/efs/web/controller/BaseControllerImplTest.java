@@ -38,7 +38,6 @@ public abstract class BaseControllerImplTest {
     protected static final String SUBMISSION_ID = "aaaaaaaaaaaaaaaaaaaaaaaa";
     protected static final String FILE_ID = "1234567890";
     protected static final String CONFIRMATION_REF = "m6mo orcu mwgs c5pw";
-    protected static final String PAYMENT_REF = "1234567890";
     protected static final String COMPANY_NUMBER = "11111111";
     protected static final String COMPANY_NAME = "TEST COMPANY LTD";
     protected static final String USER_EMAIL = "tester@email.com";
@@ -81,8 +80,6 @@ public abstract class BaseControllerImplTest {
     protected FormTemplateService formTemplateService;
     @Mock
     protected FileTransferApiClient fileTransferApiClient;
-    @Mock
-    protected SessionListApi paymentSessions;
 
     protected MockMvc mockMvc;
 

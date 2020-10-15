@@ -19,6 +19,7 @@ import uk.gov.companieshouse.api.model.efs.submissions.SubmissionApi;
 import uk.gov.companieshouse.api.model.efs.submissions.SubmissionFormApi;
 import uk.gov.companieshouse.api.model.efs.submissions.SubmissionResponseApi;
 import uk.gov.companieshouse.api.model.efs.submissions.SubmissionStatus;
+import uk.gov.companieshouse.api.model.paymentsession.SessionListApi;
 import uk.gov.companieshouse.efs.web.model.CheckDetailsModel;
 import uk.gov.companieshouse.efs.web.service.api.ApiClientService;
 import uk.gov.companieshouse.efs.web.validation.ConfirmAuthorisedValidator;
@@ -34,6 +35,8 @@ class CheckDetailsControllerImplTest extends BaseControllerImplTest {
     private CheckDetailsModel checkDetailsAttribute;
     @Mock
     private ConfirmAuthorisedValidator confirmAuthorisedValidator;
+    @Mock
+    private SessionListApi paymentSessions;
 
     @BeforeEach
     protected void setUp() {

@@ -136,8 +136,7 @@ public abstract class BaseControllerImpl implements BaseController {
                     break;
             }
             if (response.hasErrors()) {
-                response.getErrors().stream().forEach(
-                        e -> logger.errorContext(applicationId, "error=" + e, null, null));
+                response.getErrors().forEach(e -> logger.errorContext(applicationId, "error=" + e, null, null));
             }
         }
     }

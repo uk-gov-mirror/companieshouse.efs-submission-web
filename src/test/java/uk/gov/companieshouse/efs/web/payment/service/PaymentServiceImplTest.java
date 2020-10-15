@@ -76,7 +76,6 @@ class PaymentServiceImplTest {
         sessionCaptor = ArgumentCaptor.forClass(PaymentSessionApi.class);
     }
 
-    @Disabled("pending fix to resource URL")
     @Test
     void createPaymentSession() throws ServiceException, ApiErrorResponseException, URIValidationException {
         when(paymentCreate.execute()).thenReturn(response);
@@ -129,7 +128,7 @@ class PaymentServiceImplTest {
         PaymentSessionApi api = new PaymentSessionApi();
 
         api.setRedirectUri(MessageFormat
-            .format("redirect:{0}{1}/{2}/company/{3}/payment-complete", WEB_URL, BaseControllerImpl.SERVICE_URI, SUB_ID, COMPANY_NUMBER));
+            .format("{0}{1}/{2}/company/{3}/payment-complete-callback", WEB_URL, BaseControllerImpl.SERVICE_URI, SUB_ID, COMPANY_NUMBER));
         api.setResource(
             MessageFormat.format("{0}/efs-submission-api/submission/{1}/payment", API_URL, SUB_ID));
         api.setReference(SUB_ID);
