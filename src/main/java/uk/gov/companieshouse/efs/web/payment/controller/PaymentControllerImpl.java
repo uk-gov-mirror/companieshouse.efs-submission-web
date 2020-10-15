@@ -29,7 +29,7 @@ import uk.gov.companieshouse.logging.Logger;
 
 @Controller
 public class PaymentControllerImpl extends BaseControllerImpl implements PaymentController {
-    private static final Pattern PAYMENT_SESSION_URL_REGEX = Pattern.compile(".*?/payments/([A-Za-z0-9]{15})/pay$");
+    private static final Pattern PAYMENT_SESSION_URL_REGEX = Pattern.compile("/payments/([A-Za-z0-9]{15}+)/pay$");
 
     private PaymentService paymentService;
     private NonceService nonceService;
@@ -92,7 +92,7 @@ public class PaymentControllerImpl extends BaseControllerImpl implements Payment
         boolean created = false;
 
         Matcher matcher = PAYMENT_SESSION_URL_REGEX.matcher(callback);
-        if (matcher.matches()) {
+        if (matcher.find()) {
 
             SessionApi paymentSession = new SessionApi(matcher.group(1), sessionState);
             SessionListApi paymentSessions = new SessionListApi();
