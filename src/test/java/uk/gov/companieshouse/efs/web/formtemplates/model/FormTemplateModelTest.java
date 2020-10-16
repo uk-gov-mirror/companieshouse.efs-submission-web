@@ -1,16 +1,16 @@
 package uk.gov.companieshouse.efs.web.formtemplates.model;
 
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.nullValue;
+import static org.hamcrest.MatcherAssert.assertThat;
+
+import java.util.Arrays;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 import uk.gov.companieshouse.api.model.efs.formtemplates.FormTemplateApi;
 import uk.gov.companieshouse.api.model.efs.formtemplates.FormTemplateListApi;
-
-import java.util.Arrays;
-
-import static org.hamcrest.CoreMatchers.*;
-import static org.hamcrest.MatcherAssert.assertThat;
 
 @ExtendWith(MockitoExtension.class)
 class FormTemplateModelTest {
@@ -72,9 +72,9 @@ class FormTemplateModelTest {
     @Test
     void setGetFee() {
 
-        testFormTemplate.setFee(null);
+        testFormTemplate.setPaymentCharge(null);
 
-        assertThat(testFormTemplate.getFee(), is(nullValue()));
+        assertThat(testFormTemplate.getPaymentCharge(), is(nullValue()));
     }
 
     @Test

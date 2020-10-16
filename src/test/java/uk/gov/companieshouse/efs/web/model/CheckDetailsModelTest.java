@@ -18,7 +18,6 @@ class CheckDetailsModelTest {
     private static final String SUBMISSION_ID = "aaaaaaaaaaaaaaaaaaaaaaaa";
     private static final String COMPANY_NAME = "TEST COMPANY LTD";
     private static final String COMPANY_NUMBER = "11111111";
-    protected static final String PAYMENT_REFERENCE = "AAA1234567";
 
     private CheckDetailsModel checkDetailsModel;
 
@@ -78,13 +77,13 @@ class CheckDetailsModelTest {
     }
 
     @Test
-    void getSetPaymentReference() {
-        assertThat(checkDetailsModel.getPaymentReference(), is(nullValue()));
+    void getSetPaymentCharge() {
+        assertThat(checkDetailsModel.getPaymentCharge(), is(nullValue()));
 
-        final String paymentReference = PAYMENT_REFERENCE;
-        checkDetailsModel.setPaymentReference(paymentReference);
-        assertThat(checkDetailsModel.getPaymentReference(), is(paymentReference));
-        assertThat(checkDetailsModel.getPaymentReference(), sameInstance(paymentReference));
+        final String paymentCharge = "99";
+
+        checkDetailsModel.setPaymentCharge(paymentCharge);
+        assertThat(checkDetailsModel.getPaymentCharge(), is(paymentCharge));
     }
 
     @Test
@@ -108,9 +107,9 @@ class CheckDetailsModelTest {
     @Test
     void toStringTest() {
         final String stringFormat = "CheckDetailsModel[submissionId=%s,companyName=%s,companyNumber=%s," +
-                "documentTypeDescription=%s,documentUploadedList=%s,paymentReference=%s,confirmAuthorised=%s]";
+                "documentTypeDescription=%s,documentUploadedList=%s,paymentCharge=%s,confirmAuthorised=%s]";
 
         assertThat(checkDetailsModel.toString(),
-                is(String.format(stringFormat, "<null>", "<null>", "<null>", "<null>", "<null>", "<null>", "<null>")));
+                is(String.format(stringFormat, "<null>", "<null>", "<null>", "<null>", "<null>", "<null>", "<null>", "<null>")));
     }
 }

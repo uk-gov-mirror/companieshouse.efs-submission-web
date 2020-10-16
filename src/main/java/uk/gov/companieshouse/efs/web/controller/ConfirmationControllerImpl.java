@@ -1,9 +1,7 @@
 package uk.gov.companieshouse.efs.web.controller;
 
-import java.math.BigDecimal;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -50,14 +48,6 @@ public class ConfirmationControllerImpl extends BaseControllerImpl implements Co
 
         if (submission.getStatus() != SubmissionStatus.OPEN) {
             return ViewConstants.GONE.asView();
-        }
-
-        final String fee = formTemplateAttribute.getFee();
-        final BigDecimal feeAmount = StringUtils.isNotBlank(fee) ? new BigDecimal(fee) : BigDecimal.ZERO;
-        final boolean paymentRequired = feeAmount.compareTo(BigDecimal.ZERO) > 0;
-
-        if (paymentRequired && StringUtils.isBlank(submission.getPaymentReference())) {
-            return ViewConstants.MISSING.asView();
         }
 
         final ApiResponse<SubmissionResponseApi> response = apiClientService.putSubmissionSubmitted(id);

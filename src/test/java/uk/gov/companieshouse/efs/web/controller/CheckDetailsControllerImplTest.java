@@ -1,5 +1,9 @@
 package uk.gov.companieshouse.efs.web.controller;
 
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertThat;
+import static org.mockito.Mockito.when;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -15,13 +19,10 @@ import uk.gov.companieshouse.api.model.efs.submissions.SubmissionApi;
 import uk.gov.companieshouse.api.model.efs.submissions.SubmissionFormApi;
 import uk.gov.companieshouse.api.model.efs.submissions.SubmissionResponseApi;
 import uk.gov.companieshouse.api.model.efs.submissions.SubmissionStatus;
+import uk.gov.companieshouse.api.model.paymentsession.SessionListApi;
 import uk.gov.companieshouse.efs.web.model.CheckDetailsModel;
 import uk.gov.companieshouse.efs.web.service.api.ApiClientService;
 import uk.gov.companieshouse.efs.web.validation.ConfirmAuthorisedValidator;
-
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
-import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class CheckDetailsControllerImplTest extends BaseControllerImplTest {
@@ -34,12 +35,14 @@ class CheckDetailsControllerImplTest extends BaseControllerImplTest {
     private CheckDetailsModel checkDetailsAttribute;
     @Mock
     private ConfirmAuthorisedValidator confirmAuthorisedValidator;
+    @Mock
+    private SessionListApi paymentSessions;
 
     @BeforeEach
     protected void setUp() {
         super.setUp();
-        testController = new CheckDetailsControllerImpl(logger, sessionService, apiClientService,
-                formTemplateService, categoryTemplateService, checkDetailsAttribute, confirmAuthorisedValidator);
+        testController = new CheckDetailsControllerImpl(logger, sessionService, apiClientService, formTemplateService,
+            categoryTemplateService, checkDetailsAttribute, confirmAuthorisedValidator);
         ((CheckDetailsControllerImpl) testController).setChsUrl(CHS_URL);
     }
 
@@ -73,18 +76,33 @@ class CheckDetailsControllerImplTest extends BaseControllerImplTest {
     }
 
     @Test
-    void postCheckDetailsWhenValid() {
+    void postCheckDetailsWhenValidFeeForm() {
         final SubmissionApi submission = createSubmission(SubmissionStatus.OPEN);
         when(apiClientService.getSubmission(SUBMISSION_ID)).thenReturn(
             new ApiResponse<>(200, getHeaders(), submission));
         when(bindingResult.hasErrors()).thenReturn(false);
         when(apiClientService.putConfirmAuthorised(SUBMISSION_ID, new ConfirmAuthorisedApi(false))).thenReturn(
             new ApiResponse<>(200, getHeaders(), new SubmissionResponseApi(SUBMISSION_ID)));
+        when(checkDetailsAttribute.getPaymentCharge()).thenReturn("99");
 
         final String result = testController.postCheckDetails(SUBMISSION_ID, COMPANY_NUMBER, checkDetailsAttribute, bindingResult, model, request);
 
-        assertThat(result, is(ViewConstants.CONFIRMATION
-            .asRedirectUri(CHS_URL, SUBMISSION_ID, COMPANY_NUMBER)));
+        assertThat(result, is(ViewConstants.PAYMENT.asRedirectUri(CHS_URL, SUBMISSION_ID, COMPANY_NUMBER)));
+    }
+
+    @Test
+    void postCheckDetailsWhenValidNonFeeForm() {
+        final SubmissionApi submission = createSubmission(SubmissionStatus.OPEN);
+        when(apiClientService.getSubmission(SUBMISSION_ID)).thenReturn(
+            new ApiResponse<>(200, getHeaders(), submission));
+        when(bindingResult.hasErrors()).thenReturn(false);
+        when(apiClientService.putConfirmAuthorised(SUBMISSION_ID, new ConfirmAuthorisedApi(false))).thenReturn(
+            new ApiResponse<>(200, getHeaders(), new SubmissionResponseApi(SUBMISSION_ID)));
+        when(checkDetailsAttribute.getPaymentCharge()).thenReturn(null);
+
+        final String result = testController.postCheckDetails(SUBMISSION_ID, COMPANY_NUMBER, checkDetailsAttribute, bindingResult, model, request);
+
+        assertThat(result, is(ViewConstants.CONFIRMATION.asRedirectUri(CHS_URL, SUBMISSION_ID, COMPANY_NUMBER)));
     }
 
     @Test
@@ -93,8 +111,8 @@ class CheckDetailsControllerImplTest extends BaseControllerImplTest {
         when(apiClientService.getSubmission(SUBMISSION_ID)).thenReturn(
             new ApiResponse<>(200, getHeaders(), submission));
         when(bindingResult.hasErrors()).thenReturn(true);
-        when(formTemplateService.getFormTemplate(FORM_TYPE)).thenReturn(
-            new ApiResponse<FormTemplateApi>(200, getHeaders(), new FormTemplateApi()));
+        when(formTemplateService.getFormTemplate(FORM_TYPE))
+            .thenReturn(new ApiResponse<>(200, getHeaders(), new FormTemplateApi()));
 
         final String result = testController.postCheckDetails(SUBMISSION_ID, COMPANY_NUMBER, checkDetailsAttribute, bindingResult, model, request);
 
@@ -108,7 +126,7 @@ class CheckDetailsControllerImplTest extends BaseControllerImplTest {
         submission.setCompany(new CompanyApi(COMPANY_NUMBER, COMPANY_NAME));
         submission.getSubmissionForm().setFileDetails(new FileDetailListApi());
         submission.getSubmissionForm().getFileDetails().add(new FileDetailApi());
-        submission.setPaymentReference(PAYMENT_REF);
+        submission.setPaymentSessions(paymentSessions);
 
         return submission;
     }

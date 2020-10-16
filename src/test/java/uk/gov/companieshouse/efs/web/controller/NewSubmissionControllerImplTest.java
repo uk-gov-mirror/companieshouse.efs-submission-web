@@ -1,20 +1,5 @@
 package uk.gov.companieshouse.efs.web.controller;
 
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.mock.web.MockHttpSession;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-import uk.gov.companieshouse.api.model.ApiResponse;
-import uk.gov.companieshouse.api.model.efs.submissions.CompanyApi;
-import uk.gov.companieshouse.api.model.efs.submissions.PresenterApi;
-import uk.gov.companieshouse.api.model.efs.submissions.SubmissionResponseApi;
-import uk.gov.companieshouse.efs.web.model.company.CompanyDetail;
-
 import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 import static org.mockito.ArgumentMatchers.eq;
@@ -22,12 +7,20 @@ import static org.mockito.ArgumentMatchers.refEq;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import uk.gov.companieshouse.api.model.ApiResponse;
+import uk.gov.companieshouse.api.model.efs.submissions.CompanyApi;
+import uk.gov.companieshouse.api.model.efs.submissions.PresenterApi;
+import uk.gov.companieshouse.api.model.efs.submissions.SubmissionResponseApi;
+import uk.gov.companieshouse.efs.web.model.company.CompanyDetail;
 
 @ExtendWith(MockitoExtension.class)
-@AutoConfigureMockMvc(printOnlyOnFailure = true)
 class NewSubmissionControllerImplTest extends BaseControllerImplTest {
 
     private NewSubmissionController testController;
@@ -44,10 +37,6 @@ class NewSubmissionControllerImplTest extends BaseControllerImplTest {
         testController = new NewSubmissionControllerImpl(logger, sessionService, apiClientService);
         ((NewSubmissionControllerImpl) testController).setChsUrl(CHS_URL);
         company = new CompanyApi(COMPANY_NUMBER, COMPANY_NAME);
-
-        mockMvc = MockMvcBuilders.standaloneSetup(testController)
-                .setControllerAdvice(new GlobalExceptionHandler())
-                .build();
     }
 
     @Test
@@ -69,15 +58,12 @@ class NewSubmissionControllerImplTest extends BaseControllerImplTest {
     }
 
     @Test
-    void newSubmissionWhenRuntimeError() throws Exception {
+    void newSubmissionWhenRuntimeError() {
         doThrow(new RuntimeException("dummy exception")).when(sessionService).getUserEmail();
 
-        MockHttpSession session = new MockHttpSession();
-        session.setAttribute("companyDetail", new CompanyDetail());
-        mockMvc.perform(get("/efs-submission/new-submission").session(session))
-                .andExpect(status().isInternalServerError())
-                .andExpect(view().name(ViewConstants.ERROR.asView()))
-                .andReturn();
+        final String result = testController.newSubmission(companyDetail, sessionStatus, request, attributes);
+
+        assertThat(result, is(ViewConstants.ERROR.asView()));
     }
 
     @Test
@@ -104,20 +90,17 @@ class NewSubmissionControllerImplTest extends BaseControllerImplTest {
     }
 
     @Test
-    void newSubmissionForCompanyWhenRuntimeError() throws Exception {
+    void newSubmissionForCompanyWhenRuntimeError() {
         expectCreateSubmission();
         when(companyDetail.getCompanyNumber()).thenReturn(COMPANY_NUMBER);
         when(companyDetail.getCompanyName()).thenReturn(COMPANY_NAME);
         when(apiClientService.putCompany(eq(SUBMISSION_ID), refEq(company)))
-                .thenThrow(new RuntimeException("dummy exception"));
+            .thenThrow(new RuntimeException("dummy exception"));
 
-        MockHttpSession session = new MockHttpSession();
-        session.setAttribute("companyDetail", new CompanyDetail());
-        String url = String.format("/efs-submission/company/%s/new-submission", COMPANY_NUMBER);
-        mockMvc.perform(get(url).session(session))
-                .andExpect(status().isInternalServerError())
-                .andExpect(view().name(ViewConstants.ERROR.asView()))
-                .andReturn();
+        final String result =
+            testController.newSubmissionForCompany(COMPANY_NUMBER, companyDetail, sessionStatus, request, attributes);
+
+        assertThat(result, is(ViewConstants.ERROR.asView()));
     }
 
     private SubmissionResponseApi createSubmissionResponse() {

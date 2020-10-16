@@ -49,10 +49,10 @@
                                 <p th:each="documentUploaded : *{documentUploadedList}" id="documentUploaded" th:utext="${documentUploaded.fileName}"></p>
                             </dd>
                         </div>
-                        <div th:if="${checkDetails.paymentReference}" class="govuk-summary-list__row">
-                            <dt th:text="#{checkDetails.payment.reference}" class="govuk-summary-list__key"></dt>
-                            <dd class="govuk-summary-list__value"  id="paymentReference"
-                                th:utext="*{#strings.replace(paymentReference,'&#10;','&lt;br&gt;')}">
+                        <div th:if="${checkDetails.paymentCharge}" class="govuk-summary-list__row">
+                            <dt th:text="#{checkDetails.payment.charge}" class="govuk-summary-list__key"></dt>
+                            <dd class="govuk-summary-list__value"  id="paymentCharge"
+                                th:utext="*{'&pound;' + paymentCharge}">
                             </dd>
                         </div>
                     </dl>
@@ -78,7 +78,9 @@
                     </div>
                 </fieldset>
                 <div>
-                    <button data-prevent-double-click="true" id="next-button" type="submit" class="govuk-button" name="action" value="submit" th:text="#{checkDetails.button.submit}"></button>
+                    <button data-prevent-double-click="true" id="next-button" type="submit" class="govuk-button"
+                            name="action" value="submit"
+                            th:text="${checkDetails.paymentCharge} ? #{checkDetails.button.payAndSubmit} : #{checkDetails.button.submit}"></button>
                 </div>
             </div>
         </div>

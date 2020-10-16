@@ -17,7 +17,7 @@ public class CheckDetailsModel {
     private String companyNumber;
     private String documentTypeDescription;
     private List<FileDetailApi> documentUploadedList;
-    private String paymentReference;
+    private String paymentCharge;
     private Boolean confirmAuthorised;
 
     public String getSubmissionId() {
@@ -60,12 +60,12 @@ public class CheckDetailsModel {
         this.documentUploadedList = documentUploadedList;
     }
 
-    public String getPaymentReference() {
-        return paymentReference;
+    public String getPaymentCharge() {
+        return paymentCharge;
     }
 
-    public void setPaymentReference(final String paymentReference) {
-        this.paymentReference = paymentReference;
+    public void setPaymentCharge(final String paymentCharge) {
+        this.paymentCharge = paymentCharge;
     }
 
     public Boolean getConfirmAuthorised() {
@@ -85,30 +85,27 @@ public class CheckDetailsModel {
             return false;
         }
         final CheckDetailsModel that = (CheckDetailsModel) o;
-        return Objects.equals(getSubmissionId(), that.getSubmissionId())
-               && Objects.equals(getCompanyName(), that.getCompanyName())
-               && Objects.equals(getCompanyNumber(), that.getCompanyNumber())
-               && Objects.equals(getDocumentTypeDescription(), that.getDocumentTypeDescription())
-               && Objects.equals(getDocumentUploadedList(), that.getDocumentUploadedList())
-               && Objects.equals(getPaymentReference(), that.getPaymentReference())
-               && Objects.equals(getConfirmAuthorised(), that.getConfirmAuthorised());
+        return Objects.equals(getSubmissionId(), that.getSubmissionId()) && Objects
+            .equals(getCompanyName(), that.getCompanyName()) && Objects
+            .equals(getCompanyNumber(), that.getCompanyNumber()) && Objects
+            .equals(getDocumentTypeDescription(), that.getDocumentTypeDescription()) && Objects
+            .equals(getDocumentUploadedList(), that.getDocumentUploadedList()) && Objects
+            .equals(getPaymentCharge(), that.getPaymentCharge()) && Objects
+            .equals(getConfirmAuthorised(), that.getConfirmAuthorised());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getSubmissionId(), getCompanyName(), getCompanyNumber(),
-            getDocumentTypeDescription(), getDocumentUploadedList(), getPaymentReference(),
-            getConfirmAuthorised());
+        return Objects.hash(getSubmissionId(), getCompanyName(), getCompanyNumber(), getDocumentTypeDescription(),
+            getDocumentUploadedList(), getPaymentCharge(), getConfirmAuthorised());
     }
 
     @Override
     public String toString() {
-        return new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE)
-            .append("submissionId", submissionId).append("companyName", companyName)
-            .append("companyNumber", companyNumber)
+        return new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE).append("submissionId", submissionId)
+            .append("companyName", companyName).append("companyNumber", companyNumber)
             .append("documentTypeDescription", documentTypeDescription)
-            .append("documentUploadedList", documentUploadedList)
-            .append("paymentReference", paymentReference)
+            .append("documentUploadedList", documentUploadedList).append("paymentCharge", paymentCharge)
             .append("confirmAuthorised", confirmAuthorised).toString();
     }
 }

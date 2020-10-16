@@ -1,5 +1,13 @@
 package uk.gov.companieshouse.efs.web.controller;
 
+import static org.mockito.Mockito.when;
+
+import java.text.MessageFormat;
+import java.time.Instant;
+import java.util.HashMap;
+import java.util.Map;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import org.mockito.Mock;
 import org.springframework.http.HttpStatus;
 import org.springframework.test.web.servlet.MockMvc;
@@ -11,6 +19,7 @@ import uk.gov.companieshouse.api.model.ApiResponse;
 import uk.gov.companieshouse.api.model.efs.submissions.CompanyApi;
 import uk.gov.companieshouse.api.model.efs.submissions.SubmissionApi;
 import uk.gov.companieshouse.api.model.efs.submissions.SubmissionStatus;
+import uk.gov.companieshouse.api.model.paymentsession.SessionListApi;
 import uk.gov.companieshouse.efs.web.categorytemplates.model.CategoryTemplateModel;
 import uk.gov.companieshouse.efs.web.categorytemplates.service.api.CategoryTemplateService;
 import uk.gov.companieshouse.efs.web.formtemplates.model.FormTemplateModel;
@@ -23,22 +32,12 @@ import uk.gov.companieshouse.session.Session;
 import uk.gov.companieshouse.session.SessionImpl;
 import uk.gov.companieshouse.session.handler.SessionHandler;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
-import java.text.MessageFormat;
-import java.time.Instant;
-import java.util.HashMap;
-import java.util.Map;
-
-import static org.mockito.Mockito.when;
-
 public abstract class BaseControllerImplTest {
 
     protected static final String CHS_URL = "http://web.chs-dev:4000";
     protected static final String SUBMISSION_ID = "aaaaaaaaaaaaaaaaaaaaaaaa";
     protected static final String FILE_ID = "1234567890";
     protected static final String CONFIRMATION_REF = "m6mo orcu mwgs c5pw";
-    protected static final String PAYMENT_REF = "1234567890";
     protected static final String COMPANY_NUMBER = "11111111";
     protected static final String COMPANY_NAME = "TEST COMPANY LTD";
     protected static final String USER_EMAIL = "tester@email.com";

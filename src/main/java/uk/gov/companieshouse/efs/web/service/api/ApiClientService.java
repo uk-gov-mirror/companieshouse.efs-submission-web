@@ -6,10 +6,10 @@ import uk.gov.companieshouse.api.model.efs.submissions.CompanyApi;
 import uk.gov.companieshouse.api.model.efs.submissions.ConfirmAuthorisedApi;
 import uk.gov.companieshouse.api.model.efs.submissions.FileListApi;
 import uk.gov.companieshouse.api.model.efs.submissions.FormTypeApi;
-import uk.gov.companieshouse.api.model.efs.submissions.PaymentReferenceApi;
 import uk.gov.companieshouse.api.model.efs.submissions.PresenterApi;
 import uk.gov.companieshouse.api.model.efs.submissions.SubmissionApi;
 import uk.gov.companieshouse.api.model.efs.submissions.SubmissionResponseApi;
+import uk.gov.companieshouse.api.model.paymentsession.SessionListApi;
 
 /**
  * The {@code ApiClientService} interface provides an abstraction that can be
@@ -64,13 +64,14 @@ public interface ApiClientService {
     ApiResponse<SubmissionResponseApi> putFileList(final String submissionId, final FileListApi fileList);
 
     /**
-     * Update payment reference.
+     * Update payment sessions.
      *
      * @param submissionId the submission ID
-     * @param payment the payment reference
+     * @param paymentSessions the complete payment session collection
      * @return the api response
      */
-    ApiResponse<SubmissionResponseApi> putPayment(final String submissionId, final PaymentReferenceApi payment);
+    ApiResponse<SubmissionResponseApi> putPaymentSessions(final String submissionId,
+        final SessionListApi paymentSessions);
 
     /**
      * Update confirm authorised.

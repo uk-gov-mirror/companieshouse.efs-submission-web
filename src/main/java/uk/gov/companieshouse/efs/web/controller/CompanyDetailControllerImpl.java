@@ -18,11 +18,6 @@ import uk.gov.companieshouse.efs.web.service.company.CompanyService;
 import uk.gov.companieshouse.efs.web.service.session.SessionService;
 import uk.gov.companieshouse.logging.Logger;
 
-import javax.servlet.http.HttpServletRequest;
-import java.text.MessageFormat;
-
-import static uk.gov.companieshouse.efs.web.controller.CompanyDetailControllerImpl.ATTRIBUTE_NAME;
-
 @Controller
 @SessionAttributes(ATTRIBUTE_NAME)
 @SuppressWarnings("squid:S3753")
@@ -52,7 +47,7 @@ public class CompanyDetailControllerImpl extends BaseControllerImpl implements C
      */
     @Autowired
     public CompanyDetailControllerImpl(final CompanyService companyService, final SessionService sessionService,
-                                       final ApiClientService apiClientService, final Logger logger, final CompanyDetail companyDetailAttribute) {
+        final ApiClientService apiClientService, final Logger logger, final CompanyDetail companyDetailAttribute) {
         super(logger, sessionService, apiClientService);
         this.companyService = companyService;
         this.companyDetailAttribute = companyDetailAttribute;
@@ -70,10 +65,10 @@ public class CompanyDetailControllerImpl extends BaseControllerImpl implements C
 
     @Override
     public String getCompanyDetail(final String id, final String companyNumber,
-                                   final CompanyDetail companyDetailAttribute, final Model model, final HttpServletRequest request) {
+        final CompanyDetail companyDetailAttribute, final Model model, final HttpServletRequest request) {
 
-        companyDetailAttribute.setSubmissionId(id);
-        companyService.getCompanyDetail(companyDetailAttribute, companyNumber);
+            companyDetailAttribute.setSubmissionId(id);
+            companyService.getCompanyDetail(companyDetailAttribute, companyNumber);
 
         addTrackingAttributeToModel(model);
 
@@ -82,12 +77,12 @@ public class CompanyDetailControllerImpl extends BaseControllerImpl implements C
 
     @Override
     public String postCompanyDetail(final String id, final String companyNumber,
-                                    final CompanyDetail companyDetailAttribute, final Model model, final HttpServletRequest request) {
+        final CompanyDetail companyDetailAttribute, final Model model, final HttpServletRequest request) {
 
-        final ApiResponse<SubmissionResponseApi> response = apiClientService.putCompany(id,
+            final ApiResponse<SubmissionResponseApi> response = apiClientService.putCompany(id,
                 new CompanyApi(companyDetailAttribute.getCompanyNumber(), companyDetailAttribute.getCompanyName()));
 
-        logApiResponse(response, "", MessageFormat.format("PUT /efs-submission-api/submission/{0}/company", id));
+            logApiResponse(response, "", MessageFormat.format("PUT /efs-submission-api/submission/{0}/company", id));
 
 
         return ViewConstants.CATEGORY_SELECTION.asRedirectUri(chsUrl, id, companyNumber);

@@ -5,14 +5,13 @@ import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.when;
 
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import uk.gov.companieshouse.api.model.ApiResponse;
 import uk.gov.companieshouse.api.model.efs.submissions.SubmissionApi;
 import uk.gov.companieshouse.api.model.efs.submissions.SubmissionStatus;
-import uk.gov.companieshouse.efs.web.service.api.ApiClientService;
 
 @ExtendWith(MockitoExtension.class)
 class ConfirmationControllerImplTest extends BaseControllerImplTest {
@@ -51,18 +50,6 @@ class ConfirmationControllerImplTest extends BaseControllerImplTest {
         final String result = testController.getConfirmation(SUBMISSION_ID, COMPANY_NUMBER, formTemplateAttribute, model, request, session, sessionStatus);
 
         assertThat(result, is(ViewConstants.GONE.asView()));
-    }
-
-    @Test
-    void getConfirmationWhenPaymentRequired() {
-        final SubmissionApi submission = createSubmission(SubmissionStatus.OPEN);
-        when(apiClientService.getSubmission(SUBMISSION_ID)).thenReturn(
-            new ApiResponse<>(200, headers, submission));
-        when(formTemplateAttribute.getFee()).thenReturn("2");
-
-        final String result = testController.getConfirmation(SUBMISSION_ID, COMPANY_NUMBER, formTemplateAttribute, model, request, session, sessionStatus);
-
-        assertThat(result, is(ViewConstants.MISSING.asView()));
     }
 
 }

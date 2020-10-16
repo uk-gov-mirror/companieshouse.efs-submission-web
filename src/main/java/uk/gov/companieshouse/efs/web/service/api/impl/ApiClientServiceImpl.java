@@ -14,11 +14,11 @@ import uk.gov.companieshouse.api.model.efs.submissions.CompanyApi;
 import uk.gov.companieshouse.api.model.efs.submissions.ConfirmAuthorisedApi;
 import uk.gov.companieshouse.api.model.efs.submissions.FileListApi;
 import uk.gov.companieshouse.api.model.efs.submissions.FormTypeApi;
-import uk.gov.companieshouse.api.model.efs.submissions.PaymentReferenceApi;
 import uk.gov.companieshouse.api.model.efs.submissions.PresenterApi;
 import uk.gov.companieshouse.api.model.efs.submissions.SubmissionApi;
 import uk.gov.companieshouse.api.model.efs.submissions.SubmissionResponseApi;
 import uk.gov.companieshouse.api.model.efs.submissions.SubmissionStatus;
+import uk.gov.companieshouse.api.model.paymentsession.SessionListApi;
 import uk.gov.companieshouse.efs.web.exception.UrlEncodingException;
 import uk.gov.companieshouse.efs.web.service.api.ApiClientService;
 import uk.gov.companieshouse.logging.Logger;
@@ -86,11 +86,12 @@ public class ApiClientServiceImpl extends BaseApiClientServiceImpl implements Ap
     }
 
     @Override
-    public ApiResponse<SubmissionResponseApi> putPayment(final String submissionId, final PaymentReferenceApi payment) {
-        final String uri = SUB_URI + submissionId + "/payment";
+    public ApiResponse<SubmissionResponseApi> putPaymentSessions(final String submissionId,
+        final SessionListApi paymentSessions) {
+        final String uri = SUB_URI + submissionId + "/payment-sessions";
 
-        return executeOp("submitPaymentReference", uri,
-            getApiClient().privateEfsResourceHandler().submissions().payment().upsert(uri, payment));
+        return executeOp("submitPaymentSessions", uri,
+            getApiClient().privateEfsResourceHandler().submissions().paymentSessions().upsert(uri, paymentSessions));
     }
 
     @Override
