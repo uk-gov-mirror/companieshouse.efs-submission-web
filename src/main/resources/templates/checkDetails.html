@@ -80,7 +80,11 @@
                 <div>
                     <button data-prevent-double-click="true" id="next-button" type="submit" class="govuk-button"
                             name="action" value="submit"
-                            th:text="${checkDetails.paymentCharge} ? #{checkDetails.button.payAndSubmit} : #{checkDetails.button.submit}"></button>
+                            th:text="${checkDetails.paymentCharge} ? #{checkDetails.button.payAndSubmit} : #{checkDetails.button.submit}"
+                            th:attr="data-event-id=${checkDetails.paymentCharge} ? 'payment-button' : null"
+                            th:classappend="${checkDetails.paymentCharge} ? 'piwik-event'">
+
+                    </button>
                 </div>
             </div>
         </div>
