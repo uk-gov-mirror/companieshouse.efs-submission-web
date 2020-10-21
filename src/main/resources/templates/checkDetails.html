@@ -78,9 +78,12 @@
                     </div>
                 </fieldset>
                 <div>
-                    <button data-prevent-double-click="true" id="next-button" type="submit" class="govuk-button"
+                    <button data-prevent-double-click="true" id="next-button" type="submit" class="govuk-button piwik-event"
                             name="action" value="submit"
-                            th:text="${checkDetails.paymentCharge} ? #{checkDetails.button.payAndSubmit} : #{checkDetails.button.submit}"></button>
+                            th:text="${checkDetails.paymentCharge} ? #{checkDetails.button.payAndSubmit} : #{checkDetails.button.submit}"
+                            th:attr="data-event-id=${checkDetails.paymentCharge} ? 'payment-button' : null">
+
+                    </button>
                 </div>
             </div>
         </div>
