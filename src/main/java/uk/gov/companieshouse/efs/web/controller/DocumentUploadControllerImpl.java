@@ -65,18 +65,19 @@ public class DocumentUploadControllerImpl extends BaseControllerImpl implements 
     /**
      * Constructor used by child controllers.
      *
+     * @param fileTransferManager - Parameter object that groups some file transfer related in order
+     *                            to reduce the number of constructor parameters.
      * @param logger the CH logger
      */
     @Autowired
-    public DocumentUploadControllerImpl(FileTransferApiClient fileTransferApiClient,
-        FileUploadConfiguration fileUploadConfiguration, DocumentUploadValidator documentUploadValidator, Logger logger,
-        SessionService sessionService, ApiClientService apiClientService, DocumentUploadModel documentUploadAttribute,
-        final FormTemplateService formTemplateService) {
+    public DocumentUploadControllerImpl(FileTransferManager fileTransferManager, Logger logger,
+                                        SessionService sessionService, ApiClientService apiClientService, DocumentUploadModel documentUploadAttribute,
+                                        final FormTemplateService formTemplateService) {
 
         super(logger, sessionService, apiClientService);
-        this.fileUploadConfiguration = fileUploadConfiguration;
-        this.fileTransferApiClient = fileTransferApiClient;
-        this.documentUploadValidator = documentUploadValidator;
+        this.fileUploadConfiguration = fileTransferManager.getFileUploadConfiguration();
+        this.fileTransferApiClient = fileTransferManager.getFileTransferApiClient();
+        this.documentUploadValidator = fileTransferManager.getDocumentUploadValidator();
         this.documentUploadAttribute = documentUploadAttribute;
         this.resourceBundle = ResourceBundle.getBundle("messages", Locale.UK);
         this.formTemplateService = formTemplateService;
@@ -236,4 +237,36 @@ public class DocumentUploadControllerImpl extends BaseControllerImpl implements 
                 == CategoryTypeConstants.CHANGE_OF_CONSTITUTION);
     }
 
+
+    /**
+     * Parameter object used to group file transfer related objects.
+     * Reduces the number of parameters taken by the constructor and makes sonar happy.
+     */
+    static class FileTransferManager {
+        private final FileTransferApiClient fileTransferApiClient;
+        private final FileUploadConfiguration fileUploadConfiguration;
+        private final DocumentUploadValidator documentUploadValidator;
+
+        @Autowired
+        private FileTransferManager(FileTransferApiClient fileTransferApiClient,
+                                    FileUploadConfiguration fileUploadConfiguration,
+                                    DocumentUploadValidator documentUploadValidator) {
+
+            this.fileTransferApiClient = fileTransferApiClient;
+            this.fileUploadConfiguration = fileUploadConfiguration;
+            this.documentUploadValidator = documentUploadValidator;
+        }
+
+        public FileTransferApiClient getFileTransferApiClient() {
+            return fileTransferApiClient;
+        }
+
+        public FileUploadConfiguration getFileUploadConfiguration() {
+            return fileUploadConfiguration;
+        }
+
+        public DocumentUploadValidator getDocumentUploadValidator() {
+            return documentUploadValidator;
+        }
+    }
 }

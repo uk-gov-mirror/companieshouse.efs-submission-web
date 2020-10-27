@@ -20,9 +20,13 @@ import uk.gov.companieshouse.session.handler.SessionHandler;
  */
 @EnableWebSecurity
 public class WebApplicationSecurity {
+    @Value("${start.page.url}")
     private String startPageUrl;
+    @Value("${guidance.page.url}")
     private String guidancePageUrl;
+    @Value("${accessibility.statement.page.url}")
     private String accessibilityStatementPageUrl;
+    @Value("${chs.signout.redirect.path}")
     private String signoutRedirectPath;
     private ApiClientService apiClientService;
     private FormTemplateService formTemplateService;
@@ -32,26 +36,14 @@ public class WebApplicationSecurity {
     /**
      * Constructor.
      *
-     * @param signoutRedirectPath           redirect path when user signs out
-     * @param startPageUrl                  start page of service
-     * @param guidancePageUrl               guidance page
-     * @param accessibilityStatementPageUrl accesibility page
      * @param apiClientService              apiClient service
      * @param formTemplateService           formTemplate service
      * @param categoryTemplateService       categoryTemplate service
      */
     @Autowired
-    public WebApplicationSecurity(@Value("${chs.signout.redirect.path}") final String signoutRedirectPath,
-        @Value("${start.page.url}") final String startPageUrl,
-        @Value("${guidance.page.url}") final String guidancePageUrl,
-        @Value("${accessibility.statement.page.url}") final String accessibilityStatementPageUrl,
+    public WebApplicationSecurity(
         final ApiClientService apiClientService, FormTemplateService formTemplateService,
         final CategoryTemplateService categoryTemplateService, final EnvironmentReader environmentReader) {
-
-        this.signoutRedirectPath = signoutRedirectPath;
-        this.startPageUrl = startPageUrl;
-        this.guidancePageUrl = guidancePageUrl;
-        this.accessibilityStatementPageUrl = accessibilityStatementPageUrl;
         this.apiClientService = apiClientService;
         this.formTemplateService = formTemplateService;
         this.categoryTemplateService = categoryTemplateService;
