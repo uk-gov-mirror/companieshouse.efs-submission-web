@@ -34,11 +34,11 @@ public class CompanyAuthFilter extends AuthFilter {
 
     private static final Pattern AUTH_COMPANY_SCOPE = Pattern.compile("/company/([0-9a-zA-Z]*)$");
 
-    private ApiClientService apiClientService;
+    private final ApiClientService apiClientService;
 
-    private FormTemplateService formTemplateService;
+    private final FormTemplateService formTemplateService;
 
-    private CategoryTemplateService categoryTemplateService;
+    private final CategoryTemplateService categoryTemplateService;
 
     /**
      * Constructor.
@@ -65,12 +65,17 @@ public class CompanyAuthFilter extends AuthFilter {
         HttpServletRequest httpServletRequest = (HttpServletRequest) request;
         HttpServletResponse httpServletResponse = (HttpServletResponse) response;
 
-        Matcher matcher = EFS_SUBMISSION_WITH_COMPANY.matcher(httpServletRequest.getRequestURI());
+        ValidatorResourceProvider resourceProvider = new ValidatorResourceProvider(httpServletRequest, apiClientService, formTemplateService);
+        Validator authValidator = new HttpRequestValidator(resourceProvider);
+        authValidator.setNext(new FormTemplateValidator(resourceProvider, categoryTemplateService));
 
-        if (!("GET".equalsIgnoreCase(httpServletRequest.getMethod()) && matcher.find())) {
+        if(!authValidator.validate()) {
             chain.doFilter(request, response);
             return;
         }
+
+        Matcher matcher = EFS_SUBMISSION_WITH_COMPANY.matcher(httpServletRequest.getRequestURI());
+        matcher.find();
 
         String efsSubmissionId = matcher.group(1);
 
@@ -81,38 +86,37 @@ public class CompanyAuthFilter extends AuthFilter {
         SubmissionFormApi submissionFormApi = submissionApi.getSubmissionForm();
 
         // The form could be null if the user hasn't progressed far enough in the journey to select a form type
-        if (submissionFormApi != null) {
 
-            String formType = submissionFormApi.getFormType();
 
-            ApiResponse<FormTemplateApi> formTemplateResponse = formTemplateService.getFormTemplate(formType);
+        String formType = submissionFormApi.getFormType();
 
-            String formCategory = formTemplateResponse.getData().getFormCategory();
+        ApiResponse<FormTemplateApi> formTemplateResponse = formTemplateService.getFormTemplate(formType);
 
-            boolean isAuthenticationRequired = formTemplateResponse.getData().isAuthenticationRequired();
+        String formCategory = formTemplateResponse.getData().getFormCategory();
 
-            if (isAuthenticationRequired) {
-                //Get the sign in info from the CH session
-                Session chSession = (Session) request.getAttribute(SessionHandler.CHS_SESSION_REQUEST_ATT_KEY);
-                SignInInfo signInInfo = new SignInInfo();
-                if (chSession != null) {
-                    signInInfo = chSession.getSignInInfo();
-                }
+        boolean isAuthenticationRequired = formTemplateResponse.getData().isAuthenticationRequired();
 
-                String companyNumber = matcher.group(2);
+
+        //Get the sign in info from the CH session
+        Session chSession = (Session) request.getAttribute(SessionHandler.CHS_SESSION_REQUEST_ATT_KEY);
+        SignInInfo signInInfo = new SignInInfo();
+        if (chSession != null) {
+            signInInfo = chSession.getSignInInfo();
+        }
+
+        String companyNumber = matcher.group(2);
 
                     /*
                         According to the sign in info, check:
                         If the company number is authorised
                         If the email address is on the allow list for insolvency forms
                      */
-                if (!isAuthorisedForCompany(signInInfo, companyNumber)
-                        && !isOnAllowList(signInInfo, formCategory)) {
+        if (!isAuthorisedForCompany(signInInfo, companyNumber)
+                && !isOnAllowList(signInInfo, formCategory)) {
 
-                    //Redirect for company authentication (scope specified)
-                    redirectForAuth(chSession, httpServletRequest, httpServletResponse, companyNumber, false);
-                }
-            }
+            //Redirect for company authentication (scope specified)
+            redirectForAuth(chSession, httpServletRequest, httpServletResponse, companyNumber, false);
+
 
         }
 
