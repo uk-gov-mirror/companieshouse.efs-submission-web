@@ -7,7 +7,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.support.SessionStatus;
-import uk.gov.companieshouse.efs.web.formtemplates.model.FormTemplateModel;
 
 @RequestMapping(BaseControllerImpl.SERVICE_URI)
 public interface ConfirmationController {
@@ -17,7 +16,6 @@ public interface ConfirmationController {
      *
      * @param id            the submission id
      * @param companyNumber the company number
-     * @param formTemplateAttribute the form template model
      * @param model         the confirmation page model
      * @param request       contains the chs session id
      * @param session       the HTTP session
@@ -26,6 +24,6 @@ public interface ConfirmationController {
      */
     @GetMapping("{id}/company/{companyNumber}/confirmation")
     String getConfirmation(@PathVariable String id, @PathVariable String companyNumber,
-        final FormTemplateModel formTemplateAttribute, Model model, HttpServletRequest request, HttpSession session,
-        SessionStatus sessionStatus);
+                           Model model, HttpServletRequest request, HttpSession session,
+                           SessionStatus sessionStatus);
 }

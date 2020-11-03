@@ -9,6 +9,7 @@ public enum CategoryTypeConstants {
     CHANGE_OF_CONSTITUTION("CC"),
     ARTICLES("MA"),
     INSOLVENCY("INS"),
+    REGISTRAR_POWERS("RP"),
     OTHER("*");
 
     CategoryTypeConstants(final String value) {
