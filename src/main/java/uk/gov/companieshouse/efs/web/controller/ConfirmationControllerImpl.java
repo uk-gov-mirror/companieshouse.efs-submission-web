@@ -27,9 +27,6 @@ import uk.gov.companieshouse.logging.Logger;
 @SessionAttributes({FormTemplateControllerImpl.ATTRIBUTE_NAME, CategoryTemplateControllerImpl.ATTRIBUTE_NAME})
 public class ConfirmationControllerImpl extends BaseControllerImpl implements ConfirmationController {
 
-    final private FormTemplateService formTemplateService;
-    final private CategoryTemplateService categoryTemplateService;
-
     /**
      * Constructor used by child controllers.
      *
