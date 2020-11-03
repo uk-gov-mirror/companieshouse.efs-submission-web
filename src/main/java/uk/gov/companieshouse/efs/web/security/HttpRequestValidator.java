@@ -13,7 +13,7 @@ public class HttpRequestValidator extends ValidatorImpl
 
     @Override
     public boolean isValid() {
-        return isEfsSubmissionWithCompany() && isGetRequest();
+        return isGetRequest() && isEfsSubmissionWithCompany();
     }
 
     private boolean isGetRequest() {

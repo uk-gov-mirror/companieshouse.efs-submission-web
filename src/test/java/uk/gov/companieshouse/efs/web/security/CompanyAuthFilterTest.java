@@ -1,28 +1,10 @@
 package uk.gov.companieshouse.efs.web.security;
 
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.atLeast;
-import static org.mockito.Mockito.atMostOnce;
-import static org.mockito.Mockito.spy;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
-import java.io.IOException;
-import java.text.MessageFormat;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
-import javax.servlet.FilterChain;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.mockito.junit.jupiter.MockitoSettings;
-import org.mockito.quality.Strictness;
 import org.springframework.http.HttpStatus;
 import uk.gov.companieshouse.api.model.ApiResponse;
 import uk.gov.companieshouse.api.model.efs.formtemplates.FormTemplateApi;
@@ -40,8 +22,22 @@ import uk.gov.companieshouse.session.handler.SessionHandler;
 import uk.gov.companieshouse.session.model.SignInInfo;
 import uk.gov.companieshouse.session.model.UserProfile;
 
+import javax.servlet.FilterChain;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.text.MessageFormat;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
 @ExtendWith(MockitoExtension.class)
-@MockitoSettings(strictness = Strictness.LENIENT) // TODO: remove!
 class CompanyAuthFilterTest {
 
     private static final String OAUTH2_REQUEST_KEY = "pXf+qkU6P6SAoY2lKW0FtKMS4PylaNA3pY2sUQxNFDk=";
@@ -151,8 +147,6 @@ class CompanyAuthFilterTest {
 
     @Test
     public void doFilterWhenMethodIsNotGET() throws IOException, ServletException {
-        when(request.getRequestURI()).thenReturn(MessageFormat.format(EFS_SUBMISSION_WITH_COMPANY,
-            SUBMISSION_ID, COMPANY_NUMBER));
         when(request.getMethod()).thenReturn("POST");
 
         testCompanyAuthFilter.doFilter(request, response, chain);
@@ -165,7 +159,8 @@ class CompanyAuthFilterTest {
         SubmissionApi submission = createSubmission(null);
 
         ApiResponse<SubmissionApi> submissionApiResponse = new ApiResponse<>(HttpStatus.OK.value(),
-            Collections.EMPTY_MAP, submission);
+                new HashMap<>(),
+                submission);
 
         when(request.getRequestURI()).thenReturn(MessageFormat.format(EFS_SUBMISSION_WITH_COMPANY,
             SUBMISSION_ID, COMPANY_NUMBER));
@@ -190,8 +185,6 @@ class CompanyAuthFilterTest {
         expectCategoryAndFormLookup(submission, AUTH_REQUIRED_FORM_TEMPLATE);
         when(request.getRequestURL()).thenReturn(new StringBuffer(REQUEST_URL));
 
-        when(categoryTemplateService.getTopLevelCategory("CC"))
-                .thenReturn(CategoryTypeConstants.INSOLVENCY);
         spyFilter.doFilter(request, response, chain);
 
         verifyCompanyAuthIsNotSkipped();
@@ -206,8 +199,6 @@ class CompanyAuthFilterTest {
         expectCategoryAndFormLookup(submission, AUTH_REQUIRED_FORM_TEMPLATE);
         expectRequestUrlLookup();
         when(request.getAttribute(SessionHandler.CHS_SESSION_REQUEST_ATT_KEY)).thenReturn(session);
-        when(categoryTemplateService.getTopLevelCategory("CC"))
-                .thenReturn(CategoryTypeConstants.INSOLVENCY);
 
         testCompanyAuthFilter.doFilter(request, response, chain);
 

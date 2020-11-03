@@ -1,9 +1,9 @@
 package uk.gov.companieshouse.efs.web.security;
 
-
 public abstract class ValidatorImpl implements Validator {
-    private Validator nextValidator;
     protected ValidatorResourceProvider resourceProvider;
+    private Validator nextValidator;
+    private Validator lastValidator;
 
     public ValidatorImpl(ValidatorResourceProvider resourceProvider) {
         this.resourceProvider = resourceProvider;
@@ -11,19 +11,29 @@ public abstract class ValidatorImpl implements Validator {
 
     @Override
     public Validator setNext(Validator nextValidator) {
-        this.nextValidator = nextValidator;
+        if (this.nextValidator == null) {
+            this.nextValidator = nextValidator;
+        } else {
+            lastValidator.setNext(nextValidator);
+        }
 
-        return nextValidator;
+        lastValidator = nextValidator;
+
+        return this;
     }
 
     @Override
     public boolean validate() {
-        if (isValid() && nextValidator != null) {
-            return nextValidator.validate();
+        if (nextValidator == null) {
+            return isValid();
         }
 
-        return false;
+        return isValid() && nextValidator.validate();
     }
 
-    public abstract boolean isValid();
+    public boolean requiresAuth() {
+        return validate();
+    }
+
+    protected abstract boolean isValid();
 }

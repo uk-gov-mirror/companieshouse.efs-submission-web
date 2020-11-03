@@ -1,12 +1,9 @@
 package uk.gov.companieshouse.efs.web.security;
 
-import org.codehaus.plexus.util.cli.Arg;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
-import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.util.ReflectionTestUtils;
@@ -21,7 +18,6 @@ import uk.gov.companieshouse.session.handler.SessionHandler;
 import uk.gov.companieshouse.session.model.SignInInfo;
 
 import javax.servlet.http.HttpServletRequest;
-
 import java.text.MessageFormat;
 import java.util.Optional;
 import java.util.stream.Stream;
@@ -230,5 +226,22 @@ class ValidatorResourceProviderTest {
         Optional<String> maybeCompanyNumber = testResourceProvider.getCompanyNumber();
         assertFalse(maybeCompanyNumber.isPresent());
 
+    }
+
+    @Test
+    void getSession() {
+        when(request.getAttribute(SessionHandler.CHS_SESSION_REQUEST_ATT_KEY)).thenReturn(session);
+
+        Optional<Session> gotSession = testResourceProvider.getChsSession();
+        assertTrue(gotSession.isPresent());
+        assertThat(gotSession.get(), sameInstance(session));
+    }
+
+    @Test
+    void getSessionWhenSessionNull() {
+        when(request.getAttribute(SessionHandler.CHS_SESSION_REQUEST_ATT_KEY)).thenReturn(null);
+
+        Optional<Session> gotSession = testResourceProvider.getChsSession();
+        assertFalse(gotSession.isPresent());
     }
 }

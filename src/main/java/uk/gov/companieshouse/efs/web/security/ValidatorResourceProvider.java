@@ -74,9 +74,12 @@ public class ValidatorResourceProvider {
         return getFormFromSubmission();
     }
 
+    public Optional<Session> getChsSession() {
+        return Optional.ofNullable((Session) request.getAttribute(SessionHandler.CHS_SESSION_REQUEST_ATT_KEY));
+    }
+
     private Optional<SignInInfo> getSignInInfoFromRequest() {
-        Session session = (Session) request.getAttribute(SessionHandler.CHS_SESSION_REQUEST_ATT_KEY);
-        return Optional.ofNullable(session)
+        return getChsSession()
                 .map(Session::getSignInInfo);
     }
 

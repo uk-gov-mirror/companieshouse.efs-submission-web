@@ -10,7 +10,6 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import javax.servlet.http.HttpServletRequest;
-
 import java.util.stream.Stream;
 
 import static org.junit.Assert.assertFalse;
