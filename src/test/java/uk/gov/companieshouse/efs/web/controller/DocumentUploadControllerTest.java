@@ -64,6 +64,9 @@ class DocumentUploadControllerTest extends BaseControllerImplTest {
 
     private ModelMap attributes;
 
+    @Mock
+    FileTransferManager paramObject;
+
     @InjectMocks
     private DocumentUploadControllerImpl toTest;
 

@@ -52,14 +52,14 @@
                         <caption class="govuk-table__caption" th:text="#{documentUpload.table.caption(*{#lists.size(details.files)})}"></caption>
                         <thead class="govuk-table__head">
                         <tr class="govuk-table__row">
-                            <th class="govuk-table__header">File name</th>
-                            <th class="govuk-table__header">Size</th>
-                            <th class="govuk-table__header">Action</th>
+                            <th class="govuk-table__header" scope="col">File name</th>
+                            <th class="govuk-table__header" scope="col">Size</th>
+                            <th class="govuk-table__header" scope="col">Action</th>
                         </tr>
                         </thead>
                         <tbody class="govuk-table__body" th:each="document: *{details.getFiles()}">
                         <tr class="govuk-table__row">
-                            <th class="govuk-table__cell" style="word-break: break-word" th:text="${#strings.replace(document.fileName, '-', '&#8209;')}"></th>
+                            <th class="govuk-table__cell" style="word-break: break-word" th:text="${#strings.replace(document.fileName, '-', '&#8209;')}" scope="row"></th>
                             <td class="govuk-table__cell" th:text="${T(uk.gov.companieshouse.efs.web.model.DocumentUploadModel).displayFileSizeAsHuman(document)}"></td>
                             <td class="govuk-table__cell">
                                 <a th:href="@{/efs-submission/{id}/company/{companyNumber}/remove-document/{fileId}(id=*{submissionId}, companyNumber=*{companyNumber}, fileId=${document.fileId})}">Remove<span

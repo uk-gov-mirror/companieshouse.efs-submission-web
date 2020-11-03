@@ -17,7 +17,7 @@
                 <main class="govuk-main-wrapper govuk-main-wrapper--auto-spacing" id="main-content" role="main">
                     <div class="govuk-grid-row">
                         <div class="govuk-grid-column-two-thirds">
-                            <fieldset class="govuk-fieldset">
+                            <div class="govuk-fieldset">
                                 <h1 class="govuk-heading-xl" id="company-details-heading" th:utext="#{companyDetails.title}"></h1>
                                 <dl class="app-check-your-answers app-check-your-answers--short">
                                     <div class="app-check-your-answers__contents">
@@ -52,7 +52,7 @@
                                         </dd>
                                     </div>
                                 </dl>
-                            </fieldset>
+                            </div>
                             <div>
                                 <button data-prevent-double-click="true" id="next-button" type="submit" class="govuk-button" name="action" value="submit" th:text="#{button.confirm}"></button>
                             </div>
