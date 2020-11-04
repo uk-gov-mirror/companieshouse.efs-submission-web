@@ -46,9 +46,7 @@ public class UserValidator extends BaseCompanyAuthValidator implements Validator
      */
     @Override
     protected boolean requiresAuth() {
-        boolean allowed = isOnAllowList();
-        boolean auth = isAuthorisedForCompany();
-        return !(allowed || auth);
+        return !(isOnAllowList() || isAuthorisedForCompany());
     }
 
     // topLevelCategory == INSOLVENCY
