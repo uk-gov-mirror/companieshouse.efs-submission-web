@@ -13,6 +13,8 @@ import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.junit.jupiter.MockitoExtension;
 import uk.gov.companieshouse.api.model.ApiResponse;
 import uk.gov.companieshouse.api.model.efs.categorytemplates.CategoryTemplateApi;
@@ -64,6 +66,9 @@ class FormTemplateControllerTest extends BaseControllerImplTest {
     private FormTemplateController testController;
 
     final static String PRESENTER_EMAIL = "test@email.com";
+    final static String SCOTTISH_COMPANY_NUMBER_1 = "SC000000";
+    final static String SCOTTISH_COMPANY_NUMBER_2 = "SF000000";
+    final static String SCOTTISH_COMPANY_NUMBER_3 = "SO000000";
 
     @Override
     @BeforeEach
@@ -186,5 +191,33 @@ class FormTemplateControllerTest extends BaseControllerImplTest {
 
         assertThat(result, is(ViewConstants.DOCUMENT_UPLOAD
                 .asRedirectUri(CHS_URL, SUBMISSION_ID, COMPANY_NUMBER)));
+    }
+
+    @ParameterizedTest
+    @ValueSource(strings = {SCOTTISH_COMPANY_NUMBER_1, SCOTTISH_COMPANY_NUMBER_2, SCOTTISH_COMPANY_NUMBER_3})
+    void formTemplateWhenScottishCompany(String companyNumber) {
+
+        final SubmissionApi submission = createSubmission(SubmissionStatus.OPEN);
+        PresenterApi presenter = new PresenterApi();
+        presenter.setEmail(PRESENTER_EMAIL);
+        submission.setPresenter(presenter);
+
+        when(apiClientService.getSubmission(SUBMISSION_ID)).thenReturn(
+                getSubmissionOkResponse(submission));
+
+        when(apiClientService.isOnAllowList(PRESENTER_EMAIL)).
+                thenReturn(new ApiResponse(200, getHeaders(), true));
+
+        when(formTemplateService.getFormTemplatesByCategory(CAT1_SUB_LEVEL1.getCategoryType())).
+                thenReturn(new ApiResponse(200, getHeaders(), new FormTemplateListApi(FORM_TEMPLATE_LIST)));
+
+        when(categoryTemplateAttribute.getCategoryName()).thenReturn(CAT1_SUB_LEVEL1.getCategoryName());
+
+        String template = testController.formTemplate(SUBMISSION_ID, companyNumber, CAT1_SUB_LEVEL1.getCategoryType(),
+                categoryTemplateAttribute, formTemplateAttribute, model, servletRequest);
+
+        verify(model).addAttribute("isScottishCompany", Boolean.TRUE);
+
+        assertThat(template, is(ViewConstants.DOCUMENT_SELECTION.asView()));
     }
 }
