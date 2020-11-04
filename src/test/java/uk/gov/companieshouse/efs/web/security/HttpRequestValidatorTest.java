@@ -22,7 +22,7 @@ class HttpRequestValidatorTest {
     private HttpRequestValidator testValidator;
 
     @Mock
-    Validator nextValidator;
+    Validator<HttpServletRequest> nextValidator;
 
     @Mock
     HttpServletRequest request;
@@ -31,7 +31,7 @@ class HttpRequestValidatorTest {
 
     @BeforeEach
     void setUp() {
-        resourceProvider = new ValidatorResourceProvider(request, null, null);
+        resourceProvider = new ValidatorResourceProvider(null, null);
     }
 
     @ParameterizedTest
@@ -39,16 +39,16 @@ class HttpRequestValidatorTest {
     void passingValidator(String method, String path) {
         when(request.getMethod()).thenReturn(method);
         when(request.getRequestURI()).thenReturn(path);
-        when(nextValidator.validate()).thenReturn(true);
+        when(nextValidator.validate(request)).thenReturn(true);
 
 
         testValidator = new HttpRequestValidator(resourceProvider);
         testValidator.setNext(nextValidator);
 
-        testValidator.validate();
+        testValidator.validate(request);
 
         // validate must be true to call the next validator in the chain
-        verify(nextValidator).validate();
+        verify(nextValidator).validate(request);
     }
 
     private static Stream<Arguments> provideValidConditions() {
@@ -70,7 +70,7 @@ class HttpRequestValidatorTest {
         testValidator = new HttpRequestValidator(resourceProvider);
         testValidator.setNext(nextValidator);
 
-        boolean needsAuth = testValidator.validate();
+        boolean needsAuth = testValidator.validate(request);
         assertFalse(needsAuth);
 
         // validate must be true to call the next validator in the chain
@@ -86,9 +86,9 @@ class HttpRequestValidatorTest {
 
     @Test
     void nullInput() {
-        testValidator = new HttpRequestValidator(new ValidatorResourceProvider(null, null, null));
+        testValidator = new HttpRequestValidator(new ValidatorResourceProvider(null, null));
 
-        boolean needsAuth = testValidator.validate();
+        boolean needsAuth = testValidator.validate(null);
         assertFalse(needsAuth);
 
         // validate must be true to call the next validator in the chain
@@ -99,7 +99,7 @@ class HttpRequestValidatorTest {
     @Test
     void nullResourceProvider() {
         testValidator = new HttpRequestValidator(null);
-        boolean needsAuth = testValidator.validate();
+        boolean needsAuth = testValidator.validate(request);
         assertFalse(needsAuth);
 
         verifyNoMoreInteractions(nextValidator);

@@ -3,23 +3,38 @@ package uk.gov.companieshouse.efs.web.security;
 
 import uk.gov.companieshouse.api.model.efs.formtemplates.FormTemplateApi;
 
+import javax.servlet.http.HttpServletRequest;
 
-public class FormTemplateValidator extends ValidatorImpl
-        implements Validator {
+
+/**
+ * Validates if the the form attached to the submission requires authorisation.
+ */
+public class FormTemplateValidator extends BaseCompanyAuthValidator
+        implements Validator<HttpServletRequest> {
 
     public FormTemplateValidator(ValidatorResourceProvider resourceProvider) {
         super(resourceProvider);
     }
 
+    /**
+     * Only forms require authorisation so if the user hasn't progressed far enough to have a form
+     * then it can't require authorisation.
+     * If the form is present then it returns whether it requires authorisation.
+     *
+     * @return true if the form attached to the submission requires authentication
+     */
     @Override
-    public boolean isValid() {
-        return isAuthRequired();
+    public boolean requiresAuth() {
+        return formRequiresAuth();
     }
 
-    private boolean isAuthRequired() {
+    /**
+     * @return true if submission has form and form requires auth
+     */
+    private boolean formRequiresAuth() {
         return resourceProvider.getForm()
                 .map(FormTemplateApi::isAuthenticationRequired)
                 .orElse(false);    // If the user hasn't progressed far enough to have a form then
-                                         // this returns false
+        // this returns false
     }
 }

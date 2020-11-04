@@ -3,7 +3,6 @@ package uk.gov.companieshouse.efs.web.security;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.junit.jupiter.params.provider.Arguments;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.util.ReflectionTestUtils;
@@ -19,9 +18,11 @@ import uk.gov.companieshouse.session.model.SignInInfo;
 
 import javax.servlet.http.HttpServletRequest;
 import java.text.MessageFormat;
+import java.util.Objects;
 import java.util.Optional;
-import java.util.stream.Stream;
 
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.nullValue;
 import static org.hamcrest.Matchers.sameInstance;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -75,7 +76,8 @@ class ValidatorResourceProviderTest {
 
     @BeforeEach
     void setUp() {
-        testResourceProvider = spy(new ValidatorResourceProvider(request, apiClientService, formTemplateService));
+        testResourceProvider = spy(new ValidatorResourceProvider(apiClientService, formTemplateService));
+        testResourceProvider.setInput(request);
     }
 
     @Test
@@ -101,10 +103,14 @@ class ValidatorResourceProviderTest {
         testResourceProvider.getSubmission();
         verify(testResourceProvider).getRequestPathMatcher();
         verify(apiClientService).getSubmission(submissionId);
+
+        SubmissionApi submission = (SubmissionApi) ReflectionTestUtils.getField(
+                testResourceProvider, "submission");
+        assertTrue(Objects.nonNull(submission));
     }
 
     @Test
-    void getsSubmissionWhenNoExistingSubmissionButUrlInvalid() {
+    void getSubmissionWhenNoExistingSubmissionButUrlInvalid() {
         when(request.getRequestURI()).thenReturn("");
 
 
@@ -116,14 +122,15 @@ class ValidatorResourceProviderTest {
     @Test
     void getRequest() {
         testResourceProvider =
-                spy(new ValidatorResourceProvider(request, null, null));
+                spy(new ValidatorResourceProvider(null, null));
+        testResourceProvider.setInput(request);
 
         HttpServletRequest gotRequest = testResourceProvider.getInput();
         assertThat(request, sameInstance(gotRequest));
     }
 
     @Test
-    void getSubmissionFormWhenNoExistingForm() {
+    void getFormWhenNoExistingForm() {
         ReflectionTestUtils.setField(testResourceProvider, "submission", submission);
 
         when(submission.getSubmissionForm()).thenReturn(submissionForm);
@@ -134,10 +141,15 @@ class ValidatorResourceProviderTest {
         testResourceProvider.getForm();
 
         verify(testResourceProvider).getSubmission();
+
+        // Ensure form is cached for subsequent calls
+        FormTemplateApi cachedForm = (FormTemplateApi) ReflectionTestUtils.getField(
+                testResourceProvider, "form");
+        assertTrue(Objects.nonNull(cachedForm));
     }
 
     @Test
-    void getSubmissionFormWhenExistingForm() {
+    void getFormWhenExistingForm() {
         ReflectionTestUtils.setField(testResourceProvider, "form", formTemplate);
 
         Optional<FormTemplateApi> form = testResourceProvider.getForm();
@@ -149,7 +161,7 @@ class ValidatorResourceProviderTest {
     }
 
     @Test
-    void getSubmissionFormWhenSubmissionNotPresent() {
+    void getFormWhenSubmissionNotPresent() {
         // Matcher doesn't find and getSubmission returns empty
         when(request.getRequestURI()).thenReturn("");
 
@@ -178,6 +190,12 @@ class ValidatorResourceProviderTest {
         assertTrue(maybeSignInInfo.isPresent());
         assertThat(maybeSignInInfo.get(), sameInstance(signInInfo));
         verify(session).getSignInInfo();
+
+
+        // Ensure value is cached
+        SignInInfo cachedSignInInfo = (SignInInfo) ReflectionTestUtils.getField(
+                testResourceProvider, "signInInfo");
+        assertTrue(Objects.nonNull(cachedSignInInfo));
     }
 
     @Test
@@ -186,23 +204,6 @@ class ValidatorResourceProviderTest {
         assertFalse(maybeSignInInfo.isPresent());
         verify(session, never()).getSignInInfo();
         verifyNoMoreInteractions(session);
-    }
-
-    private static Stream<Arguments> companyNumberProvider() {
-        String sid = "submissionId";
-        return Stream.of(
-                Arguments.of(
-                        MessageFormat.format(EFS_SUBMISSION_WITH_COMPANY, sid, "1234"),
-                        true,
-                        "1234"
-                ),
-                // Url Doesn't match
-                Arguments.of(
-                        "jkhsdfkgjhsdf",
-                        false,
-                        null
-                )
-        );
     }
 
     @Test
@@ -243,5 +244,15 @@ class ValidatorResourceProviderTest {
 
         Optional<Session> gotSession = testResourceProvider.getChsSession();
         assertFalse(gotSession.isPresent());
+    }
+
+    @Test
+    void setInputWhenInputIsNull() {
+        ReflectionTestUtils.setField(testResourceProvider, "signInInfo", new SignInInfo());
+        testResourceProvider.setInput(null);
+
+        SignInInfo signInInfo = (SignInInfo) ReflectionTestUtils.getField(testResourceProvider,
+                "signInInfo");
+        assertThat(signInInfo, is(nullValue()));
     }
 }

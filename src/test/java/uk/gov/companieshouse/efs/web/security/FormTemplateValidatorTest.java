@@ -8,13 +8,10 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.test.util.ReflectionTestUtils;
 import uk.gov.companieshouse.api.model.efs.formtemplates.FormTemplateApi;
-import uk.gov.companieshouse.api.model.efs.submissions.SubmissionApi;
-import uk.gov.companieshouse.efs.web.categorytemplates.service.api.CategoryTemplateService;
-import uk.gov.companieshouse.efs.web.formtemplates.service.api.FormTemplateService;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.Optional;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.never;
@@ -28,49 +25,38 @@ class FormTemplateValidatorTest {
     FormTemplateValidator testFormTemplateValidator;
 
     @Mock
-    CategoryTemplateService categoryTemplateService;
-
     ValidatorResourceProvider resourceProvider;
 
     @Mock
     HttpServletRequest request;
 
     @Mock
-    Validator nextValidator;
-
-    @Mock
-    FormTemplateService formTemplateService;
-
-    @Mock
-    SubmissionApi submission;
+    Validator<HttpServletRequest> nextValidator;
 
     @Mock
     FormTemplateApi formTemplate;
 
     @BeforeEach
     void setUp() {
-        resourceProvider = spy(new ValidatorResourceProvider(request, null, formTemplateService));
-
         testFormTemplateValidator = spy(new FormTemplateValidator(
                 resourceProvider));
     }
 
     @Test
     void falseWhenNoForm() {
-        ReflectionTestUtils.setField(resourceProvider, "submission", submission);
-        when(submission.getSubmissionForm()).thenReturn(null);
+        when(resourceProvider.getForm()).thenReturn(Optional.empty());
 
-        testFormTemplateValidator.validate();
-        verify(nextValidator, never()).validate();
+        testFormTemplateValidator.validate(request);
+        verify(nextValidator, never()).validate(request);
     }
 
     @ParameterizedTest
     @ValueSource(booleans = {true, false})
     void requiresAuthWhenFormRequiresAuth(boolean formRequiresAuth) {
-        ReflectionTestUtils.setField(resourceProvider, "form", formTemplate);
+        when(resourceProvider.getForm()).thenReturn(Optional.of(formTemplate));
         when(formTemplate.isAuthenticationRequired()).thenReturn(formRequiresAuth);
 
-        boolean requiresAuth = testFormTemplateValidator.validate();
+        boolean requiresAuth = testFormTemplateValidator.validate(request);
         assertEquals(formRequiresAuth, requiresAuth);
     }
 }

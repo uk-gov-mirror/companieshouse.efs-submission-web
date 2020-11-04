@@ -17,7 +17,8 @@ import java.io.IOException;
 
 
 /**
- * CompanyAuthFilter
+ * CompanyAuthFilter ensures that a request is authorised if it is made to a resource that
+ * requires authentication.
  */
 public class CompanyAuthFilter extends AuthFilter {
 
@@ -45,20 +46,41 @@ public class CompanyAuthFilter extends AuthFilter {
         this.categoryTemplateService = categoryTemplateService;
     }
 
+    /**
+     * doFilter does the request validation and, if necessary, redirects the user for authentication
+     * before responding.
+     * <p>
+     * It redirects if:
+     * The request is a get request
+     * and made to an endpoint with a company number and submissionId
+     * and has a form that requires authentication
+     * and the user is not authorised for that form or, in the case of Insolvency,
+     * on the allow list.
+     * <p>
+     * The validation for these conditions is implemented as a chain of responsibility
+     * with a "link" for the request checking, form checking, and finally user checking.
+     *
+     * @param request  the request made to the web
+     * @param response the response to the user
+     * @param chain    the chain of filters for authorisation
+     */
     @Override
-    public void doFilter(
-            ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
+    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
+            throws IOException, ServletException {
+
 
         HttpServletRequest httpServletRequest = (HttpServletRequest) request;
 
-        ValidatorResourceProvider resourceProvider = new ValidatorResourceProvider(httpServletRequest, apiClientService, formTemplateService);
-        Validator authChecker = new HttpRequestValidator(resourceProvider)
+        ValidatorResourceProvider resourceProvider = new ValidatorResourceProvider(apiClientService,
+                formTemplateService);
+        Validator<HttpServletRequest> authChecker = new HttpRequestValidator(resourceProvider)
                 .setNext(new FormTemplateValidator(resourceProvider))
                 .setNext(new UserValidator(resourceProvider, categoryTemplateService));
 
-        if(authChecker.validate()) {
+        if (authChecker.validate(httpServletRequest)) {
             String companyNumber = resourceProvider.getCompanyNumber().orElse("");
             Session chsSession = resourceProvider.getChsSession().orElse(null);
+
             redirectForAuth(chsSession,
                     httpServletRequest,
                     (HttpServletResponse) response,
