@@ -25,7 +25,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-public class UserValidatorTest {
+class UserValidatorTest {
     public static final String FORM_CATEGORY = "FORM_CATEGORY";
     public static final String EMAIL = "demo@ch.gov.uk";
     @Mock
