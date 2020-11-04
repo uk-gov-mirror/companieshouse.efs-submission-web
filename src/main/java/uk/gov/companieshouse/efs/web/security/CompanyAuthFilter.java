@@ -73,11 +73,11 @@ public class CompanyAuthFilter extends AuthFilter {
 
         ValidatorResourceProvider resourceProvider = new ValidatorResourceProvider(apiClientService,
                 formTemplateService);
-        Validator<HttpServletRequest> authChecker = new HttpRequestValidator(resourceProvider)
-                .setNext(new FormTemplateValidator(resourceProvider))
-                .setNext(new UserValidator(resourceProvider, categoryTemplateService));
+        Validator<HttpServletRequest> requiresAuth = new HttpRequestRequiredValidator(resourceProvider)
+                .setNext(new FormTemplateRequiredValidator(resourceProvider))
+                .setNext(new UserRequiredValidator(resourceProvider, categoryTemplateService));
 
-        if (authChecker.validate(httpServletRequest)) {
+        if (requiresAuth.validate(httpServletRequest)) {
             String companyNumber = resourceProvider.getCompanyNumber().orElse("");
             Session chsSession = resourceProvider.getChsSession().orElse(null);
 

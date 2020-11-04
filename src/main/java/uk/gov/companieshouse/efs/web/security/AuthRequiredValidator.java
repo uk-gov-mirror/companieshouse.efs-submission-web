@@ -7,7 +7,7 @@ import javax.servlet.http.HttpServletRequest;
  * <p>
  * Implementation of a chain of responsibility pattern
  */
-public abstract class BaseCompanyAuthValidator extends ValidatorImpl<HttpServletRequest> {
+public abstract class AuthRequiredValidator extends ValidatorImpl<HttpServletRequest> {
     protected ValidatorResourceProvider resourceProvider;
 
     /**
@@ -15,7 +15,7 @@ public abstract class BaseCompanyAuthValidator extends ValidatorImpl<HttpServlet
      *
      * @param resourceProvider the object to hold resources used by multiple chain links
      */
-    public BaseCompanyAuthValidator(ValidatorResourceProvider resourceProvider) {
+    public AuthRequiredValidator(ValidatorResourceProvider resourceProvider) {
         this.resourceProvider = resourceProvider;
     }
 

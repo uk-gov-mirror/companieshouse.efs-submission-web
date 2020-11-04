@@ -19,7 +19,7 @@ import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class HttpRequestValidatorTest {
-    private HttpRequestValidator testValidator;
+    private HttpRequestRequiredValidator testValidator;
 
     @Mock
     Validator<HttpServletRequest> nextValidator;
@@ -42,7 +42,7 @@ class HttpRequestValidatorTest {
         when(nextValidator.validate(request)).thenReturn(true);
 
 
-        testValidator = new HttpRequestValidator(resourceProvider);
+        testValidator = new HttpRequestRequiredValidator(resourceProvider);
         testValidator.setNext(nextValidator);
 
         testValidator.validate(request);
@@ -67,7 +67,7 @@ class HttpRequestValidatorTest {
         }
 
 
-        testValidator = new HttpRequestValidator(resourceProvider);
+        testValidator = new HttpRequestRequiredValidator(resourceProvider);
         testValidator.setNext(nextValidator);
 
         boolean needsAuth = testValidator.validate(request);
@@ -86,7 +86,7 @@ class HttpRequestValidatorTest {
 
     @Test
     void nullInput() {
-        testValidator = new HttpRequestValidator(new ValidatorResourceProvider(null, null));
+        testValidator = new HttpRequestRequiredValidator(new ValidatorResourceProvider(null, null));
 
         boolean needsAuth = testValidator.validate(null);
         assertFalse(needsAuth);
@@ -98,7 +98,7 @@ class HttpRequestValidatorTest {
 
     @Test
     void nullResourceProvider() {
-        testValidator = new HttpRequestValidator(null);
+        testValidator = new HttpRequestRequiredValidator(null);
         boolean needsAuth = testValidator.validate(request);
         assertFalse(needsAuth);
 

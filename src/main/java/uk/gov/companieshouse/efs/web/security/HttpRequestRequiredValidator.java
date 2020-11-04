@@ -4,10 +4,10 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.Optional;
 import java.util.regex.Matcher;
 
-public class HttpRequestValidator extends BaseCompanyAuthValidator
+public class HttpRequestRequiredValidator extends AuthRequiredValidator
         implements Validator<HttpServletRequest> {
 
-    public HttpRequestValidator(ValidatorResourceProvider resourceProvider) {
+    public HttpRequestRequiredValidator(ValidatorResourceProvider resourceProvider) {
         super(resourceProvider);
     }
 

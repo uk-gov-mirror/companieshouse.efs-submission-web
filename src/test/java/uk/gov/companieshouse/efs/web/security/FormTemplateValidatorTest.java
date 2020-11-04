@@ -22,7 +22,7 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 class FormTemplateValidatorTest {
 
-    FormTemplateValidator testFormTemplateValidator;
+    FormTemplateRequiredValidator testFormTemplateValidator;
 
     @Mock
     ValidatorResourceProvider resourceProvider;
@@ -38,7 +38,7 @@ class FormTemplateValidatorTest {
 
     @BeforeEach
     void setUp() {
-        testFormTemplateValidator = spy(new FormTemplateValidator(
+        testFormTemplateValidator = spy(new FormTemplateRequiredValidator(
                 resourceProvider));
     }
 

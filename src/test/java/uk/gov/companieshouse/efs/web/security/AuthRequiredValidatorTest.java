@@ -18,8 +18,8 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-class BaseCompanyAuthValidatorTest {
-    private TestBaseCompanyAuthValidator testValidator;
+class AuthRequiredValidatorTest {
+    private TestAuthRequiredValidator testValidator;
 
     @Mock
     private Validator<HttpServletRequest> nextValidator;
@@ -32,7 +32,7 @@ class BaseCompanyAuthValidatorTest {
 
     @Test
     void validateWhenHasNextValidator() {
-        testValidator = new TestBaseCompanyAuthValidator(true);
+        testValidator = new TestAuthRequiredValidator(true);
         testValidator.setNext(nextValidator);
         testValidator.validate(request);
 
@@ -41,7 +41,7 @@ class BaseCompanyAuthValidatorTest {
 
     @Test
     void dontCallNextValidatorWhenValidationFails() {
-        testValidator = new TestBaseCompanyAuthValidator(false);
+        testValidator = new TestAuthRequiredValidator(false);
         testValidator.setNext(nextValidator);
         testValidator.validate(request);
 
@@ -51,17 +51,17 @@ class BaseCompanyAuthValidatorTest {
     @ParameterizedTest
     @ValueSource(booleans = {true, false})
     void validateWhenNoNextValidator(boolean isValid) {
-        testValidator = new TestBaseCompanyAuthValidator(isValid);
+        testValidator = new TestAuthRequiredValidator(isValid);
 
         assertEquals(isValid, testValidator.validate(request));
     }
 
     @Test
     void setNextAppendsToLast() {
-        Validator<HttpServletRequest> validator1 = spy(new TestBaseCompanyAuthValidator(true));
-        Validator<HttpServletRequest> validator2 = spy(new TestBaseCompanyAuthValidator(true));
+        Validator<HttpServletRequest> validator1 = spy(new TestAuthRequiredValidator(true));
+        Validator<HttpServletRequest> validator2 = spy(new TestAuthRequiredValidator(true));
 
-        testValidator = new TestBaseCompanyAuthValidator(true);
+        testValidator = new TestAuthRequiredValidator(true);
         Validator<HttpServletRequest> tv = testValidator
                 .setNext(validator1)
                 .setNext(validator2);
@@ -78,7 +78,7 @@ class BaseCompanyAuthValidatorTest {
 
     @Test
     void inputNotSetWhenResourceProverAlreadyHasIt() {
-        testValidator = new TestBaseCompanyAuthValidator(true);
+        testValidator = new TestAuthRequiredValidator(true);
         when(provider.getInput()).thenReturn(request);
 
         testValidator.validate(request);
@@ -88,7 +88,7 @@ class BaseCompanyAuthValidatorTest {
 
     @Test
     void inputNotSetWhenResourceProviderNull() {
-        testValidator = new TestBaseCompanyAuthValidator(true);
+        testValidator = new TestAuthRequiredValidator(true);
         testValidator.resourceProvider = null;
 
         testValidator.validate(request);
@@ -96,11 +96,11 @@ class BaseCompanyAuthValidatorTest {
     }
 
 
-    class TestBaseCompanyAuthValidator extends BaseCompanyAuthValidator {
+    class TestAuthRequiredValidator extends AuthRequiredValidator {
         private final boolean returns;
 
 
-        public TestBaseCompanyAuthValidator(boolean returns) {
+        public TestAuthRequiredValidator(boolean returns) {
             super(provider);
             this.returns = returns;
         }

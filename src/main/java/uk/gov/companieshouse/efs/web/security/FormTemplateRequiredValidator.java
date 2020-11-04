@@ -9,10 +9,10 @@ import javax.servlet.http.HttpServletRequest;
 /**
  * Validates if the the form attached to the submission requires authorisation.
  */
-public class FormTemplateValidator extends BaseCompanyAuthValidator
+public class FormTemplateRequiredValidator extends AuthRequiredValidator
         implements Validator<HttpServletRequest> {
 
-    public FormTemplateValidator(ValidatorResourceProvider resourceProvider) {
+    public FormTemplateRequiredValidator(ValidatorResourceProvider resourceProvider) {
         super(resourceProvider);
     }
 

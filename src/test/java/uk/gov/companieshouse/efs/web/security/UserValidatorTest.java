@@ -42,7 +42,7 @@ class UserValidatorTest {
     @Mock
     CategoryTemplateService categoryTemplateService;
 
-    UserValidator testUserValidator;
+    UserRequiredValidator testUserValidator;
 
     @Mock
     FormTemplateApi form;
@@ -55,7 +55,7 @@ class UserValidatorTest {
 
     @BeforeEach
     void setUp() {
-        testUserValidator = new UserValidator(resourceProvider, categoryTemplateService);
+        testUserValidator = new UserRequiredValidator(resourceProvider, categoryTemplateService);
     }
 
     @Test

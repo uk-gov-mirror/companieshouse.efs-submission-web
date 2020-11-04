@@ -23,7 +23,7 @@ import static uk.gov.companieshouse.efs.web.categorytemplates.controller.Categor
  * Validates if a user is authorised for the form attached to the submission or if they are on the
  * allow list.
  */
-public class UserValidator extends BaseCompanyAuthValidator implements Validator<HttpServletRequest> {
+public class UserRequiredValidator extends AuthRequiredValidator implements Validator<HttpServletRequest> {
     private static final List<CategoryTypeConstants> categoriesWithAllowLists = Collections
             .singletonList(INSOLVENCY);
     private static final String COMPANY_NUMBER_GROUP = "companyNumber";
@@ -34,7 +34,7 @@ public class UserValidator extends BaseCompanyAuthValidator implements Validator
 
     private final CategoryTemplateService categoryTemplateService;
 
-    public UserValidator(ValidatorResourceProvider resourceProvider, CategoryTemplateService categoryTemplateService) {
+    public UserRequiredValidator(ValidatorResourceProvider resourceProvider, CategoryTemplateService categoryTemplateService) {
         super(resourceProvider);
         this.categoryTemplateService = categoryTemplateService;
     }
