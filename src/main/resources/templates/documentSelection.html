@@ -36,7 +36,9 @@
                                             <input class="govuk-radios__input show-text piwik-event" th:field="${formTemplate.formType}"
                                                    th:value="${formTemplate.formType}" type="radio"
                                                    th:id="${formTemplate.formType}"
-                                                   th:attr="data-event-id=${formTemplate.formType}"/>
+                                                   th:attr="data-event-id=${formTemplate.formType}"
+                                                   th:attrappend="aria-disabled=${formTemplate.formType eq '600' and isScottishCompany} ? 'true' : null"
+                                                   th:disabled="${formTemplate.formType eq '600' and isScottishCompany == true}"/>
                                             <label class="govuk-label govuk-radios__label"
                                                    th:for="${formTemplate.formType}" th:text="${formTemplate.formName}"></label>
                                         </div>

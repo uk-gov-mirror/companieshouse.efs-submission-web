@@ -7,6 +7,7 @@ import static uk.gov.companieshouse.efs.web.formtemplates.controller.FormTemplat
 
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Stream;
 import javax.servlet.ServletRequest;
 import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -108,6 +109,7 @@ public class FormTemplateControllerImpl extends BaseControllerImpl implements Fo
         formTemplateAttribute.setFormTemplateList(formList);
         formTemplateAttribute.setSubmissionId(submissionApi.getId());
         model.addAttribute("categoryName", categoryTemplateAttribute.getCategoryName());
+        model.addAttribute("isScottishCompany", isScottishCompany(companyNumber));
         addTrackingAttributeToModel(model);
 
         return ViewConstants.DOCUMENT_SELECTION.asView();
@@ -148,5 +150,9 @@ public class FormTemplateControllerImpl extends BaseControllerImpl implements Fo
     private FormTemplateApi getSelectedFormTemplate(final String selectedFormType) {
         return formTemplateAttribute.getFormTemplateList().stream().filter(
                 c -> c.getFormType().equals(selectedFormType)).findFirst().orElse(null);
+    }
+
+    boolean isScottishCompany(String companyNumber) {
+        return Stream.of("SC","SF","SO").anyMatch(companyNumber::startsWith);
     }
 }
