@@ -13,6 +13,7 @@ import uk.gov.companieshouse.efs.web.service.api.ApiClientService;
 import uk.gov.companieshouse.session.model.SignInInfo;
 import uk.gov.companieshouse.session.model.UserProfile;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -21,6 +22,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -117,31 +119,56 @@ class UserValidatorTest {
     void notAuthorisedWhenInvalidScope() {
         expectScopes(Collections.singletonList("INVALID_SCOPE"));
         when(resourceProvider.getCompanyNumber()).thenReturn(Optional.of(COMPANY_NUMBER));
+        when(signInInfo.getCompanyNumber()).thenReturn(COMPANY_NUMBER);
 
         boolean requiresAuth = testUserValidator.requiresAuth();
 
         assertTrue(requiresAuth);
-        verify(resourceProvider).getSignInInfo();
+        verify(resourceProvider, times(2)).getSignInInfo();
     }
 
     @Test
-    void authorisedWhenScopeValid() {
+    void authorisedWhenScopeOldStyleScopeValid() {
         expectScopes(Collections.singletonList(scopeFromCompanyNumber()));
         when(resourceProvider.getCompanyNumber()).thenReturn(Optional.of(COMPANY_NUMBER));
+        when(signInInfo.getCompanyNumber()).thenReturn(COMPANY_NUMBER);
 
         boolean requiresAuth = testUserValidator.requiresAuth();
 
         assertFalse(requiresAuth);
-        verify(resourceProvider).getSignInInfo();
+        verify(resourceProvider, times(2)).getSignInInfo();
+    }
+
+    @Test
+    void authorisedWhenNewStyleScopeValid() {
+        expectScopes(Collections.singletonList("/company/" + COMPANY_NUMBER + "/admin.write-full"));
+        when(resourceProvider.getCompanyNumber()).thenReturn(Optional.of(COMPANY_NUMBER));
+        when(signInInfo.getCompanyNumber()).thenReturn(COMPANY_NUMBER);
+
+        boolean requiresAuth = testUserValidator.requiresAuth();
+
+        assertFalse(requiresAuth);
+        verify(resourceProvider, times(2)).getSignInInfo();
+    }
+
+    @Test
+    void authorisedWhenTwoScopes() {
+        List<String> scopes = Arrays.asList(
+                "/company/" + COMPANY_NUMBER + "/admin.write-full",
+                "https://account.companieshouse.gov.uk/user.write-full");
+
+        expectScopes(scopes);
+        when(resourceProvider.getCompanyNumber()).thenReturn(Optional.of(COMPANY_NUMBER));
+        when(signInInfo.getCompanyNumber()).thenReturn(COMPANY_NUMBER);
+
+        boolean requiresAuth = testUserValidator.requiresAuth();
+
+        assertFalse(requiresAuth);
+        verify(resourceProvider, times(2)).getSignInInfo();
     }
 
     static String scopeFromCompanyNumber() {
-        return "/company/" + UserValidatorTest.COMPANY_NUMBER;
-    }
-
-    void makeAuthorisedForCompany() {
-        when(resourceProvider.getCompanyNumber()).thenReturn(Optional.of(COMPANY_NUMBER));
-        expectScopes(Collections.singletonList(scopeFromCompanyNumber()));
+        return "/company/" + COMPANY_NUMBER;
     }
 
     void expectScopes(List<String> scopes) {

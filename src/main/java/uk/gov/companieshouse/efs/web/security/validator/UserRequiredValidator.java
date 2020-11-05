@@ -26,11 +26,9 @@ import static uk.gov.companieshouse.efs.web.categorytemplates.controller.Categor
 public class UserRequiredValidator extends AuthRequiredValidator implements Validator<HttpServletRequest> {
     private static final List<CategoryTypeConstants> categoriesWithAllowLists = Collections
             .singletonList(INSOLVENCY);
-    private static final String COMPANY_NUMBER_GROUP = "companyNumber";
 
-    private static final String AUTH_SCOPE_PATTERN_STRING = String.format("/company/(?<%s>[0-9a-zA-Z]*)$",
-            COMPANY_NUMBER_GROUP);
-    private static final Pattern AUTH_COMPANY_SCOPE = Pattern.compile(AUTH_SCOPE_PATTERN_STRING);
+    private static final String COMPANY_NUMBER_GROUP = "companyNumber";
+    private static final Pattern AUTH_COMPANY_SCOPE = Pattern.compile("/company/(?<companyNumber>[0-9a-zA-Z]{8}+)[^0-9a-zA-Z]?");
 
     private final CategoryTemplateService categoryTemplateService;
 
@@ -82,6 +80,15 @@ public class UserRequiredValidator extends AuthRequiredValidator implements Vali
         }
 
         String companyNumber = maybeCompanyNumber.get();
+
+        boolean isAuthorisedForCompany = resourceProvider.getSignInInfo()
+                .map(SignInInfo::getCompanyNumber)
+                .map(companyNumber::equalsIgnoreCase)
+                .orElse(false);
+
+        if (!isAuthorisedForCompany) {
+            return false;
+        }
 
         return getUserScopes().stream()
                 .map(AUTH_COMPANY_SCOPE::matcher)
