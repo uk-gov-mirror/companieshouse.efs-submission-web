@@ -28,6 +28,8 @@ class HttpRequestValidatorTest {
     HttpServletRequest request;
 
     ValidatorResourceProvider resourceProvider;
+    public static final String SUBMISSION_ID = "5f8422b326e7b618e25684da";
+    public static final String COMPANY_NUMBER = "12345678";
 
     @BeforeEach
     void setUp() {
@@ -53,9 +55,9 @@ class HttpRequestValidatorTest {
 
     private static Stream<Arguments> provideValidConditions() {
         return Stream.of(
-                Arguments.of("GET", "/efs-submission/0123456789/company/11223344"),
-                Arguments.of("GET", "/efs-submission/8374g58974g5/company/hgdfoiusbdfg"),
-                Arguments.of("gEt", "/efs-submission/8374g58974g5/company/hgdfoiusbdfg"));
+                Arguments.of("GET", String.format("/efs-submission/%s/company/%s", SUBMISSION_ID, COMPANY_NUMBER)),
+                Arguments.of("GET", String.format("/efs-submission/%s/company/%s", SUBMISSION_ID, COMPANY_NUMBER)),
+                Arguments.of("gEt", String.format("/efs-submission/%s/company/%s", SUBMISSION_ID, COMPANY_NUMBER)));
     }
 
     @ParameterizedTest
@@ -79,9 +81,26 @@ class HttpRequestValidatorTest {
 
     private static Stream<Arguments> provideInValidConditions() {
         return Stream.of(
-                Arguments.of("POST", "/efs-submission/0123456789/company/11223344"),
-                Arguments.of("GET", "/efs-submission/0123456789/company"),
-                Arguments.of("GET", " /efs-submission/0123456789/company/11223344"));
+                Arguments.of("POST", String.format("/efs-submission/%s/company/%s",
+                        SUBMISSION_ID, COMPANY_NUMBER)),
+
+                Arguments.of("GET", String.format("/efs-submission/%s/company/%s",
+                        SUBMISSION_ID, "")),
+
+                Arguments.of("GET", String.format(" /efs-submission/%s/company/%s",
+                        SUBMISSION_ID, COMPANY_NUMBER)),
+
+                Arguments.of("GET", String.format("/efs-submission/%s/company/%s",
+                        SUBMISSION_ID.replace('5', 'x'), COMPANY_NUMBER)),
+
+                Arguments.of("GET", String.format("/efs-submission/%s/company/%s",
+                        SUBMISSION_ID + "0", COMPANY_NUMBER)),
+
+                Arguments.of("GET", String.format("/efs-submission/%s/company/%s",
+                        SUBMISSION_ID, COMPANY_NUMBER.substring(1))),
+
+                Arguments.of("GET", String.format("/efs-submission/%s/company/%s",
+                        SUBMISSION_ID, COMPANY_NUMBER.replace("1", "-"))));
     }
 
     @Test

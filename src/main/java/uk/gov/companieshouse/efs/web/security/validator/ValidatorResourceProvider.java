@@ -28,7 +28,7 @@ import java.util.regex.Pattern;
  */
 public class ValidatorResourceProvider {
     private static final Pattern EFS_SUBMISSION_WITH_COMPANY = Pattern.compile(
-            "^/efs-submission/(?<submissionId>[^/]++)/company/(?<companyNumber>[^/]++)");
+            "^/efs-submission/(?<submissionId>[a-fA-F\\d]{24}+)/company/(?<companyNumber>[a-zA-Z\\d]{8}+)[^a-zA-Z\\d]?+");
 
     private final FormTemplateService formTemplateService;
     private final ApiClientService apiClientService;

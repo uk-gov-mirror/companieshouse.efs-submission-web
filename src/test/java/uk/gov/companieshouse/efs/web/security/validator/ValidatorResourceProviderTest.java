@@ -91,8 +91,8 @@ class ValidatorResourceProviderTest {
 
     @Test
     void getsSubmissionWhenNoExistingSubmission() {
-        String submissionId = "0123456789";
-        String companyNumber = "11223344";
+        String submissionId = "5f8422b326e7b618e25684da";
+        String companyNumber = "12345678";
         String url = MessageFormat.format(EFS_SUBMISSION_WITH_COMPANY,
                 submissionId, companyNumber);
         when(request.getRequestURI()).thenReturn(url);
@@ -208,9 +208,9 @@ class ValidatorResourceProviderTest {
 
     @Test
     void getCompanyNumberValidUrl() {
-        String companyNumber = "1234";
+        String companyNumber = "12345678";
         String validUrl = MessageFormat.format(EFS_SUBMISSION_WITH_COMPANY,
-                "submissionId", companyNumber);
+                "5f8422b326e7b618e25684da", companyNumber);
         when(request.getRequestURI()).thenReturn(validUrl);
 
         Optional<String> maybeCompanyNumber = testResourceProvider.getCompanyNumber();

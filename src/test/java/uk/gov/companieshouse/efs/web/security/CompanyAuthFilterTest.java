@@ -50,9 +50,9 @@ class CompanyAuthFilterTest {
 
     private static final String REQUEST_URL = "http://chs.companieshouse.gov.uk/";
 
-    private static final String SUBMISSION_ID = "0123456789";
+    private static final String SUBMISSION_ID = "5f8422b326e7b618e25684da";
 
-    private static final String COMPANY_NUMBER = "11223344";
+    private static final String COMPANY_NUMBER = "12345678";
 
     private static final String VALID_AUTH_SCOPE = "https://chs.companieshouse.gov.uk/company/" + COMPANY_NUMBER;
 
