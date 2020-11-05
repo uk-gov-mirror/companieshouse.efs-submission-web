@@ -1,4 +1,4 @@
-package uk.gov.companieshouse.efs.web.security;
+package uk.gov.companieshouse.efs.web.security.validator;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

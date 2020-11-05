@@ -1,4 +1,4 @@
-package uk.gov.companieshouse.efs.web.security;
+package uk.gov.companieshouse.efs.web.security.validator;
 
 import uk.gov.companieshouse.api.model.ApiResponse;
 import uk.gov.companieshouse.api.model.efs.formtemplates.FormTemplateApi;

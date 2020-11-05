@@ -1,4 +1,4 @@
-package uk.gov.companieshouse.efs.web.security;
+package uk.gov.companieshouse.efs.web.security.validator;
 
 /**
  * Implementation of the validator interface.

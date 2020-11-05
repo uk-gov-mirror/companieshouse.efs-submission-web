@@ -1,4 +1,4 @@
-package uk.gov.companieshouse.efs.web.security;
+package uk.gov.companieshouse.efs.web.security.validator;
 
 import uk.gov.companieshouse.api.model.ApiResponse;
 import uk.gov.companieshouse.api.model.efs.formtemplates.FormTemplateApi;
@@ -209,7 +209,7 @@ public class ValidatorResourceProvider {
      *
      * @return the company is it was found.
      */
-    Optional<String> getCompanyNumber() {
+    public Optional<String> getCompanyNumber() {
         Matcher urlPathMatcher = getRequestPathMatcher();
         if (!urlPathMatcher.find()) {
             return Optional.empty();
