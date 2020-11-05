@@ -1,19 +1,5 @@
 package uk.gov.companieshouse.efs.web.security;
 
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.spy;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
-import java.io.IOException;
-import java.text.MessageFormat;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
-import javax.servlet.FilterChain;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -36,6 +22,21 @@ import uk.gov.companieshouse.session.handler.SessionHandler;
 import uk.gov.companieshouse.session.model.SignInInfo;
 import uk.gov.companieshouse.session.model.UserProfile;
 
+import javax.servlet.FilterChain;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.text.MessageFormat;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
 @ExtendWith(MockitoExtension.class)
 class CompanyAuthFilterTest {
 
@@ -56,20 +57,25 @@ class CompanyAuthFilterTest {
     private static final String VALID_AUTH_SCOPE = "https://chs.companieshouse.gov.uk/company/" + COMPANY_NUMBER;
 
     public static final FormTemplateApi INSOLVENCY_WITH_AUTH_REQUIRED_FORM_TEMPLATE =
-        new FormTemplateApi("REC01", null, "REC", null, true, false);
+            new FormTemplateApi("REC01", null, "REC", null, true, false);
 
     public static final FormTemplateApi AUTH_REQUIRED_FORM_TEMPLATE =
-        new FormTemplateApi("CC02", null, "CC", null, true, false);
+            new FormTemplateApi("CC02", null, "CC", null, true, false);
 
     public static final FormTemplateApi AUTH_NOT_REQUIRED_FORM_TEMPLATE =
-        new FormTemplateApi("CC01", null, "CC", null, false, false);
+            new FormTemplateApi("CC01", null, "CC", null, false, false);
     private static final String TEST_EMAIL = "testing@test.com";
 
+    public static final String NON_MATCHING_FINE_GRAINED_SCOPE = " /company/12345678/admin.write-full";
+    public static final String MATCHING_FINE_GRAINED_SCOPE = "/company/12345678/admin.write-full";
+
     private TestCompanyAuthFilter spyFilter;
+    private static final String MATCHING_LEGACY_SCOPE = "/company/12345678";
+    private static final String NON_MATCHING_LEGACY_SCOPE = "/company/12345678 ";
 
     private class TestCompanyAuthFilter extends CompanyAuthFilter {
         public TestCompanyAuthFilter(final EnvironmentReader environmentReader, final ApiClientService apiClientService,
-            final FormTemplateService formTemplateService, final CategoryTemplateService categoryTemplateService) {
+                                     final FormTemplateService formTemplateService, final CategoryTemplateService categoryTemplateService) {
             super(environmentReader, apiClientService, formTemplateService, categoryTemplateService);
         }
 
@@ -106,6 +112,7 @@ class CompanyAuthFilterTest {
     private FilterChain chain;
 
     private SignInInfo signInInfo;
+
     private UserProfile userProfile;
 
     @BeforeEach
@@ -253,6 +260,129 @@ class CompanyAuthFilterTest {
     }
 
     @Test
+    public void doFilterWhenAuthIsRequiredForInsolvencyAndUserProfileScopeIsNull() throws IOException, ServletException {
+        SubmissionFormApi submissionForm = createSubmissionForm(INSOLVENCY_WITH_AUTH_REQUIRED_FORM_TEMPLATE);
+        SubmissionApi submission = createSubmission(submissionForm);
+
+        expectSession(session);
+        signInInfo.setUserProfile(userProfile);
+        userProfile.setScope(null);
+        expectCategoryAndFormLookup(submission, INSOLVENCY_WITH_AUTH_REQUIRED_FORM_TEMPLATE);
+        expectRequestUrlLookup();
+        when(request.getAttribute(SessionHandler.CHS_SESSION_REQUEST_ATT_KEY)).thenReturn(session);
+
+        testCompanyAuthFilter.doFilter(request, response, chain);
+
+        verifyCompanyAuthIsNotSkipped();
+    }
+
+    @Test
+    public void doFilterWhenAuthIsRequiredForInsolvencyAndScopeMatches() throws IOException, ServletException {
+        SubmissionFormApi submissionForm = createSubmissionForm(INSOLVENCY_WITH_AUTH_REQUIRED_FORM_TEMPLATE);
+        SubmissionApi submission = createSubmission(submissionForm);
+
+        expectSession(session);
+        signInInfo.setUserProfile(userProfile);
+        userProfile.setScope(MATCHING_LEGACY_SCOPE);
+        expectCategoryAndFormLookup(submission, INSOLVENCY_WITH_AUTH_REQUIRED_FORM_TEMPLATE);
+        expectRequestUrlLookup();
+        when(request.getAttribute(SessionHandler.CHS_SESSION_REQUEST_ATT_KEY)).thenReturn(session);
+
+        testCompanyAuthFilter.doFilter(request, response, chain);
+
+        verifyCompanyAuthIsNotSkipped();
+    }
+
+    @Test
+    public void doFilterWhenAuthIsRequiredForInsolvencyAndScopeMatchesCompanyNumber() throws IOException, ServletException {
+        SubmissionFormApi submissionForm = createSubmissionForm(INSOLVENCY_WITH_AUTH_REQUIRED_FORM_TEMPLATE);
+        SubmissionApi submission = createSubmission(submissionForm);
+
+        expectSession(session);
+        signInInfo.setUserProfile(userProfile);
+        userProfile.setScope(MATCHING_LEGACY_SCOPE.replace("12345678", COMPANY_NUMBER));
+        expectCategoryAndFormLookup(submission, INSOLVENCY_WITH_AUTH_REQUIRED_FORM_TEMPLATE);
+        when(request.getAttribute(SessionHandler.CHS_SESSION_REQUEST_ATT_KEY)).thenReturn(session);
+
+        testCompanyAuthFilter.doFilter(request, response, chain);
+
+        verifyCompanyAuthIsSkipped();
+    }
+
+    @Test
+    public void doFilterWhenAuthIsRequiredForInsolvencyAndScopeDoesntMatch() throws IOException, ServletException {
+        SubmissionFormApi submissionForm = createSubmissionForm(INSOLVENCY_WITH_AUTH_REQUIRED_FORM_TEMPLATE);
+        SubmissionApi submission = createSubmission(submissionForm);
+
+        expectSession(session);
+        signInInfo.setUserProfile(userProfile);
+        userProfile.setScope(NON_MATCHING_LEGACY_SCOPE);
+        expectCategoryAndFormLookup(submission, INSOLVENCY_WITH_AUTH_REQUIRED_FORM_TEMPLATE);
+        expectRequestUrlLookup();
+        when(request.getAttribute(SessionHandler.CHS_SESSION_REQUEST_ATT_KEY)).thenReturn(session);
+
+        testCompanyAuthFilter.doFilter(request, response, chain);
+
+        verifyCompanyAuthIsNotSkipped();
+    }
+
+    @Test
+    public void doFilterWhenAuthIsRequiredForInsolvencyAndFineGrainedScopeMatches() throws IOException, ServletException {
+        SubmissionFormApi submissionForm = createSubmissionForm(INSOLVENCY_WITH_AUTH_REQUIRED_FORM_TEMPLATE);
+        SubmissionApi submission = createSubmission(submissionForm);
+
+        expectFineGrainedScope();
+
+        expectSession(session);
+        signInInfo.setUserProfile(userProfile);
+        userProfile.setScope(MATCHING_FINE_GRAINED_SCOPE);
+        expectCategoryAndFormLookup(submission, INSOLVENCY_WITH_AUTH_REQUIRED_FORM_TEMPLATE);
+        expectRequestUrlLookup();
+        when(request.getAttribute(SessionHandler.CHS_SESSION_REQUEST_ATT_KEY)).thenReturn(session);
+
+        testCompanyAuthFilter.doFilter(request, response, chain);
+
+        verifyCompanyAuthIsNotSkipped();
+    }
+
+    @Test
+    public void doFilterWhenAuthIsRequiredForInsolvencyAndFineGrainedScopeMatchesCompanyNumber() throws IOException, ServletException {
+        SubmissionFormApi submissionForm = createSubmissionForm(INSOLVENCY_WITH_AUTH_REQUIRED_FORM_TEMPLATE);
+        SubmissionApi submission = createSubmission(submissionForm);
+
+        expectFineGrainedScope();
+
+        expectSession(session);
+        signInInfo.setUserProfile(userProfile);
+        userProfile.setScope(MATCHING_FINE_GRAINED_SCOPE.replace("12345678", COMPANY_NUMBER));
+        expectCategoryAndFormLookup(submission, INSOLVENCY_WITH_AUTH_REQUIRED_FORM_TEMPLATE);
+        when(request.getAttribute(SessionHandler.CHS_SESSION_REQUEST_ATT_KEY)).thenReturn(session);
+
+        testCompanyAuthFilter.doFilter(request, response, chain);
+
+        verifyCompanyAuthIsSkipped();
+    }
+
+    @Test
+    public void doFilterWhenAuthIsRequiredForInsolvencyAndFineGrainedScopeDoesntMatch() throws IOException, ServletException {
+        SubmissionFormApi submissionForm = createSubmissionForm(INSOLVENCY_WITH_AUTH_REQUIRED_FORM_TEMPLATE);
+        SubmissionApi submission = createSubmission(submissionForm);
+
+        expectFineGrainedScope();
+
+        expectSession(session);
+        signInInfo.setUserProfile(userProfile);
+        userProfile.setScope(NON_MATCHING_FINE_GRAINED_SCOPE);
+        expectCategoryAndFormLookup(submission, INSOLVENCY_WITH_AUTH_REQUIRED_FORM_TEMPLATE);
+        expectRequestUrlLookup();
+        when(request.getAttribute(SessionHandler.CHS_SESSION_REQUEST_ATT_KEY)).thenReturn(session);
+
+        testCompanyAuthFilter.doFilter(request, response, chain);
+
+        verifyCompanyAuthIsNotSkipped();
+    }
+
+    @Test
     public void doFilterWhenAuthIsRequiredAndCompanyNumberMismatch() throws IOException, ServletException {
         SubmissionFormApi submissionForm = createSubmissionForm(AUTH_REQUIRED_FORM_TEMPLATE);
         SubmissionApi submission = createSubmission(submissionForm);
@@ -360,5 +490,11 @@ class CompanyAuthFilterTest {
 
     private void verifyCompanyAuthIsSkipped() throws IOException, ServletException {
         verify(chain).doFilter(request, response);
+    }
+
+    private void expectFineGrainedScope() {
+        when(environmentReader.getOptionalString("USE_FINE_GRAIN_SCOPES_MODEL")).thenReturn("1");
+        testCompanyAuthFilter = new TestCompanyAuthFilter(environmentReader, apiClientService, formTemplateService, categoryTemplateService);
+        spyFilter = spy(testCompanyAuthFilter);
     }
 }
