@@ -32,7 +32,10 @@ public class CompanyAuthFilter extends AuthFilter {
 
     private static final Pattern EFS_SUBMISSION_WITH_COMPANY = Pattern.compile("^/efs-submission/(.+)/company/([^/]+).*");
 
-    private static final Pattern AUTH_COMPANY_SCOPE = Pattern.compile("/company/([0-9a-zA-Z]*)$");
+    private static final Pattern LEGACY_AUTH_COMPANY_SCOPE = Pattern.compile("/company/([0-9a-zA-Z]*)$");
+    private static final Pattern FINE_GRAINED_AUTH_COMPANY_SCOPE = Pattern.compile("/company/([0-9a-zA-Z]*)/admin.write-full$");
+
+    private boolean useFineGrainScopesModel;
 
     private ApiClientService apiClientService;
 
@@ -56,6 +59,7 @@ public class CompanyAuthFilter extends AuthFilter {
         this.apiClientService = apiClientService;
         this.formTemplateService = formTemplateService;
         this.categoryTemplateService = categoryTemplateService;
+        useFineGrainScopesModel = "1".equals(environmentReader.getOptionalString("USE_FINE_GRAIN_SCOPES_MODEL"));
     }
 
     @Override
@@ -146,7 +150,7 @@ public class CompanyAuthFilter extends AuthFilter {
 
             String[] scopes = signInInfo.getUserProfile().getScope().split(" ");
             for (String scope : scopes) {
-                Matcher m = AUTH_COMPANY_SCOPE.matcher(scope);
+                Matcher m = getAuthCompanyScopePattern().matcher(scope);
                 if (m.find() && m.group(1).equalsIgnoreCase(companyNumber)) {
                     return true;
                 }
@@ -175,5 +179,21 @@ public class CompanyAuthFilter extends AuthFilter {
         }
 
         return false;
+    }
+
+    public void setUseFineGrainScopesModel(boolean useFineGrainScopesModel) {
+        this.useFineGrainScopesModel = useFineGrainScopesModel;
+    }
+
+    public boolean isUseFineGrainScopesModel() {
+        return useFineGrainScopesModel;
+    }
+
+    private Pattern getAuthCompanyScopePattern() {
+        if (isUseFineGrainScopesModel()) {
+            return FINE_GRAINED_AUTH_COMPANY_SCOPE;
+        } else {
+            return LEGACY_AUTH_COMPANY_SCOPE;
+        }
     }
 }
