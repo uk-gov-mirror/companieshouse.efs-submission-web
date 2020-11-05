@@ -27,10 +27,4 @@ else
     source "${APP_DIR}/app_env"
 fi
 
-# exec java ${JAVA_MEM_ARGS} -jar -Dserver.port="${PORT}" "${APP_DIR}/efs-submission-web.jar"
-DEBUG=true
-if [[ ${DEBUG+x} ]] ; then
-        exec java ${JAVA_MEM_ARGS} -Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=4${PORT} -jar -Dserver.port="${PORT}" "${APP_DIR}/efs-submission-web.jar"
-else
-        exec java ${JAVA_MEM_ARGS} -jar -Dserver.port="${PORT}" "${APP_DIR}/efs-submission-web.jar"
-fi
+exec java ${JAVA_MEM_ARGS} -jar -Dserver.port="${PORT}" "${APP_DIR}/efs-submission-web.jar"
