@@ -39,7 +39,7 @@ class HttpRequestValidatorTest {
     @ParameterizedTest
     @MethodSource("provideValidConditions")
     void passingValidator(String method, String path) {
-        when(request.getMethod()).thenReturn(method);
+        expectMethod(method);
         when(request.getRequestURI()).thenReturn(path);
         when(nextValidator.validate(request)).thenReturn(true);
 
@@ -55,15 +55,14 @@ class HttpRequestValidatorTest {
 
     private static Stream<Arguments> provideValidConditions() {
         return Stream.of(
-                Arguments.of("GET", String.format("/efs-submission/%s/company/%s", SUBMISSION_ID, COMPANY_NUMBER)),
-                Arguments.of("GET", String.format("/efs-submission/%s/company/%s", SUBMISSION_ID, COMPANY_NUMBER)),
-                Arguments.of("gEt", String.format("/efs-submission/%s/company/%s", SUBMISSION_ID, COMPANY_NUMBER)));
+                createConditions("GET", SUBMISSION_ID, COMPANY_NUMBER),
+                createConditions("gEt", SUBMISSION_ID, COMPANY_NUMBER));
     }
 
     @ParameterizedTest
-    @MethodSource("provideInValidConditions")
+    @MethodSource(value = "provideInValidConditions")
     void failingValidator(String method, String path) {
-        when(request.getMethod()).thenReturn(method);
+        expectMethod(method);
         if (method.equalsIgnoreCase("GET")) {
             when(request.getRequestURI()).thenReturn(path);
         }
@@ -81,26 +80,13 @@ class HttpRequestValidatorTest {
 
     private static Stream<Arguments> provideInValidConditions() {
         return Stream.of(
-                Arguments.of("POST", String.format("/efs-submission/%s/company/%s",
-                        SUBMISSION_ID, COMPANY_NUMBER)),
-
-                Arguments.of("GET", String.format("/efs-submission/%s/company/%s",
-                        SUBMISSION_ID, "")),
-
-                Arguments.of("GET", String.format(" /efs-submission/%s/company/%s",
-                        SUBMISSION_ID, COMPANY_NUMBER)),
-
-                Arguments.of("GET", String.format("/efs-submission/%s/company/%s",
-                        SUBMISSION_ID.replace('5', 'x'), COMPANY_NUMBER)),
-
-                Arguments.of("GET", String.format("/efs-submission/%s/company/%s",
-                        SUBMISSION_ID + "0", COMPANY_NUMBER)),
-
-                Arguments.of("GET", String.format("/efs-submission/%s/company/%s",
-                        SUBMISSION_ID, COMPANY_NUMBER.substring(1))),
-
-                Arguments.of("GET", String.format("/efs-submission/%s/company/%s",
-                        SUBMISSION_ID, COMPANY_NUMBER.replace("1", "-"))));
+                createConditions("POST",SUBMISSION_ID, COMPANY_NUMBER),
+                createConditions("GET", SUBMISSION_ID, ""),
+                createConditions("GET", String.format(" /efs-submission/%s/company/%s", SUBMISSION_ID, COMPANY_NUMBER)),
+                createConditions("GET", SUBMISSION_ID.replace('5', 'x'), COMPANY_NUMBER),
+                createConditions("GET", SUBMISSION_ID + "0", COMPANY_NUMBER),
+                createConditions("GET", SUBMISSION_ID, COMPANY_NUMBER.substring(1)),
+                createConditions("GET", SUBMISSION_ID, COMPANY_NUMBER.replace("1", "-")));
     }
 
     @Test
@@ -122,5 +108,21 @@ class HttpRequestValidatorTest {
         assertFalse(needsAuth);
 
         verifyNoMoreInteractions(nextValidator);
+    }
+
+    private void expectMethod(String method) {
+        when(request.getMethod()).thenReturn(method);
+    }
+
+    private static Arguments createConditions(String method, String url) {
+        return Arguments.of(
+                method,
+                url);
+    }
+
+    private static Arguments createConditions(String method, String submissionId, String companyNumber) {
+        return createConditions(
+            method,
+            String.format("/efs-submission/%s/company/%s", submissionId, companyNumber));
     }
 }

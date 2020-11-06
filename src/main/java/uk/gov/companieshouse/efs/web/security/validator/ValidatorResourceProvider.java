@@ -217,4 +217,5 @@ public class ValidatorResourceProvider {
 
         return Optional.ofNullable(urlPathMatcher.group("companyNumber"));
     }
+
 }

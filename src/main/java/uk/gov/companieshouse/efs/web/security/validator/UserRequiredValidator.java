@@ -1,5 +1,6 @@
 package uk.gov.companieshouse.efs.web.security.validator;
 
+import org.springframework.beans.factory.annotation.Value;
 import uk.gov.companieshouse.api.model.ApiResponse;
 import uk.gov.companieshouse.api.model.efs.formtemplates.FormTemplateApi;
 import uk.gov.companieshouse.efs.web.categorytemplates.controller.CategoryTypeConstants;
@@ -28,9 +29,13 @@ public class UserRequiredValidator extends AuthRequiredValidator implements Vali
             .singletonList(INSOLVENCY);
 
     private static final String COMPANY_NUMBER_GROUP = "companyNumber";
-    private static final Pattern AUTH_COMPANY_SCOPE = Pattern.compile("/company/(?<companyNumber>[0-9a-zA-Z]{8}+)[^0-9a-zA-Z]?");
+    private static final Pattern LEGACY_AUTH_COMPANY_SCOPE = Pattern.compile("/company/(?<companyNumber>[0-9a-zA-Z]{8}+)$");
+    private static final Pattern FINE_GRAINED_AUTH_COMPANY_SCOPE = Pattern.compile("/company/(?<companyNumber>[0-9a-zA-Z]{8}+)/admin.write-full$");
 
     private final CategoryTemplateService categoryTemplateService;
+
+    @Value("${auth.use.fine.grained.scope}")
+    private String useFineGrainedScope;
 
     public UserRequiredValidator(ValidatorResourceProvider resourceProvider, CategoryTemplateService categoryTemplateService) {
         super(resourceProvider);
@@ -81,17 +86,17 @@ public class UserRequiredValidator extends AuthRequiredValidator implements Vali
 
         String companyNumber = maybeCompanyNumber.get();
 
-        boolean isAuthorisedForCompany = resourceProvider.getSignInInfo()
+        boolean previouslyAuthorised = resourceProvider.getSignInInfo()
                 .map(SignInInfo::getCompanyNumber)
                 .map(companyNumber::equalsIgnoreCase)
                 .orElse(false);
 
-        if (!isAuthorisedForCompany) {
-            return false;
+        if (previouslyAuthorised) {
+            return true;
         }
 
         return getUserScopes().stream()
-                .map(AUTH_COMPANY_SCOPE::matcher)
+                .map(getAuthCompanyScopePattern()::matcher)
                 .filter(Matcher::find)
                 .map(m -> m.group(COMPANY_NUMBER_GROUP))
                 .anyMatch(companyNumber::equalsIgnoreCase);
@@ -104,5 +109,17 @@ public class UserRequiredValidator extends AuthRequiredValidator implements Vali
                 .map(scopesStr -> scopesStr.split(" "))
                 .map(Arrays::asList)
                 .orElseGet(ArrayList::new);
+    }
+
+    private Pattern getAuthCompanyScopePattern() {
+        if (isUseFineGrainedScope()) {
+            return FINE_GRAINED_AUTH_COMPANY_SCOPE;
+        } else {
+            return LEGACY_AUTH_COMPANY_SCOPE;
+        }
+    }
+
+    private boolean isUseFineGrainedScope() {
+        return "1".equalsIgnoreCase(useFineGrainedScope);
     }
 }

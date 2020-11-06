@@ -3,8 +3,11 @@ package uk.gov.companieshouse.efs.web.security.validator;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.test.util.ReflectionTestUtils;
 import uk.gov.companieshouse.api.model.ApiResponse;
 import uk.gov.companieshouse.api.model.efs.formtemplates.FormTemplateApi;
 import uk.gov.companieshouse.efs.web.categorytemplates.controller.CategoryTypeConstants;
@@ -27,7 +30,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-class UserValidatorTest {
+class UserRequiredValidatorTest {
     public static final String FORM_CATEGORY = "FORM_CATEGORY";
     public static final String EMAIL = "demo@ch.gov.uk";
     @Mock
@@ -119,7 +122,6 @@ class UserValidatorTest {
     void notAuthorisedWhenInvalidScope() {
         expectScopes(Collections.singletonList("INVALID_SCOPE"));
         when(resourceProvider.getCompanyNumber()).thenReturn(Optional.of(COMPANY_NUMBER));
-        when(signInInfo.getCompanyNumber()).thenReturn(COMPANY_NUMBER);
 
         boolean requiresAuth = testUserValidator.requiresAuth();
 
@@ -127,11 +129,16 @@ class UserValidatorTest {
         verify(resourceProvider, times(2)).getSignInInfo();
     }
 
-    @Test
-    void authorisedWhenScopeOldStyleScopeValid() {
-        expectScopes(Collections.singletonList(scopeFromCompanyNumber()));
+    @ParameterizedTest(name = "Fine grained scopes={0}")
+    @ValueSource(booleans = { false, true })
+    void authorisedWhenScopeValid(final boolean fineGrainedScopes) {
+        final String scope = "/company/" + COMPANY_NUMBER + (fineGrainedScopes ? "/admin.write-full" : "");
+
+        if (fineGrainedScopes) {
+            ReflectionTestUtils.setField(testUserValidator, "useFineGrainedScope", "1");
+        }
+        expectScopes(Collections.singletonList(scope));
         when(resourceProvider.getCompanyNumber()).thenReturn(Optional.of(COMPANY_NUMBER));
-        when(signInInfo.getCompanyNumber()).thenReturn(COMPANY_NUMBER);
 
         boolean requiresAuth = testUserValidator.requiresAuth();
 
@@ -140,15 +147,15 @@ class UserValidatorTest {
     }
 
     @Test
-    void authorisedWhenNewStyleScopeValid() {
-        expectScopes(Collections.singletonList("/company/" + COMPANY_NUMBER + "/admin.write-full"));
+    void authorisedWhenPreviouslyAuthorised() {
+        when(resourceProvider.getSignInInfo()).thenReturn(Optional.of(signInInfo));
         when(resourceProvider.getCompanyNumber()).thenReturn(Optional.of(COMPANY_NUMBER));
         when(signInInfo.getCompanyNumber()).thenReturn(COMPANY_NUMBER);
 
         boolean requiresAuth = testUserValidator.requiresAuth();
 
         assertFalse(requiresAuth);
-        verify(resourceProvider, times(2)).getSignInInfo();
+        verify(resourceProvider).getSignInInfo();
     }
 
     @Test
@@ -157,9 +164,9 @@ class UserValidatorTest {
                 "/company/" + COMPANY_NUMBER + "/admin.write-full",
                 "https://account.companieshouse.gov.uk/user.write-full");
 
+        ReflectionTestUtils.setField(testUserValidator, "useFineGrainedScope", "1");
         expectScopes(scopes);
         when(resourceProvider.getCompanyNumber()).thenReturn(Optional.of(COMPANY_NUMBER));
-        when(signInInfo.getCompanyNumber()).thenReturn(COMPANY_NUMBER);
 
         boolean requiresAuth = testUserValidator.requiresAuth();
 
@@ -167,20 +174,19 @@ class UserValidatorTest {
         verify(resourceProvider, times(2)).getSignInInfo();
     }
 
-    static String scopeFromCompanyNumber() {
-        return "/company/" + COMPANY_NUMBER;
+    private void expectUserProfile() {
+        when(resourceProvider.getSignInInfo()).thenReturn(Optional.of(signInInfo));
+        when(signInInfo.getUserProfile()).thenReturn(userProfile);
     }
 
     void expectScopes(List<String> scopes) {
-        when(resourceProvider.getSignInInfo()).thenReturn(Optional.of(signInInfo));
-        when(signInInfo.getUserProfile()).thenReturn(userProfile);
+        expectUserProfile();
         when(userProfile.getScope()).thenReturn(String.join(" ", scopes));
     }
 
     void expectEmail() {
-        when(resourceProvider.getSignInInfo()).thenReturn(Optional.of(signInInfo));
-        when(signInInfo.getUserProfile()).thenReturn(userProfile);
-        when(userProfile.getEmail()).thenReturn(UserValidatorTest.EMAIL);
+        expectUserProfile();
+        when(userProfile.getEmail()).thenReturn(UserRequiredValidatorTest.EMAIL);
     }
 
     void expectTopLevelCategory(CategoryTypeConstants tlc) {

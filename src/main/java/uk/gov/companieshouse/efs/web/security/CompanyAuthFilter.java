@@ -1,5 +1,12 @@
 package uk.gov.companieshouse.efs.web.security;
 
+import java.io.IOException;
+import javax.servlet.FilterChain;
+import javax.servlet.ServletException;
+import javax.servlet.ServletRequest;
+import javax.servlet.ServletResponse;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import uk.gov.companieshouse.auth.filter.AuthFilter;
 import uk.gov.companieshouse.efs.web.categorytemplates.service.api.CategoryTemplateService;
 import uk.gov.companieshouse.efs.web.formtemplates.service.api.FormTemplateService;
@@ -11,14 +18,6 @@ import uk.gov.companieshouse.efs.web.security.validator.ValidatorResourceProvide
 import uk.gov.companieshouse.efs.web.service.api.ApiClientService;
 import uk.gov.companieshouse.environment.EnvironmentReader;
 import uk.gov.companieshouse.session.Session;
-
-import javax.servlet.FilterChain;
-import javax.servlet.ServletException;
-import javax.servlet.ServletRequest;
-import javax.servlet.ServletResponse;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
 
 
 /**
@@ -95,4 +94,5 @@ public class CompanyAuthFilter extends AuthFilter {
 
         chain.doFilter(request, response);
     }
+
 }
