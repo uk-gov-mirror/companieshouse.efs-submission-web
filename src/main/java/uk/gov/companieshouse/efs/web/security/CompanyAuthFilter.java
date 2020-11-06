@@ -1,47 +1,36 @@
 package uk.gov.companieshouse.efs.web.security;
 
-import uk.gov.companieshouse.api.model.ApiResponse;
-import uk.gov.companieshouse.api.model.efs.formtemplates.FormTemplateApi;
-import uk.gov.companieshouse.api.model.efs.submissions.SubmissionApi;
-import uk.gov.companieshouse.api.model.efs.submissions.SubmissionFormApi;
-import uk.gov.companieshouse.auth.filter.AuthFilter;
-import uk.gov.companieshouse.efs.web.categorytemplates.controller.CategoryTypeConstants;
-import uk.gov.companieshouse.efs.web.categorytemplates.service.api.CategoryTemplateService;
-import uk.gov.companieshouse.efs.web.formtemplates.service.api.FormTemplateService;
-import uk.gov.companieshouse.efs.web.service.api.ApiClientService;
-import uk.gov.companieshouse.environment.EnvironmentReader;
-import uk.gov.companieshouse.session.Session;
-import uk.gov.companieshouse.session.handler.SessionHandler;
-import uk.gov.companieshouse.session.model.SignInInfo;
-import uk.gov.companieshouse.session.model.UserProfile;
-
+import java.io.IOException;
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.util.Optional;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import uk.gov.companieshouse.auth.filter.AuthFilter;
+import uk.gov.companieshouse.efs.web.categorytemplates.service.api.CategoryTemplateService;
+import uk.gov.companieshouse.efs.web.formtemplates.service.api.FormTemplateService;
+import uk.gov.companieshouse.efs.web.security.validator.FormTemplateRequiredValidator;
+import uk.gov.companieshouse.efs.web.security.validator.HttpRequestRequiredValidator;
+import uk.gov.companieshouse.efs.web.security.validator.UserRequiredValidator;
+import uk.gov.companieshouse.efs.web.security.validator.Validator;
+import uk.gov.companieshouse.efs.web.security.validator.ValidatorResourceProvider;
+import uk.gov.companieshouse.efs.web.service.api.ApiClientService;
+import uk.gov.companieshouse.environment.EnvironmentReader;
+import uk.gov.companieshouse.session.Session;
 
-import static uk.gov.companieshouse.efs.web.categorytemplates.controller.CategoryTypeConstants.INSOLVENCY;
 
+/**
+ * CompanyAuthFilter ensures that a request is authorised if it is made to a resource that
+ * requires authentication.
+ */
 public class CompanyAuthFilter extends AuthFilter {
 
-    private static final Pattern EFS_SUBMISSION_WITH_COMPANY = Pattern.compile("^/efs-submission/(.+)/company/([^/]+).*");
+    private final ApiClientService apiClientService;
 
-    private static final Pattern LEGACY_AUTH_COMPANY_SCOPE = Pattern.compile("/company/([0-9a-zA-Z]*)$");
-    private static final Pattern FINE_GRAINED_AUTH_COMPANY_SCOPE = Pattern.compile("/company/([0-9a-zA-Z]*)/admin.write-full$");
+    private final FormTemplateService formTemplateService;
 
-    private boolean useFineGrainScopesModel;
-
-    private ApiClientService apiClientService;
-
-    private FormTemplateService formTemplateService;
-
-    private CategoryTemplateService categoryTemplateService;
+    private final CategoryTemplateService categoryTemplateService;
 
     /**
      * Constructor.
@@ -59,141 +48,51 @@ public class CompanyAuthFilter extends AuthFilter {
         this.apiClientService = apiClientService;
         this.formTemplateService = formTemplateService;
         this.categoryTemplateService = categoryTemplateService;
-        useFineGrainScopesModel = "1".equals(environmentReader.getOptionalString("USE_FINE_GRAIN_SCOPES_MODEL"));
     }
 
+    /**
+     * doFilter does the request validation and, if necessary, redirects the user for authentication
+     * before responding.
+     * <p>
+     * It redirects if:
+     * The request is a get request
+     * and made to an endpoint with a company number and submissionId
+     * and has a form that requires authentication
+     * and the user is not authorised for that form or, in the case of Insolvency,
+     * on the allow list.
+     * <p>
+     * The validation for these conditions is implemented as a chain of responsibility
+     * with a "link" for the request checking, form checking, and finally user checking.
+     *
+     * @param request  the request made to the web
+     * @param response the response to the user
+     * @param chain    the chain of filters for authorisation
+     */
     @Override
-    public void doFilter(
-            ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
+    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
+            throws IOException, ServletException {
+
 
         HttpServletRequest httpServletRequest = (HttpServletRequest) request;
-        HttpServletResponse httpServletResponse = (HttpServletResponse) response;
 
-        Matcher matcher = EFS_SUBMISSION_WITH_COMPANY.matcher(httpServletRequest.getRequestURI());
+        ValidatorResourceProvider resourceProvider = new ValidatorResourceProvider(apiClientService,
+                formTemplateService);
+        Validator<HttpServletRequest> requiresAuth = new HttpRequestRequiredValidator(resourceProvider)
+                .setNext(new FormTemplateRequiredValidator(resourceProvider))
+                .setNext(new UserRequiredValidator(resourceProvider, categoryTemplateService));
 
-        if (!("GET".equalsIgnoreCase(httpServletRequest.getMethod()) && matcher.find())) {
-            chain.doFilter(request, response);
-            return;
-        }
+        if (requiresAuth.validate(httpServletRequest)) {
+            String companyNumber = resourceProvider.getCompanyNumber().orElse("");
+            Session chsSession = resourceProvider.getChsSession().orElse(null);
 
-        String efsSubmissionId = matcher.group(1);
-
-        ApiResponse<SubmissionApi> submissionApiResponse = apiClientService.getSubmission(efsSubmissionId);
-
-        SubmissionApi submissionApi = submissionApiResponse.getData();
-
-        SubmissionFormApi submissionFormApi = submissionApi.getSubmissionForm();
-
-        // The form could be null if the user hasn't progressed far enough in the journey to select a form type
-        if (submissionFormApi != null) {
-
-            String formType = submissionFormApi.getFormType();
-
-            ApiResponse<FormTemplateApi> formTemplateResponse = formTemplateService.getFormTemplate(formType);
-
-            String formCategory = formTemplateResponse.getData().getFormCategory();
-
-            boolean isAuthenticationRequired = formTemplateResponse.getData().isAuthenticationRequired();
-
-            if (isAuthenticationRequired) {
-                //Get the sign in info from the CH session
-                Session chSession = (Session) request.getAttribute(SessionHandler.CHS_SESSION_REQUEST_ATT_KEY);
-                SignInInfo signInInfo = new SignInInfo();
-                if (chSession != null) {
-                    signInInfo = chSession.getSignInInfo();
-                }
-
-                String companyNumber = matcher.group(2);
-
-                    /*
-                        According to the sign in info, check:
-                        If the company number is authorised
-                        If the email address is on the allow list for insolvency forms
-                     */
-                if (!isAuthorisedForCompany(signInInfo, companyNumber)
-                        && !isOnAllowList(signInInfo, formCategory)) {
-
-                    //Redirect for company authentication (scope specified)
-                    redirectForAuth(chSession, httpServletRequest, httpServletResponse, companyNumber, false);
-                }
-            }
-
+            redirectForAuth(chsSession,
+                    httpServletRequest,
+                    (HttpServletResponse) response,
+                    companyNumber,
+                    false);
         }
 
         chain.doFilter(request, response);
     }
 
-    /**
-     * Determines whether a signed in user is authorised to act on behalf of a company.
-     *
-     * @param signInInfo    User's signed in info retrieved from their session
-     * @param companyNumber The company to act on behalf of
-     * @return true or false
-     */
-    private boolean isAuthorisedForCompany(SignInInfo signInInfo, String companyNumber) {
-        String authorisedCompany = signInInfo.getCompanyNumber();
-        return (authorisedCompany != null
-                && authorisedCompany.equalsIgnoreCase(companyNumber))
-                && hasAuthorisedCompanyScope(signInInfo, companyNumber);
-    }
-
-    /**
-     * Determines whether a signed in user has authorised scope to act on behalf of a company.
-     *
-     * @param signInInfo    User's signed in info retrieved from their session
-     * @param companyNumber The company to act on behalf of
-     * @return true or false
-     */
-    private boolean hasAuthorisedCompanyScope(SignInInfo signInInfo, String companyNumber) {
-
-        if (signInInfo.getUserProfile() != null && signInInfo.getUserProfile().getScope() != null) {
-
-            String[] scopes = signInInfo.getUserProfile().getScope().split(" ");
-            for (String scope : scopes) {
-                Matcher m = getAuthCompanyScopePattern().matcher(scope);
-                if (m.find() && m.group(1).equalsIgnoreCase(companyNumber)) {
-                    return true;
-                }
-            }
-        }
-
-        return false;
-    }
-
-    /**
-     * Determines whether a signed in users email address is within the company authentication allow list.
-     * If the email address is within the allow list, and an insolvency form has been selected, then
-     * the company does not require authentication
-     *
-     * @param signInInfo   User's signed in info retrieved from their session
-     * @param formCategory The form category
-     * @return true or false
-     */
-    private boolean isOnAllowList(SignInInfo signInInfo, String formCategory) {
-        String userEmail = Optional.ofNullable(signInInfo.getUserProfile()).orElseGet(UserProfile::new).getEmail();
-
-        final CategoryTypeConstants topLevelCategory = categoryTemplateService.getTopLevelCategory(formCategory);
-
-        if (topLevelCategory == INSOLVENCY) {
-            return apiClientService.isOnAllowList(userEmail).getData();
-        }
-
-        return false;
-    }
-
-    public void setUseFineGrainScopesModel(boolean useFineGrainScopesModel) {
-        this.useFineGrainScopesModel = useFineGrainScopesModel;
-    }
-
-    public boolean isUseFineGrainScopesModel() {
-        return useFineGrainScopesModel;
-    }
-
-    private Pattern getAuthCompanyScopePattern() {
-        if (isUseFineGrainScopesModel()) {
-            return FINE_GRAINED_AUTH_COMPANY_SCOPE;
-        } else {
-            return LEGACY_AUTH_COMPANY_SCOPE;
-        }
-    }
 }

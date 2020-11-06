@@ -1,8 +1,24 @@
 package uk.gov.companieshouse.efs.web.security;
 
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
+import java.io.IOException;
+import java.text.MessageFormat;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+import javax.servlet.FilterChain;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
@@ -22,21 +38,6 @@ import uk.gov.companieshouse.session.handler.SessionHandler;
 import uk.gov.companieshouse.session.model.SignInInfo;
 import uk.gov.companieshouse.session.model.UserProfile;
 
-import javax.servlet.FilterChain;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.text.MessageFormat;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
-
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.spy;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
 @ExtendWith(MockitoExtension.class)
 class CompanyAuthFilterTest {
 
@@ -50,32 +51,33 @@ class CompanyAuthFilterTest {
 
     private static final String REQUEST_URL = "http://chs.companieshouse.gov.uk/";
 
-    private static final String SUBMISSION_ID = "0123456789";
+    private static final String SUBMISSION_ID = "5f8422b326e7b618e25684da";
 
-    private static final String COMPANY_NUMBER = "11223344";
+    private static final String COMPANY_NUMBER = "12345678";
 
     private static final String VALID_AUTH_SCOPE = "https://chs.companieshouse.gov.uk/company/" + COMPANY_NUMBER;
 
     public static final FormTemplateApi INSOLVENCY_WITH_AUTH_REQUIRED_FORM_TEMPLATE =
-            new FormTemplateApi("REC01", null, "REC", null, true, false);
+        new FormTemplateApi("REC01", null, "REC", null, true, false);
 
     public static final FormTemplateApi AUTH_REQUIRED_FORM_TEMPLATE =
-            new FormTemplateApi("CC02", null, "CC", null, true, false);
+        new FormTemplateApi("CC02", null, "CC", null, true, false);
 
     public static final FormTemplateApi AUTH_NOT_REQUIRED_FORM_TEMPLATE =
-            new FormTemplateApi("CC01", null, "CC", null, false, false);
+        new FormTemplateApi("CC01", null, "CC", null, false, false);
     private static final String TEST_EMAIL = "testing@test.com";
 
     public static final String NON_MATCHING_FINE_GRAINED_SCOPE = " /company/12345678/admin.write-full";
     public static final String MATCHING_FINE_GRAINED_SCOPE = "/company/12345678/admin.write-full";
+    private static final String OTHER_COMPANY_NUMBER = "11223344";
 
     private TestCompanyAuthFilter spyFilter;
-    private static final String MATCHING_LEGACY_SCOPE = "/company/12345678";
-    private static final String NON_MATCHING_LEGACY_SCOPE = "/company/12345678 ";
+    private static final String MATCHING_LEGACY_SCOPE = "/company/" + OTHER_COMPANY_NUMBER;
+    private static final String NON_MATCHING_LEGACY_SCOPE = MATCHING_LEGACY_SCOPE + " ";
 
-    private class TestCompanyAuthFilter extends CompanyAuthFilter {
+    private static class TestCompanyAuthFilter extends CompanyAuthFilter {
         public TestCompanyAuthFilter(final EnvironmentReader environmentReader, final ApiClientService apiClientService,
-                                     final FormTemplateService formTemplateService, final CategoryTemplateService categoryTemplateService) {
+            final FormTemplateService formTemplateService, final CategoryTemplateService categoryTemplateService) {
             super(environmentReader, apiClientService, formTemplateService, categoryTemplateService);
         }
 
@@ -142,7 +144,7 @@ class CompanyAuthFilterTest {
     }
 
     @Test
-    public void doFilterWhenUrlIsNotMatched() throws IOException, ServletException {
+    void doFilterWhenUrlIsNotMatched() throws IOException, ServletException {
         when(request.getRequestURI()).thenReturn("");
         when(request.getMethod()).thenReturn("GET");
 
@@ -152,9 +154,7 @@ class CompanyAuthFilterTest {
     }
 
     @Test
-    public void doFilterWhenMethodIsNotGET() throws IOException, ServletException {
-        when(request.getRequestURI()).thenReturn(MessageFormat.format(EFS_SUBMISSION_WITH_COMPANY,
-            SUBMISSION_ID, COMPANY_NUMBER));
+    void doFilterWhenMethodIsNotGET() throws IOException, ServletException {
         when(request.getMethod()).thenReturn("POST");
 
         testCompanyAuthFilter.doFilter(request, response, chain);
@@ -163,14 +163,14 @@ class CompanyAuthFilterTest {
     }
 
     @Test
-    public void doFilterWhenSubmissionFormApiIsNull() throws IOException, ServletException {
+    void doFilterWhenSubmissionFormApiIsNull() throws IOException, ServletException {
         SubmissionApi submission = createSubmission(null);
 
-        ApiResponse<SubmissionApi> submissionApiResponse = new ApiResponse<>(HttpStatus.OK.value(),
-            Collections.EMPTY_MAP, submission);
+        ApiResponse<SubmissionApi> submissionApiResponse =
+            new ApiResponse<>(HttpStatus.OK.value(), new HashMap<>(), submission);
 
-        when(request.getRequestURI()).thenReturn(MessageFormat.format(EFS_SUBMISSION_WITH_COMPANY,
-            SUBMISSION_ID, COMPANY_NUMBER));
+        when(request.getRequestURI())
+            .thenReturn(MessageFormat.format(EFS_SUBMISSION_WITH_COMPANY, SUBMISSION_ID, COMPANY_NUMBER));
         when(request.getMethod()).thenReturn("GET");
         when(apiClientService.getSubmission(SUBMISSION_ID)).thenReturn(submissionApiResponse);
 
@@ -180,7 +180,7 @@ class CompanyAuthFilterTest {
     }
 
     @Test
-    public void doFilterWhenCHSessionIsNull() throws IOException, ServletException {
+    void doFilterWhenCHSessionIsNull() throws IOException, ServletException {
         SubmissionFormApi submissionForm = createSubmissionForm(AUTH_REQUIRED_FORM_TEMPLATE);
         SubmissionApi submission = createSubmission(submissionForm);
 
@@ -198,11 +198,12 @@ class CompanyAuthFilterTest {
     }
 
     @Test
-    public void doFilterWhenAuthIsRequiredAndEmailIsNull() throws IOException, ServletException {
+    void doFilterWhenAuthIsRequiredAndEmailIsNull() throws IOException, ServletException {
         SubmissionFormApi submissionForm = createSubmissionForm(AUTH_REQUIRED_FORM_TEMPLATE);
         SubmissionApi submission = createSubmission(submissionForm);
 
         expectSession(session);
+        signInInfo.setCompanyNumber(OTHER_COMPANY_NUMBER);
         expectCategoryAndFormLookup(submission, AUTH_REQUIRED_FORM_TEMPLATE);
         expectRequestUrlLookup();
         when(request.getAttribute(SessionHandler.CHS_SESSION_REQUEST_ATT_KEY)).thenReturn(session);
@@ -213,7 +214,7 @@ class CompanyAuthFilterTest {
     }
 
     @Test
-    public void doFilterWhenAuthIsNotRequired() throws IOException, ServletException {
+    void doFilterWhenAuthIsNotRequired() throws IOException, ServletException {
         SubmissionFormApi submissionForm = createSubmissionForm(AUTH_NOT_REQUIRED_FORM_TEMPLATE);
         SubmissionApi submission = createSubmission(submissionForm);
 
@@ -225,7 +226,7 @@ class CompanyAuthFilterTest {
     }
 
     @Test
-    public void doFilterWhenAuthIsRequiredForInsolvencyAndUserIsOnAllowList() throws IOException, ServletException {
+    void doFilterWhenAuthIsRequiredForInsolvencyAndUserIsOnAllowList() throws IOException, ServletException {
         SubmissionFormApi submissionForm = createSubmissionForm(INSOLVENCY_WITH_AUTH_REQUIRED_FORM_TEMPLATE);
         SubmissionApi submission = createSubmission(submissionForm);
 
@@ -244,12 +245,13 @@ class CompanyAuthFilterTest {
     }
 
     @Test
-    public void doFilterWhenAuthIsRequiredForInsolvencyAndUserProfileIsNull() throws IOException, ServletException {
+    void doFilterWhenAuthIsRequiredForInsolvencyAndUserProfileIsNull() throws IOException, ServletException {
         SubmissionFormApi submissionForm = createSubmissionForm(INSOLVENCY_WITH_AUTH_REQUIRED_FORM_TEMPLATE);
         SubmissionApi submission = createSubmission(submissionForm);
 
         expectSession(session);
         signInInfo.setUserProfile(null);
+        signInInfo.setCompanyNumber(OTHER_COMPANY_NUMBER);
         expectCategoryAndFormLookup(submission, INSOLVENCY_WITH_AUTH_REQUIRED_FORM_TEMPLATE);
         expectRequestUrlLookup();
         when(request.getAttribute(SessionHandler.CHS_SESSION_REQUEST_ATT_KEY)).thenReturn(session);
@@ -260,12 +262,13 @@ class CompanyAuthFilterTest {
     }
 
     @Test
-    public void doFilterWhenAuthIsRequiredForInsolvencyAndUserProfileScopeIsNull() throws IOException, ServletException {
+    void doFilterWhenAuthIsRequiredForInsolvencyAndUserProfileScopeIsNull() throws IOException, ServletException {
         SubmissionFormApi submissionForm = createSubmissionForm(INSOLVENCY_WITH_AUTH_REQUIRED_FORM_TEMPLATE);
         SubmissionApi submission = createSubmission(submissionForm);
 
         expectSession(session);
         signInInfo.setUserProfile(userProfile);
+        signInInfo.setCompanyNumber(OTHER_COMPANY_NUMBER);
         userProfile.setScope(null);
         expectCategoryAndFormLookup(submission, INSOLVENCY_WITH_AUTH_REQUIRED_FORM_TEMPLATE);
         expectRequestUrlLookup();
@@ -276,14 +279,19 @@ class CompanyAuthFilterTest {
         verifyCompanyAuthIsNotSkipped();
     }
 
-    @Test
-    public void doFilterWhenAuthIsRequiredForInsolvencyAndScopeMatches() throws IOException, ServletException {
+    @ParameterizedTest(name = "Fine grained scopes={0}")
+    @ValueSource(booleans = {false, true})
+    void doFilterWhenAuthIsRequiredForInsolvencyAndFineGrainedScopeMatches(final boolean fineGrainedUserScope)
+        throws IOException, ServletException {
         SubmissionFormApi submissionForm = createSubmissionForm(INSOLVENCY_WITH_AUTH_REQUIRED_FORM_TEMPLATE);
         SubmissionApi submission = createSubmission(submissionForm);
 
+        expectFineGrainedScope();
+
         expectSession(session);
         signInInfo.setUserProfile(userProfile);
-        userProfile.setScope(MATCHING_LEGACY_SCOPE);
+        signInInfo.setCompanyNumber(OTHER_COMPANY_NUMBER);
+        userProfile.setScope(fineGrainedUserScope ? MATCHING_FINE_GRAINED_SCOPE : MATCHING_LEGACY_SCOPE);
         expectCategoryAndFormLookup(submission, INSOLVENCY_WITH_AUTH_REQUIRED_FORM_TEMPLATE);
         expectRequestUrlLookup();
         when(request.getAttribute(SessionHandler.CHS_SESSION_REQUEST_ATT_KEY)).thenReturn(session);
@@ -293,14 +301,23 @@ class CompanyAuthFilterTest {
         verifyCompanyAuthIsNotSkipped();
     }
 
-    @Test
-    public void doFilterWhenAuthIsRequiredForInsolvencyAndScopeMatchesCompanyNumber() throws IOException, ServletException {
+    @ParameterizedTest(name = "Fine grained scopes={0}")
+    @ValueSource(booleans = {false, true})
+    void doFilterWhenAuthIsRequiredForInsolvencyAndFineGrainedScopeMatchesCompanyNumber(
+        final boolean fineGrainedUserScope) throws IOException, ServletException {
         SubmissionFormApi submissionForm = createSubmissionForm(INSOLVENCY_WITH_AUTH_REQUIRED_FORM_TEMPLATE);
         SubmissionApi submission = createSubmission(submissionForm);
 
+        if (fineGrainedUserScope) {
+            expectFineGrainedScope();
+        }
+
         expectSession(session);
         signInInfo.setUserProfile(userProfile);
-        userProfile.setScope(MATCHING_LEGACY_SCOPE.replace("12345678", COMPANY_NUMBER));
+
+        final String scope = fineGrainedUserScope ? MATCHING_FINE_GRAINED_SCOPE : MATCHING_LEGACY_SCOPE;
+
+        userProfile.setScope(scope.replace(OTHER_COMPANY_NUMBER, COMPANY_NUMBER));
         expectCategoryAndFormLookup(submission, INSOLVENCY_WITH_AUTH_REQUIRED_FORM_TEMPLATE);
         when(request.getAttribute(SessionHandler.CHS_SESSION_REQUEST_ATT_KEY)).thenReturn(session);
 
@@ -309,14 +326,21 @@ class CompanyAuthFilterTest {
         verifyCompanyAuthIsSkipped();
     }
 
-    @Test
-    public void doFilterWhenAuthIsRequiredForInsolvencyAndScopeDoesntMatch() throws IOException, ServletException {
+    @ParameterizedTest(name = "Fine grained scopes={0}")
+    @ValueSource(booleans = {false, true})
+    void doFilterWhenAuthIsRequiredForInsolvencyAndScopeDoesntMatch(final boolean fineGrainedUserScope)
+        throws IOException, ServletException {
         SubmissionFormApi submissionForm = createSubmissionForm(INSOLVENCY_WITH_AUTH_REQUIRED_FORM_TEMPLATE);
         SubmissionApi submission = createSubmission(submissionForm);
 
+        if (fineGrainedUserScope) {
+            expectFineGrainedScope();
+        }
+
         expectSession(session);
         signInInfo.setUserProfile(userProfile);
-        userProfile.setScope(NON_MATCHING_LEGACY_SCOPE);
+        signInInfo.setCompanyNumber(OTHER_COMPANY_NUMBER);
+        userProfile.setScope(fineGrainedUserScope ? NON_MATCHING_FINE_GRAINED_SCOPE : NON_MATCHING_LEGACY_SCOPE);
         expectCategoryAndFormLookup(submission, INSOLVENCY_WITH_AUTH_REQUIRED_FORM_TEMPLATE);
         expectRequestUrlLookup();
         when(request.getAttribute(SessionHandler.CHS_SESSION_REQUEST_ATT_KEY)).thenReturn(session);
@@ -327,63 +351,7 @@ class CompanyAuthFilterTest {
     }
 
     @Test
-    public void doFilterWhenAuthIsRequiredForInsolvencyAndFineGrainedScopeMatches() throws IOException, ServletException {
-        SubmissionFormApi submissionForm = createSubmissionForm(INSOLVENCY_WITH_AUTH_REQUIRED_FORM_TEMPLATE);
-        SubmissionApi submission = createSubmission(submissionForm);
-
-        expectFineGrainedScope();
-
-        expectSession(session);
-        signInInfo.setUserProfile(userProfile);
-        userProfile.setScope(MATCHING_FINE_GRAINED_SCOPE);
-        expectCategoryAndFormLookup(submission, INSOLVENCY_WITH_AUTH_REQUIRED_FORM_TEMPLATE);
-        expectRequestUrlLookup();
-        when(request.getAttribute(SessionHandler.CHS_SESSION_REQUEST_ATT_KEY)).thenReturn(session);
-
-        testCompanyAuthFilter.doFilter(request, response, chain);
-
-        verifyCompanyAuthIsNotSkipped();
-    }
-
-    @Test
-    public void doFilterWhenAuthIsRequiredForInsolvencyAndFineGrainedScopeMatchesCompanyNumber() throws IOException, ServletException {
-        SubmissionFormApi submissionForm = createSubmissionForm(INSOLVENCY_WITH_AUTH_REQUIRED_FORM_TEMPLATE);
-        SubmissionApi submission = createSubmission(submissionForm);
-
-        expectFineGrainedScope();
-
-        expectSession(session);
-        signInInfo.setUserProfile(userProfile);
-        userProfile.setScope(MATCHING_FINE_GRAINED_SCOPE.replace("12345678", COMPANY_NUMBER));
-        expectCategoryAndFormLookup(submission, INSOLVENCY_WITH_AUTH_REQUIRED_FORM_TEMPLATE);
-        when(request.getAttribute(SessionHandler.CHS_SESSION_REQUEST_ATT_KEY)).thenReturn(session);
-
-        testCompanyAuthFilter.doFilter(request, response, chain);
-
-        verifyCompanyAuthIsSkipped();
-    }
-
-    @Test
-    public void doFilterWhenAuthIsRequiredForInsolvencyAndFineGrainedScopeDoesntMatch() throws IOException, ServletException {
-        SubmissionFormApi submissionForm = createSubmissionForm(INSOLVENCY_WITH_AUTH_REQUIRED_FORM_TEMPLATE);
-        SubmissionApi submission = createSubmission(submissionForm);
-
-        expectFineGrainedScope();
-
-        expectSession(session);
-        signInInfo.setUserProfile(userProfile);
-        userProfile.setScope(NON_MATCHING_FINE_GRAINED_SCOPE);
-        expectCategoryAndFormLookup(submission, INSOLVENCY_WITH_AUTH_REQUIRED_FORM_TEMPLATE);
-        expectRequestUrlLookup();
-        when(request.getAttribute(SessionHandler.CHS_SESSION_REQUEST_ATT_KEY)).thenReturn(session);
-
-        testCompanyAuthFilter.doFilter(request, response, chain);
-
-        verifyCompanyAuthIsNotSkipped();
-    }
-
-    @Test
-    public void doFilterWhenAuthIsRequiredAndCompanyNumberMismatch() throws IOException, ServletException {
+    void doFilterWhenAuthIsRequiredAndCompanyNumberMismatch() throws IOException, ServletException {
         SubmissionFormApi submissionForm = createSubmissionForm(AUTH_REQUIRED_FORM_TEMPLATE);
         SubmissionApi submission = createSubmission(submissionForm);
 
@@ -401,7 +369,7 @@ class CompanyAuthFilterTest {
     }
 
     @Test
-    public void doFilterWhenAuthIsRequiredAndCompanyNumberMatches() throws IOException, ServletException {
+    void doFilterWhenAuthIsRequiredAndCompanyNumberMatches() throws IOException, ServletException {
         SubmissionFormApi submissionForm = createSubmissionForm(INSOLVENCY_WITH_AUTH_REQUIRED_FORM_TEMPLATE);
         SubmissionApi submission = createSubmission(submissionForm);
 
@@ -409,8 +377,8 @@ class CompanyAuthFilterTest {
         signInInfo.getUserProfile().setEmail(TEST_EMAIL);
         expectCategoryAndFormLookup(submission, INSOLVENCY_WITH_AUTH_REQUIRED_FORM_TEMPLATE);
         when(categoryTemplateService.getTopLevelCategory(anyString())).thenReturn(CategoryTypeConstants.INSOLVENCY);
-        when(apiClientService.isOnAllowList(TEST_EMAIL)).thenReturn(new ApiResponse<>(HttpStatus.OK.value(),
-            Collections.emptyMap(), true));
+        when(apiClientService.isOnAllowList(TEST_EMAIL))
+            .thenReturn(new ApiResponse<>(HttpStatus.OK.value(), Collections.emptyMap(), true));
 
         testCompanyAuthFilter.doFilter(request, response, chain);
 
@@ -494,7 +462,8 @@ class CompanyAuthFilterTest {
 
     private void expectFineGrainedScope() {
         when(environmentReader.getOptionalString("USE_FINE_GRAIN_SCOPES_MODEL")).thenReturn("1");
-        testCompanyAuthFilter = new TestCompanyAuthFilter(environmentReader, apiClientService, formTemplateService, categoryTemplateService);
+        testCompanyAuthFilter = new TestCompanyAuthFilter(environmentReader, apiClientService, formTemplateService,
+            categoryTemplateService);
         spyFilter = spy(testCompanyAuthFilter);
     }
 }
