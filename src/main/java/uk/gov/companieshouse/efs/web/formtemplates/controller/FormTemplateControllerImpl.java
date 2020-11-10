@@ -125,6 +125,7 @@ public class FormTemplateControllerImpl extends BaseControllerImpl implements Fo
             BindingResult binding, Model model, ServletRequest servletRequest) {
 
         if (binding.hasErrors()) {
+            model.addAttribute("isScottishCompany", isScottishCompany(companyNumber));
             addTrackingAttributeToModel(model);
 
             return ViewConstants.DOCUMENT_SELECTION.asView();
