@@ -19,16 +19,17 @@
                th:text="#{link.back}"></a>
             <main class="govuk-main-wrapper govuk-main-wrapper--auto-spacing" id="main-content" role="main">
                 <div class="govuk-grid-row">
-                    <div class="govuk-grid-column-two-thirds">
+                    <div class="govuk-grid-column-two-thirds-from-desktop">
                         <div th:replace="fragments/errorSummary :: errorSummary"></div>
                         <fieldset class="govuk-fieldset" data-required="data-required"
                                   th:attr="data-error=#{NotBlankCategoryTemplate.categoryTemplate.details}">
                             <legend class="govuk-fieldset__legend govuk-fieldset__legend--xl">
                                 <span id="category-name" class="govuk-caption-xl"
                                       th:text="*{parentCategory.categoryName}"></span>
-                                <h1 class="govuk-fieldset__heading" th:text="#{categorySelection.catType}"></h1>
+                                <h1 class="govuk-fieldset__heading"
+                                    th:text="#{categorySelection.catType}"></h1>
                             </legend>
-                                <div class="govuk-form-group" th:classappend="${#fields.hasErrors('*')}
+                            <div class="govuk-form-group" th:classappend="${#fields.hasErrors('*')}
                                 ? 'govuk-form-group--error' : ''">
                                     <span id="details-error" class="govuk-error-message"
                                           th:if="${#fields.hasErrors('details')}"
