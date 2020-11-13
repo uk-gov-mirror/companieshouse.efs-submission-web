@@ -19,17 +19,20 @@
 
         <!-- Main Wrapper -->
         <div class="govuk-grid-row">
-            <div class="govuk-grid-column-two-thirds">
+            <div class="govuk-grid-column-two-thirds-from-desktop">
                 <div th:replace="fragments/errorSummary :: errorSummary"></div>
 
                 <!-- Page Content -->
-                <div id="content-wrapper" class="govuk-form-group" th:classappend="${#fields.hasErrors('required')} ? govuk-form-group--error : noerror">
+                <div id="content-wrapper" class="govuk-form-group"
+                     th:classappend="${#fields.hasErrors('required')} ? govuk-form-group--error : noerror">
 
                     <fieldset class="govuk-fieldset" aria-describedby="page-heading">
 
                         <!-- Display Question -->
                         <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
-                            <h1 id="page-heading" class="govuk-fieldset__heading" style="word-break: break-word" th:text="#{removeDocument.page.title(${removeDocument.getFileName()})}"></h1>
+                            <h1 id="page-heading" class="govuk-fieldset__heading"
+                                style="word-break: break-word"
+                                th:text="#{removeDocument.page.title(${removeDocument.getFileName()})}"></h1>
                         </legend>
 
                         <!-- Error Message -->

@@ -16,15 +16,17 @@
                    th:text="#{link.back}"></a>
                 <main class="govuk-main-wrapper govuk-main-wrapper--auto-spacing" id="main-content" role="main">
                     <div class="govuk-grid-row">
-                        <div class="govuk-grid-column-two-thirds">
+                        <div class="govuk-grid-column-two-thirds-from-desktop">
                             <div class="govuk-fieldset">
-                                <h1 class="govuk-heading-xl" id="company-details-heading" th:utext="#{companyDetails.title}"></h1>
+                                <h1 class="govuk-heading-xl" id="company-details-heading"
+                                    th:utext="#{companyDetails.title}"></h1>
                                 <dl class="app-check-your-answers app-check-your-answers--short">
                                     <div class="app-check-your-answers__contents">
                                         <dt th:text="#{companyDetails.companyName}"
                                             class="app-check-your-answers__question">
                                         </dt>
-                                        <dd class="app-check-your-answers__answer"  id="companyDetail-companyName"
+                                        <dd class="app-check-your-answers__answer"
+                                            id="companyDetail-companyName"
                                             th:utext="*{#strings.replace(companyName,'&#10;','&lt;br&gt;')}">
                                         </dd>
                                     </div>

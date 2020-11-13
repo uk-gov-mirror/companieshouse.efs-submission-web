@@ -16,7 +16,7 @@
                (id=*{submissionId}, companyNumber=*{companyNumber},category=*{details.formCategory})}" th:text="#{link.back}"></a>
             <main class="govuk-main-wrapper govuk-main-wrapper--auto-spacing" id="main-content" role="main">
                 <div class="govuk-grid-row">
-                    <div class="govuk-grid-column-two-thirds">
+                    <div class="govuk-grid-column-two-thirds-from-desktop">
                         <h1 class="govuk-heading-xl" th:text="#{resolutionsInfo.header}"></h1>
                         <h2 class="govuk-heading-m" th:text="#{resolutionsInfo.cannot}"></h2>
                         <ul class="govuk-list govuk-list--bullet">
@@ -25,7 +25,8 @@
                         </ul>
                         <div>
                             <button data-prevent-double-click="true" id="submit-all" type="submit"
-                                    class="govuk-button" name="action" value="submit" th:text="#{button.continue}"></button>
+                                    class="govuk-button" name="action" value="submit"
+                                    th:text="#{button.continue}"></button>
                         </div>
                     </div>
                 </div>

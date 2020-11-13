@@ -20,15 +20,17 @@
 
         <!-- Main Wrapper -->
         <div class="govuk-grid-row">
-            <div class="govuk-grid-column-two-thirds">
+            <div class="govuk-grid-column-two-thirds-from-desktop">
                 <div th:replace="fragments/errorSummary :: errorSummary"></div>
                 <!-- Page Content -->
-                <div id="content-wrapper" class="govuk-form-group" th:classappend="${#fields.hasErrors('paymentReference')} ? govuk-form-group--error : noerror">
+                <div id="content-wrapper" class="govuk-form-group"
+                     th:classappend="${#fields.hasErrors('paymentReference')} ? govuk-form-group--error : noerror">
 
                     <fieldset class="govuk-fieldset" aria-describedby="page-heading">
 
                         <!-- Display Title -->
-                        <h1 id="page-heading" class="govuk-heading-xl" th:text="#{paymentRequired.heading}"></h1>
+                        <h1 id="page-heading" class="govuk-heading-xl"
+                            th:text="#{paymentRequired.heading}"></h1>
 
                         <p class="govuk-body" th:text="#{paymentRequired.guidance.para1}"></p>
                         <div class="govuk-inset-text" th:text="#{paymentRequired.guidance.hint}"></div>

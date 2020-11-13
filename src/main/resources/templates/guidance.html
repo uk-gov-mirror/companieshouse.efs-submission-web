@@ -12,7 +12,7 @@
     <a th:href="${@environment.getProperty('start.page.url')}" class="govuk-back-link" th:text="#{link.back}"></a>
     <main class="govuk-main-wrapper govuk-main-wrapper--auto-spacing" id="main-content" role="main">
         <div class="govuk-grid-row">
-            <div class="govuk-grid-column-two-thirds">
+            <div class="govuk-grid-column-two-thirds-from-desktop">
                 <span class="govuk-caption-xl" th:text="#{guidance.text}"></span>
                 <h1 class="govuk-heading-xl" th:text="#{guidance.page.title}"></h1>
                 <p class="govuk-body-l" th:text="#{guidance.how.to}"></p>
@@ -20,7 +20,8 @@
                     <span th:text="#{guidance.inset.text}"></span>
                 </div>
                 <hr class="govuk-section-break govuk-section-break--xl govuk-section-break--visible govuk-!-margin-bottom-3">
-                <p class="govuk-body-s govuk-!-margin-bottom-1" th:text="#{guidance.published.date}"></p>
+                <p class="govuk-body-s govuk-!-margin-bottom-1"
+                   th:text="#{guidance.published.date}"></p>
                 <p class="govuk-body-s">
                     <span th:text="#{guidance.from}"></span>
                     <a class="govuk-link govuk-!-font-weight-bold" th:href="${@environment.getProperty('govuk.ch.url')}">
