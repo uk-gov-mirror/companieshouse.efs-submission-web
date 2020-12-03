@@ -36,6 +36,16 @@ public interface StaticPageController {
     String guidance(Model model, ServletRequest request);
 
     /**
+     * Directs user to the insolvency guidance page.
+     *
+     * @param model the insolvency guidance page model
+     * @param request contains the chs session id
+     * @return page to be displayed
+     */
+    @GetMapping("/insolvency-guidance")
+    String insolvencyGuidance(Model model, ServletRequest request);
+
+    /**
      * Directs user to the accessibility statement page.
      *
      * @param model   the accessibility statement model

@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/baseLayout}"
+      lang="en">
+<head>
+    <title th:text="#{insolvency.guidance.title}"></title>
+</head>
+<body class="govuk-template__body js-enabled" layout:fragment="content">
+<div class="govuk-width-container">
+    <a th:href="${@environment.getProperty('start.page.url')}" class="govuk-back-link" th:text="#{link.back}"></a>
+    <main class="govuk-main-wrapper govuk-main-wrapper--auto-spacing" id="main-content" role="main">
+        <div class="govuk-grid-row">
+            <div class="govuk-grid-column-two-thirds-from-desktop">
+                <span class="govuk-caption-xl" th:text="#{insolvency.guidance.text}"></span>
+                <h1 class="govuk-heading-xl" th:text="#{insolvency.guidance.page.title}"></h1>
+                <p class="govuk-body-l" th:text="#{insolvency.guidance.how.to}"></p>
+                <div class="govuk-inset-text">
+                    <span th:text="#{insolvency.guidance.inset.text}"></span>
+                </div>
+                <hr class="govuk-section-break govuk-section-break--xl govuk-section-break--visible govuk-!-margin-bottom-3">
+                <p class="govuk-body-s govuk-!-margin-bottom-1"
+                   th:text="#{insolvency.guidance.published.date}"></p>
+                <p class="govuk-body-s">
+                    <span th:text="#{insolvency.guidance.from}"></span>
+                    <a class="govuk-link govuk-!-font-weight-bold" th:href="${@environment.getProperty('govuk.ch.url')}">
+                        <span th:text="#{header.organisation}"></span>
+                    </a>
+                </p>
+                <p class="govuk-body-s govuk-!-margin-bottom-2" th:text="#{insolvency.guidance.contents}"></p>
+                <ul class="govuk-list govuk-list--bullet govuk-!-margin-bottom-8">
+                    <li>
+                        <a class="govuk-link govuk-body-s" href="#how-access-service">
+                            <span th:text="#{insolvency.guidance.how.access.service}"></span>
+                        </a>
+                    </li>
+                    <li>
+                        <a class="govuk-link govuk-body-s" href="#documents.you.can.upload">
+                            <span th:text="#{insolvency.guidance.documents.you.can.upload}"></span>
+                        </a>
+                    </li>
+                    <li>
+                        <a class="govuk-link govuk-body-s" href="#how-to-prepare-the-document">
+                            <span th:text="#{guidance.how.to.prepare.the.document}"></span>
+                        </a>
+                    </li>
+                    <li>
+                        <a class="govuk-link govuk-body-s" href="#what-happens-next">
+                            <span th:text="#{guidance.what.happens.next}"></span>
+                        </a>
+                    </li>
+                    <li>
+                        <a class="govuk-link govuk-body-s" href="#contact-us">
+                            <span th:text="#{guidance.contact.us}"></span>
+                        </a>
+                    </li>
+                </ul>
+                <h2 class="govuk-heading-l" id="how-access-service" th:text="#{insolvency.guidance.how.access.service}"></h2>
+                <p class="govuk-body" th:text="#{insolvency.guidance.how.access.service.list1.heading}"></p>
+                <ul class="govuk-list govuk-list--bullet">
+                    <li th:text="#{insolvency.guidance.how.access.service.list1.item1}"></li>
+                    <li th:text="#{insolvency.guidance.how.access.service.list1.item2}"></li>
+                </ul>
+                <p class="govuk-body" th:text="#{insolvency.guidance.how.access.service.list2.heading}"></p>
+                <ul class="govuk-list govuk-list--bullet">
+                    <li th:text="#{insolvency.guidance.how.access.service.list2.item1}"></li>
+                    <li th:text="#{insolvency.guidance.how.access.service.list2.item2}"></li>
+                    <li th:text="#{insolvency.guidance.how.access.service.list2.item3}"></li>
+                </ul>
+                <div class="govuk-inset-text">
+                    <span th:text="#{insolvency.guidance.how.access.service.inset.text}"></span>
+                </div>
+                <p class="govuk-body" th:text="#{insolvency.guidance.how.access.service.contact.para1}"></p>
+                <p class="govuk-body">
+                    <span th:text="#{insolvency.guidance.how.access.service.contact.para2}"></span>
+                    <a class="govuk-link govuk-body-s" href="#contact-us">
+                        <span th:text="#{insolvency.guidance.how.access.service.contact.link}"></span>
+                    </a>
+                </p>
+
+                <h2 class="govuk-heading-l" id="documents.you.can.upload" th:text="#{insolvency.guidance.documents.you.can.upload}"></h2>
+                <p class="govuk-body" th:text="#{insolvency.guidance.documents.you.can.upload.include}"></p>
+                <p class="govuk-body">
+                    <a href="https://www.gov.uk/government/collections/companies-house-moratorium-forms"
+                       th:text="#{insolvency.guidance.documents.you.can.upload.moratorium}" class="govuk-link"></a>
+                </p>
+                <p class="govuk-body">
+                    <a href="https://www.gov.uk/government/collections/companies-house-forms-for-insolvency-rules-2016"
+                       th:text="#{insolvency.guidance.documents.you.can.upload.rules2016}" class="govuk-link"></a>
+                </p>
+                <p class="govuk-body">
+                    <a href="https://www.gov.uk/government/collections/companies-house-forms-for-insolvency"
+                       th:text="#{insolvency.guidance.documents.you.can.upload.1986}" class="govuk-link"></a>
+                </p>
+                <p class="govuk-body">
+                    <a href="https://www.gov.uk/government/collections/companies-house-forms-for-insolvency-scotland"
+                       th:text="#{insolvency.guidance.documents.you.can.upload.scotland}" class="govuk-link"></a>
+                </p>
+                <p class="govuk-body">
+                    <span th:text="#{insolvency.guidance.documents.you.can.upload.practitioners}"></span>
+                    <a href="https://www.gov.uk/government/publications/change-a-registered-office-address-ad01"
+                       th:text="#{insolvency.guidance.documents.you.can.upload.form" class="govuk-link"></a>
+                    <span th:text="#{insolvency.guidance.documents.you.can.upload.using"></span>
+                </p>
+
+                <h2 class="govuk-heading-l" id="how-to-prepare-the-document" th:text="#{insolvency.guidance.prepare.document}"></h2>
+                <p class="govuk-body" th:text="#{insolvency.guidance.prepare.document.para1}"></p>
+                <div class="govuk-inset-text">
+                    <span th:text="#{insolvency.guidance.prepare.document.inset.text}"></span>
+                </div>
+                <p class="govuk-body" th:text="#{insolvency.guidance.prepare.document.para2}"></p>
+                <h3 class="govuk-heading-m" th:text="#{guidance.companies.house.forms}">Companies House forms</h3>
+                <h4 class="govuk-heading-s" th:text="#{guidance.how.to.prepare.the.document.heading1}"></h4>
+                <ul class="govuk-list govuk-list--number">
+                    <li>
+                        <a th:href="${@environment.getProperty('company.registration.filing.forms')}" class="govuk-link">
+                            <span th:text="#{guidance.how.to.prepare.the.document.list.link}"></span>
+                        </a>
+                        <span th:text="#{guidance.how.to.prepare.the.document.list1.item1}"></span>
+                    </li>
+                    <li th:text="#{guidance.how.to.prepare.the.document.list1.item2}"></li>
+                    <li th:text="#{guidance.how.to.prepare.the.document.list1.item5}"></li>
+                </ul>
+                <h4 class="govuk-heading-s" th:text="#{guidance.how.to.prepare.the.document.heading2}"></h4>
+                <ul class="govuk-list govuk-list--number">
+                    <li th:text="#{guidance.how.to.prepare.the.document.list2.item1}"></li>
+                    <li th:text="#{guidance.how.to.prepare.the.document.list2.item2}"></li>
+                    <li th:text="#{guidance.how.to.prepare.the.document.list2.item3}"></li>
+                    <li th:text="#{guidance.how.to.prepare.the.document.list2.item4}"></li>
+                </ul>
+                <h3 class="govuk-heading-m" th:text="#{guidance.signatures}"></h3>
+                <p class="govuk-body" th:text="#{guidance.signatures.accepted}"></p>
+                <ul class="govuk-list govuk-list--bullet">
+                    <li th:text="#{guidance.signature.item1}"></li>
+                    <li th:text="#{guidance.signature.item2}"></li>
+                    <li th:text="#{guidance.signature.item3}"></li>
+                    <li th:text="#{guidance.signature.item4}"></li>
+                </ul>
+
+                <h2 class="govuk-heading-l" id="what-happens-next" th:text="#{guidance.what.happens.next}"></h2>
+                <p class="govuk-body" th:text="#{insolvency.guidance.what.happens.next.text1}"></p>
+                <p class="govuk-body" th:text="#{insolvency.guidance.what.happens.next.text2}"></p>
+                <p class="govuk-body" th:text="#{insolvency.guidance.what.happens.next.text3}"></p>
+
+                <h2 class="govuk-heading-l" id="contact-us" th:text="#{guidance.contact.us}"></h2>
+                <p class="govuk-body">
+                    <p th:text="#{guidance.contact.us.text1}"></p>
+                    <h3 class="govuk-heading-s" th:text="#{guidance.contact.us.heading1}"></h3>
+                    <ul class="govuk-list">
+                        <li th:text="#{guidance.contact.us.telephone.number}"></li>
+                        <li th:text="#{guidance.contact.us.telephone.open}"></li>
+                    </ul>
+                    <p class="govuk-body">
+                        <a class="govuk-link" th:href="${@environment.getProperty('govuk.call.charges.url')}"
+                           th:text="#{guidance.contact.us.telephone.charge}"></a>
+                    </p>
+                    <h3 class="govuk-heading-s" th:text="#{guidance.contact.us.heading2}"></h3>
+                    <ul class="govuk-list">
+                        <li>
+                            <a class="govuk-link piwik-event" data-event-id="contact-us-email-link"
+                               th:href="${@environment.getProperty('enquiries.mailbox')}">
+                                <span th:text="#{guidance.contact.us.link}"></span>
+                            </a>
+                        </li>
+                    </ul>
+                </p>
+            </div>
+        </div>
+    </main>
+</div>
+</body>
+</html>

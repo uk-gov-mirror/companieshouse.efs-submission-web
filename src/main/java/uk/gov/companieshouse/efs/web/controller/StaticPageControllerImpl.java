@@ -48,6 +48,13 @@ public class StaticPageControllerImpl extends BaseControllerImpl implements Stat
     }
 
     @Override
+    public String insolvencyGuidance(Model model, ServletRequest servletRequest) {
+        model.addAttribute(TEMPLATE_NAME, ViewConstants.INSOLVENCY_GUIDANCE.asView());
+
+        return ViewConstants.INSOLVENCY_GUIDANCE.asView();
+    }
+
+    @Override
     public String accessibilityStatement(Model model, ServletRequest servletRequest) {
 
         model.addAttribute(TEMPLATE_NAME, ViewConstants.ACCESSIBILITY.asView());

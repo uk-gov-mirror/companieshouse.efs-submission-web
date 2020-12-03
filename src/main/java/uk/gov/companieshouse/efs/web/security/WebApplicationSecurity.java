@@ -24,6 +24,8 @@ public class WebApplicationSecurity {
     private String startPageUrl;
     @Value("${guidance.page.url}")
     private String guidancePageUrl;
+    @Value("${insolvency.guidance.page.url}")
+    private String insolvencyGuidancePageUrl;
     @Value("${accessibility.statement.page.url}")
     private String accessibilityStatementPageUrl;
     @Value("${chs.signout.redirect.path}")
@@ -102,8 +104,21 @@ public class WebApplicationSecurity {
         }
     }
 
+    /**
+     * static nested class for insolvency guidance page security.
+     */
     @Configuration
     @Order(5)
+    public class InsolvencyGuidancePageSecurityConfig extends WebSecurityConfigurerAdapter {
+
+        @Override
+        protected void configure(final HttpSecurity http) {
+            http.antMatcher(insolvencyGuidancePageUrl);
+        }
+    }
+
+    @Configuration
+    @Order(6)
     public class CompanyAuthFilterSecurityConfig extends WebSecurityConfigurerAdapter {
 
         @Override
@@ -125,7 +140,7 @@ public class WebApplicationSecurity {
      * static nested class for resource level security.
      */
     @Configuration
-    @Order(6)
+    @Order(7)
     public class EfsWebResourceFilterConfig extends WebSecurityConfigurerAdapter {
 
         @Override
