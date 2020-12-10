@@ -72,16 +72,30 @@
                         <div id="accordion-default-content-1" class="govuk-accordion__section-content" aria-labelledby="accordion-default-heading-1">
                             <p class="govuk-body" th:text="#{guidance.documents.you.can.upload.insolvency.description}"></p>
                             <p class="govuk-body">
-                                <span th:text="#{guidance.documents.you.can.upload.insolvency.linkDescriptionText}"></span>
-                                <a th:href="${@environment.getProperty('company.registration.filing.forms')}" class="govuk-link"
-                                   th:text="#{guidance.documents.you.can.upload.insolvency.linkText}">
-                                </a>
+                                <a href="https://www.gov.uk/government/collections/companies-house-moratorium-forms"
+                                   th:text="#{guidance.documents.you.can.upload.moratorium}" class="govuk-link"></a>
+                            </p>
+                            <p class="govuk-body">
+                                <a href="https://www.gov.uk/government/collections/companies-house-forms-for-insolvency-rules-2016"
+                                   th:text="#{guidance.documents.you.can.upload.rules2016}" class="govuk-link"></a>
+                            </p>
+                            <p class="govuk-body">
+                                <a href="https://www.gov.uk/government/collections/companies-house-forms-for-insolvency"
+                                   th:text="#{guidance.documents.you.can.upload.1986}" class="govuk-link"></a>
+                            </p>
+                            <p class="govuk-body">
+                                <a href="https://www.gov.uk/government/collections/companies-house-forms-for-insolvency-scotland"
+                                   th:text="#{guidance.documents.you.can.upload.scotland}" class="govuk-link"></a>
                             </p>
                             <p class="govuk-body">
                                 <span th:text="#{guidance.documents.you.can.upload.insolvency.ad01.text1}"></span>
                                 <a href="https://www.gov.uk/government/publications/change-a-registered-office-address-ad01"
                                    th:text="#{guidance.documents.you.can.upload.insolvency.ad01.linkText}" class="govuk-link"></a>
                                 <span th:text="#{guidance.documents.you.can.upload.insolvency.ad01.text2}"></span>
+                            </p>
+                            <p>
+                                <span th:text="#{guidance.documents.you.can.upload.insolvency.read}"></span>
+                                <a class="govuk-link piwik-event" data-event-id="insolvency-guidance-link-top" th:href="${@environment.getProperty('insolvency.guidance.page.url')}" th:text="#{guidance.documents.you.can.upload.insolvency.link}"></a>
                             </p>
                         </div>
                     </div>

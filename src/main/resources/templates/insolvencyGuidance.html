@@ -110,7 +110,7 @@
                     <span th:text="#{insolvency.guidance.prepare.document.inset.text}"></span>
                 </div>
                 <p class="govuk-body" th:text="#{insolvency.guidance.prepare.document.para2}"></p>
-                <h3 class="govuk-heading-m" th:text="#{guidance.companies.house.forms}">Companies House forms</h3>
+                <h3 class="govuk-heading-m" th:text="#{guidance.companies.house.forms}"></h3>
                 <h4 class="govuk-heading-s" th:text="#{guidance.how.to.prepare.the.document.heading1}"></h4>
                 <ul class="govuk-list govuk-list--number">
                     <li>
@@ -143,24 +143,24 @@
                 <p class="govuk-body" th:text="#{insolvency.guidance.what.happens.next.text2}"></p>
                 <p class="govuk-body" th:text="#{insolvency.guidance.what.happens.next.text3}"></p>
 
-                <h2 class="govuk-heading-l" id="contact-us" th:text="#{guidance.contact.us}"></h2>
+                <h2 class="govuk-heading-l" id="contact-us" th:text="#{insolvency.guidance.contact.us}"></h2>
                 <p class="govuk-body">
-                    <p th:text="#{guidance.contact.us.text1}"></p>
-                    <h3 class="govuk-heading-s" th:text="#{guidance.contact.us.heading1}"></h3>
+                    <p th:text="#{insolvency.guidance.contact.us.text1}"></p>
+                    <h3 class="govuk-heading-s" th:text="#{insolvency.guidance.contact.us.heading1}"></h3>
                     <ul class="govuk-list">
-                        <li th:text="#{guidance.contact.us.telephone.number}"></li>
-                        <li th:text="#{guidance.contact.us.telephone.open}"></li>
+                        <li th:text="#{insolvency.guidance.contact.us.telephone.number}"></li>
+                        <li th:text="#{insolvency.guidance.contact.us.telephone.open}"></li>
                     </ul>
                     <p class="govuk-body">
                         <a class="govuk-link" th:href="${@environment.getProperty('govuk.call.charges.url')}"
-                           th:text="#{guidance.contact.us.telephone.charge}"></a>
+                           th:text="#{insolvency.guidance.contact.us.telephone.charge}"></a>
                     </p>
-                    <h3 class="govuk-heading-s" th:text="#{guidance.contact.us.heading2}"></h3>
+                    <h3 class="govuk-heading-s" th:text="#{insolvency.guidance.contact.us.heading2}"></h3>
                     <ul class="govuk-list">
                         <li>
                             <a class="govuk-link piwik-event" data-event-id="contact-us-email-link"
                                th:href="${@environment.getProperty('enquiries.mailbox')}">
-                                <span th:text="#{guidance.contact.us.link}"></span>
+                                <span th:text="#{insolvency.guidance.contact.us.link}"></span>
                             </a>
                         </li>
                     </ul>
