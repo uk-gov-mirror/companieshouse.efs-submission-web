@@ -10,7 +10,6 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.http.client.utils.URIBuilder;
 import uk.gov.companieshouse.auth.filter.UserAuthFilter;
 import uk.gov.companieshouse.efs.web.exception.ServiceException;
-import uk.gov.companieshouse.environment.EnvironmentReader;
 import uk.gov.companieshouse.session.Session;
 
 /**
@@ -23,11 +22,10 @@ public class LoggingAuthFilter extends UserAuthFilter {
     /**
      * constructor sets the signout redirect path
      *
-     * @param environmentReader the EnvironmentReader for Env vars.
      * @param signoutRedirectPath the redirect path to use after sign in instead of the original path
+     *                            (only if the user is signing out or has signed out)
      */
-    public LoggingAuthFilter(final EnvironmentReader environmentReader, final String signoutRedirectPath) {
-        super(environmentReader);
+    public LoggingAuthFilter(final String signoutRedirectPath) {
         this.signoutRestartPath = signoutRedirectPath;
     }
 

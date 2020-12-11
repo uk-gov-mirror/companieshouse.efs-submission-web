@@ -1,5 +1,6 @@
 package uk.gov.companieshouse.efs.web.security;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
@@ -19,8 +20,28 @@ import uk.gov.companieshouse.session.handler.SessionHandler;
  */
 @EnableWebSecurity
 public class WebApplicationSecurity {
-    WebApplicationSecurity() {
-        // hide implicit public constructor
+    @Value("${chs.signout.redirect.path}")
+    private String signoutRedirectPath;
+    private ApiClientService apiClientService;
+    private FormTemplateService formTemplateService;
+    private CategoryTemplateService categoryTemplateService;
+    private EnvironmentReader environmentReader;
+
+    /**
+     * Constructor.
+     *
+     * @param apiClientService              apiClient service
+     * @param formTemplateService           formTemplate service
+     * @param categoryTemplateService       categoryTemplate service
+     */
+    @Autowired
+    public WebApplicationSecurity(
+        final ApiClientService apiClientService, FormTemplateService formTemplateService,
+        final CategoryTemplateService categoryTemplateService, final EnvironmentReader environmentReader) {
+        this.apiClientService = apiClientService;
+        this.formTemplateService = formTemplateService;
+        this.categoryTemplateService = categoryTemplateService;
+        this.environmentReader = environmentReader;
     }
 
     /**
@@ -112,29 +133,11 @@ public class WebApplicationSecurity {
 
     @Configuration
     @Order(6)
-    public static class CompanyAuthFilterSecurityConfig extends WebSecurityConfigurerAdapter {
+    public class CompanyAuthFilterSecurityConfig extends WebSecurityConfigurerAdapter {
 
-        private String signoutRedirectPath;
-        private EnvironmentReader environmentReader;
-        private ApiClientService apiClientService;
-        private FormTemplateService formTemplateService;
-        private CategoryTemplateService categoryTemplateService;
-
-        public CompanyAuthFilterSecurityConfig(@Value("${chs.signout.redirect.path}") final String signoutRedirectPath,
-            final EnvironmentReader environmentReader, final ApiClientService apiClientService,
-            final FormTemplateService formTemplateService, final CategoryTemplateService categoryTemplateService) {
-            this.signoutRedirectPath = signoutRedirectPath;
-            this.environmentReader = environmentReader;
-            this.apiClientService = apiClientService;
-            this.formTemplateService = formTemplateService;
-            this.categoryTemplateService = categoryTemplateService;
-        }
-
-        // Untestable with Mockito: A static initializer block in SessionHandler class requires specific environment
-        // variables to be defined at runtime.
         @Override
         protected void configure(HttpSecurity http) {
-            final LoggingAuthFilter authFilter = new LoggingAuthFilter(environmentReader, signoutRedirectPath);
+            final LoggingAuthFilter authFilter = new LoggingAuthFilter(signoutRedirectPath);
             final CompanyAuthFilter companyAuthFilter =
                 new CompanyAuthFilter(environmentReader, apiClientService, formTemplateService,
                     categoryTemplateService);
@@ -152,23 +155,14 @@ public class WebApplicationSecurity {
      */
     @Configuration
     @Order(7)
-    public static class EfsWebResourceFilterConfig extends WebSecurityConfigurerAdapter {
-        private EnvironmentReader environmentReader;
-        private String signoutRedirectPath;
+    public class EfsWebResourceFilterConfig extends WebSecurityConfigurerAdapter {
 
-        public EfsWebResourceFilterConfig(@Value("${chs.signout.redirect.path}") final String signoutRedirectPath,
-            final EnvironmentReader environmentReader) {
-            this.environmentReader = environmentReader;
-            this.signoutRedirectPath = signoutRedirectPath;
-        }
-
-        // Untestable with Mockito: A static initializer block in SessionHandler class requires specific environment
-        // variables to be defined at runtime.
         @Override
         protected void configure(final HttpSecurity http) {
-            final LoggingAuthFilter authFilter = new LoggingAuthFilter(environmentReader, signoutRedirectPath);
+            final LoggingAuthFilter authFilter = new LoggingAuthFilter(signoutRedirectPath);
 
-            http.antMatcher("/efs-submission/**").addFilterBefore(new SessionHandler(), BasicAuthenticationFilter.class)
+            http.antMatcher("/efs-submission/**")
+                .addFilterBefore(new SessionHandler(), BasicAuthenticationFilter.class)
                 .addFilterBefore(new HijackFilter(), BasicAuthenticationFilter.class)
                 .addFilterBefore(authFilter, BasicAuthenticationFilter.class);
         }
