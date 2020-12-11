@@ -1,6 +1,5 @@
 package uk.gov.companieshouse.efs.web.security;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
@@ -20,36 +19,8 @@ import uk.gov.companieshouse.session.handler.SessionHandler;
  */
 @EnableWebSecurity
 public class WebApplicationSecurity {
-    @Value("${start.page.url}")
-    private String startPageUrl;
-    @Value("${guidance.page.url}")
-    private String guidancePageUrl;
-    @Value("${insolvency.guidance.page.url}")
-    private String insolvencyGuidancePageUrl;
-    @Value("${accessibility.statement.page.url}")
-    private String accessibilityStatementPageUrl;
-    @Value("${chs.signout.redirect.path}")
-    private String signoutRedirectPath;
-    private ApiClientService apiClientService;
-    private FormTemplateService formTemplateService;
-    private CategoryTemplateService categoryTemplateService;
-    private EnvironmentReader environmentReader;
-
-    /**
-     * Constructor.
-     *
-     * @param apiClientService              apiClient service
-     * @param formTemplateService           formTemplate service
-     * @param categoryTemplateService       categoryTemplate service
-     */
-    @Autowired
-    public WebApplicationSecurity(
-        final ApiClientService apiClientService, FormTemplateService formTemplateService,
-        final CategoryTemplateService categoryTemplateService, final EnvironmentReader environmentReader) {
-        this.apiClientService = apiClientService;
-        this.formTemplateService = formTemplateService;
-        this.categoryTemplateService = categoryTemplateService;
-        this.environmentReader = environmentReader;
+    WebApplicationSecurity() {
+        // hide implicit public constructor
     }
 
     /**
@@ -57,7 +28,7 @@ public class WebApplicationSecurity {
      */
     @Configuration
     @Order(1)
-    public class RootLevelSecurityConfig extends WebSecurityConfigurerAdapter {
+    public static class RootLevelSecurityConfig extends WebSecurityConfigurerAdapter {
 
         @Override
         protected void configure(final HttpSecurity http) {
@@ -70,7 +41,12 @@ public class WebApplicationSecurity {
      */
     @Configuration
     @Order(2)
-    public class StartPageSecurityConfig extends WebSecurityConfigurerAdapter {
+    public static class StartPageSecurityConfig extends WebSecurityConfigurerAdapter {
+        private final String startPageUrl;
+
+        public StartPageSecurityConfig(@Value("${start.page.url}") final String startPageUrl) {
+            this.startPageUrl = startPageUrl;
+        }
 
         @Override
         protected void configure(final HttpSecurity http) {
@@ -83,7 +59,13 @@ public class WebApplicationSecurity {
      */
     @Configuration
     @Order(3)
-    public class AccessibilityStatementPageSecurityConfig extends WebSecurityConfigurerAdapter {
+    public static class AccessibilityStatementPageSecurityConfig extends WebSecurityConfigurerAdapter {
+        private final String accessibilityStatementPageUrl;
+
+        public AccessibilityStatementPageSecurityConfig(
+            @Value("${accessibility.statement.page.url}") final String accessibilityStatementPageUrl) {
+            this.accessibilityStatementPageUrl = accessibilityStatementPageUrl;
+        }
 
         @Override
         protected void configure(final HttpSecurity http) {
@@ -96,7 +78,12 @@ public class WebApplicationSecurity {
      */
     @Configuration
     @Order(4)
-    public class GuidancePageSecurityConfig extends WebSecurityConfigurerAdapter {
+    public static class GuidancePageSecurityConfig extends WebSecurityConfigurerAdapter {
+        private final String guidancePageUrl;
+
+        public GuidancePageSecurityConfig(@Value("${guidance.page.url}") final String guidancePageUrl) {
+            this.guidancePageUrl = guidancePageUrl;
+        }
 
         @Override
         protected void configure(final HttpSecurity http) {
@@ -109,7 +96,13 @@ public class WebApplicationSecurity {
      */
     @Configuration
     @Order(5)
-    public class InsolvencyGuidancePageSecurityConfig extends WebSecurityConfigurerAdapter {
+    public static class InsolvencyGuidancePageSecurityConfig extends WebSecurityConfigurerAdapter {
+        private String insolvencyGuidancePageUrl;
+
+        public InsolvencyGuidancePageSecurityConfig(
+            @Value("${insolvency.guidance.page.url}") final String insolvencyGuidancePageUrl) {
+            this.insolvencyGuidancePageUrl = insolvencyGuidancePageUrl;
+        }
 
         @Override
         protected void configure(final HttpSecurity http) {
@@ -119,11 +112,29 @@ public class WebApplicationSecurity {
 
     @Configuration
     @Order(6)
-    public class CompanyAuthFilterSecurityConfig extends WebSecurityConfigurerAdapter {
+    public static class CompanyAuthFilterSecurityConfig extends WebSecurityConfigurerAdapter {
 
+        private String signoutRedirectPath;
+        private EnvironmentReader environmentReader;
+        private ApiClientService apiClientService;
+        private FormTemplateService formTemplateService;
+        private CategoryTemplateService categoryTemplateService;
+
+        public CompanyAuthFilterSecurityConfig(@Value("${chs.signout.redirect.path}") final String signoutRedirectPath,
+            final EnvironmentReader environmentReader, final ApiClientService apiClientService,
+            final FormTemplateService formTemplateService, final CategoryTemplateService categoryTemplateService) {
+            this.signoutRedirectPath = signoutRedirectPath;
+            this.environmentReader = environmentReader;
+            this.apiClientService = apiClientService;
+            this.formTemplateService = formTemplateService;
+            this.categoryTemplateService = categoryTemplateService;
+        }
+
+        // Untestable with Mockito: A static initializer block in SessionHandler class requires specific environment
+        // variables to be defined at runtime.
         @Override
-        protected void configure(HttpSecurity http) throws Exception {
-            final LoggingAuthFilter authFilter = new LoggingAuthFilter(signoutRedirectPath);
+        protected void configure(HttpSecurity http) {
+            final LoggingAuthFilter authFilter = new LoggingAuthFilter(environmentReader, signoutRedirectPath);
             final CompanyAuthFilter companyAuthFilter =
                 new CompanyAuthFilter(environmentReader, apiClientService, formTemplateService,
                     categoryTemplateService);
@@ -141,14 +152,23 @@ public class WebApplicationSecurity {
      */
     @Configuration
     @Order(7)
-    public class EfsWebResourceFilterConfig extends WebSecurityConfigurerAdapter {
+    public static class EfsWebResourceFilterConfig extends WebSecurityConfigurerAdapter {
+        private EnvironmentReader environmentReader;
+        private String signoutRedirectPath;
 
+        public EfsWebResourceFilterConfig(@Value("${chs.signout.redirect.path}") final String signoutRedirectPath,
+            final EnvironmentReader environmentReader) {
+            this.environmentReader = environmentReader;
+            this.signoutRedirectPath = signoutRedirectPath;
+        }
+
+        // Untestable with Mockito: A static initializer block in SessionHandler class requires specific environment
+        // variables to be defined at runtime.
         @Override
         protected void configure(final HttpSecurity http) {
-            final LoggingAuthFilter authFilter = new LoggingAuthFilter(signoutRedirectPath);
+            final LoggingAuthFilter authFilter = new LoggingAuthFilter(environmentReader, signoutRedirectPath);
 
-            http.antMatcher("/efs-submission/**")
-                .addFilterBefore(new SessionHandler(), BasicAuthenticationFilter.class)
+            http.antMatcher("/efs-submission/**").addFilterBefore(new SessionHandler(), BasicAuthenticationFilter.class)
                 .addFilterBefore(new HijackFilter(), BasicAuthenticationFilter.class)
                 .addFilterBefore(authFilter, BasicAuthenticationFilter.class);
         }
