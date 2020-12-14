@@ -41,6 +41,11 @@ class StaticPageControllerImplTest extends BaseControllerImplTest {
     }
 
     @Test
+    void insolvencyGuidancePage() {
+        assertThat(testController.insolvencyGuidance(model, servletRequest), is(ViewConstants.INSOLVENCY_GUIDANCE.asView()));
+    }
+
+    @Test
     void accessibilityStatementPage() {
         assertThat(testController.accessibilityStatement(model, servletRequest),
             is(ViewConstants.ACCESSIBILITY.asView()));

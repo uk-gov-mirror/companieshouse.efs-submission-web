@@ -27,6 +27,10 @@
                         <a class="govuk-link piwik-event" data-event-id="guidance-link-top" th:href="${@environment.getProperty('guidance.page.url')}" th:text="#{start.list.of.documents}"></a>
                         <span th:text="#{start.service.text}"></span>
                     </p>
+                    <p>
+                        <span th:text="#{start.insolvency.guidance.text}"></span>
+                        <a class="govuk-link piwik-event" data-event-id="insolvency-guidance-link-top" th:href="${@environment.getProperty('insolvency.guidance.page.url')}" th:text="#{start.insolvency.guidance.link}"></a>
+                    </p>
                     <div class="govuk-inset-text" th:text="#{start.interim.service.covid.description}"></div>
                     <p class="govuk-body" th:text="#{start.list.title}"></p>
                     <ul class="govuk-list govuk-list--bullet">
