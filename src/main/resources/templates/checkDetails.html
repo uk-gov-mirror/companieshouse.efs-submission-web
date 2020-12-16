@@ -39,14 +39,27 @@
                     <dl class="govuk-summary-list govuk-!-margin-bottom-9">
                         <div class="govuk-summary-list__row">
                             <dt th:text="#{checkDetails.document.type}" class="govuk-summary-list__key"></dt>
-                            <dd class="govuk-summary-list__value"  id="documentTypeDescription"
+                            <dd class="govuk-summary-list__value" id="documentTypeDescription"
                                 th:utext="*{#strings.replace(documentTypeDescription,'&#10;','&lt;br&gt;')}">
+                            </dd>
+                            <dd class="govuk-summary-list__actions">
+                                <a class="govuk-link"
+                                   th:href="@{/efs-submission/{id}/company/{companyNumber}/category-selection?category=(id=*{submissionId}, companyNumber=*{companyNumber})}">
+                                    [[#{checkDetails.action.change}]]<span class="govuk-visually-hidden"> [[#{checkDetails.document.type}]]</span>
+                                </a>
                             </dd>
                         </div>
                         <div class="govuk-summary-list__row">
-                            <dt th:text="#{checkDetails.document.uploaded}" class="govuk-summary-list__key"></dt>
+                            <dt th:text="#{checkDetails.document.uploaded(*{#lists.size(documentUploadedList)})}"
+                                class="govuk-summary-list__key"></dt>
                             <dd class="govuk-summary-list__value">
                                 <p th:each="documentUploaded : *{documentUploadedList}" id="documentUploaded" th:utext="${documentUploaded.fileName}"></p>
+                            </dd>
+                            <dd class="govuk-summary-list__actions">
+                                <a class="govuk-link"
+                                   th:href="@{/efs-submission/{id}/company/{companyNumber}/document-upload(id=*{submissionId},companyNumber=*{companyNumber})}">
+                                    [[#{checkDetails.action.change}]]<span class="govuk-visually-hidden"> [[#{checkDetails.document.uploaded}]]</span>
+                                </a>
                             </dd>
                         </div>
                         <div th:if="${checkDetails.paymentCharge}" class="govuk-summary-list__row">
