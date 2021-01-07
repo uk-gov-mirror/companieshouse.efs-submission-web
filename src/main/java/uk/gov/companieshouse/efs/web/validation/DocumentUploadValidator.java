@@ -103,7 +103,7 @@ public class DocumentUploadValidator implements BiFunction<DocumentUploadModel, 
     }
 
     private long toByteCount(final String sizeHuman) {
-        final int KILOBYTE = 1000;
+        final int KILOBYTE = 1024;
 
         long returnValue = Long.MAX_VALUE;
 

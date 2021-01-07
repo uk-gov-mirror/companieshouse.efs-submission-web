@@ -236,7 +236,7 @@ public class DocumentUploadValidatorTest {
         when(resourceBundle.getString("max_file_size_exceeded.documentUpload"))
                 .thenReturn("The selected file must be smaller than {0}");
 
-        String fileContent = createContent(4000001);
+        String fileContent = createContent(4*1024*1024 + 1);
 
         DocumentUploadModel model = new DocumentUploadModel(fileUploadConfiguration);
         model.setDetails(createFiles(MINIMUM_UPLOADS_ALLOWED));
