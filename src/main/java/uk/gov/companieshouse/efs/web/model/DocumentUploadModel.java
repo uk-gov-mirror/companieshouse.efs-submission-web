@@ -144,11 +144,10 @@ public class DocumentUploadModel {
         attributes.addAttribute(key, value);
     }
 
-    private String getAllowedFileExtensions() {
+    public String getAllowedFileExtensions() {
         final List<String> extensions = config.getDistinctExtensions().stream().sorted().collect(Collectors.toList());
         if (!extensions.isEmpty()) {
-            return String.join(" or ", String.join(", ", extensions.subList(0, extensions.size() - 1)),
-                extensions.get(extensions.size() - 1));
+            return String.join(", ", extensions);
         }
         return "";
     }
