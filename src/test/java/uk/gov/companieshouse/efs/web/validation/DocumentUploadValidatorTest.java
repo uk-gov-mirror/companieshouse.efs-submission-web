@@ -38,12 +38,13 @@ import uk.gov.companieshouse.efs.web.configuration.FileUploadConfiguration;
 import uk.gov.companieshouse.efs.web.model.DocumentUploadModel;
 
 @ExtendWith(MockitoExtension.class)
-public class DocumentUploadValidatorTest {
+class DocumentUploadValidatorTest {
 
     private static final Integer MINIMUM_UPLOADS_ALLOWED    = 1;
     private static final Integer MAXIMUM_UPLOADS_ALLOWED    = 10;
 
     private static final String PDF_VALUE = "PDF";
+    private static final int KILOBYTE = 1024;
 
     @Mock
     private FileUploadConfiguration fileUploadConfiguration;
@@ -236,7 +237,7 @@ public class DocumentUploadValidatorTest {
         when(resourceBundle.getString("max_file_size_exceeded.documentUpload"))
                 .thenReturn("The selected file must be smaller than {0}");
 
-        String fileContent = createContent(4*1024*1024 + 1);
+        String fileContent = createContent(4 * KILOBYTE * KILOBYTE + 1);
 
         DocumentUploadModel model = new DocumentUploadModel(fileUploadConfiguration);
         model.setDetails(createFiles(MINIMUM_UPLOADS_ALLOWED));
