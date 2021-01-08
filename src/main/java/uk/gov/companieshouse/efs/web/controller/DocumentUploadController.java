@@ -11,8 +11,6 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import uk.gov.companieshouse.efs.web.formtemplates.controller.FormTemplateControllerImpl;
-import uk.gov.companieshouse.efs.web.formtemplates.model.FormTemplateModel;
 import uk.gov.companieshouse.efs.web.model.DocumentUploadModel;
 
 @RequestMapping(BaseControllerImpl.SERVICE_URI)
