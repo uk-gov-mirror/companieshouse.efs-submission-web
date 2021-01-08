@@ -190,7 +190,7 @@ public class DocumentUploadModel {
      * @return The human-readable string representation of the files size.
      */
     public static String displayFileSizeAsHuman(final FileApi file) {
-        final int UNIT = 1000;
+        final int UNIT = 1024;
         if (file.getFileSize() < UNIT) {
             return file.getFileSize() + " B";
         }
