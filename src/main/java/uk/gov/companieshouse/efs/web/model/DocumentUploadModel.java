@@ -145,13 +145,18 @@ public class DocumentUploadModel {
         attributes.addAttribute(key, value);
     }
 
+    /**
+     * Retrieves and formats list of file extensions allowed in file-upload.properties.
+     *
+     * @return String with list separated by commas and 'or' at end
+     */
     public String getAllowedFileExtensions() {
         final List<String> extensions = config.getDistinctExtensions().stream().sorted().collect(Collectors.toList());
         return extensions.stream().collect(Collectors.collectingAndThen(Collectors.toList(),
             joiningLastDelimiter(", ", " or ")));
     }
 
-    public static Function<List<String>, String> joiningLastDelimiter(
+    private static Function<List<String>, String> joiningLastDelimiter(
         String delimiter, String lastDelimiter) {
         return list -> {
             int last = list.size() - 1;

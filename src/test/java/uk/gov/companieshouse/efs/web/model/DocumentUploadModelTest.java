@@ -26,6 +26,15 @@ class DocumentUploadModelTest {
     }
 
     @Test
+    void getAllowedFileExtensionsWhenTwo() {
+        fileUploadConfiguration = new FileUploadConfiguration();
+        List<String> extensions = Arrays.asList("PDF", "PDF2");
+        setConfig(extensions);
+
+        assertThat(documentUploadModel.getAllowedFileExtensions(), is("PDF or PDF2"));
+    }
+
+    @Test
     void getAllowedFileExtensionsWhenMultiple() {
         fileUploadConfiguration = new FileUploadConfiguration();
         List<String> extensions = Arrays.asList("PDF", "PDF2", "PDF3");
