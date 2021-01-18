@@ -3,6 +3,7 @@ package uk.gov.companieshouse.efs.web.model;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
@@ -144,13 +145,26 @@ public class DocumentUploadModel {
         attributes.addAttribute(key, value);
     }
 
-    private String getAllowedFileExtensions() {
+    /**
+     * Retrieves and formats list of file extensions allowed in file-upload.properties.
+     *
+     * @return String with list separated by commas and 'or' at end
+     */
+    public String getAllowedFileExtensions() {
         final List<String> extensions = config.getDistinctExtensions().stream().sorted().collect(Collectors.toList());
-        if (!extensions.isEmpty()) {
-            return String.join(" or ", String.join(", ", extensions.subList(0, extensions.size() - 1)),
-                extensions.get(extensions.size() - 1));
-        }
-        return "";
+        return extensions.stream().collect(Collectors.collectingAndThen(Collectors.toList(),
+            joiningLastDelimiter(", ", " or ")));
+    }
+
+    private static Function<List<String>, String> joiningLastDelimiter(
+        String delimiter, String lastDelimiter) {
+        return list -> {
+            int last = list.size() - 1;
+            if (last < 1) return String.join(delimiter, list);
+            return String.join(lastDelimiter,
+                String.join(delimiter, list.subList(0, last)),
+                list.get(last));
+        };
     }
 
     @Override
@@ -190,7 +204,7 @@ public class DocumentUploadModel {
      * @return The human-readable string representation of the files size.
      */
     public static String displayFileSizeAsHuman(final FileApi file) {
-        final int UNIT = 1000;
+        final int UNIT = 1024;
         if (file.getFileSize() < UNIT) {
             return file.getFileSize() + " B";
         }

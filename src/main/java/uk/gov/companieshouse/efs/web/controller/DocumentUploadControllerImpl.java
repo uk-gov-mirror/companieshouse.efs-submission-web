@@ -115,6 +115,7 @@ public class DocumentUploadControllerImpl extends BaseControllerImpl implements 
         addDynamicHintText(documentUploadAttribute, formTemplate.getFormCategory());
         model.mergeAttributes(documentUploadAttribute.getAttributes());
         addTrackingAttributeToModel(model);
+        model.addAttribute("allowedFileExtensions", documentUploadAttribute.getAllowedFileExtensions());
 
         return ViewConstants.DOCUMENT_UPLOAD.asView();
     }

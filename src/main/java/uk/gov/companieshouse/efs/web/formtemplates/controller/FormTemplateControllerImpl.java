@@ -7,9 +7,11 @@ import static uk.gov.companieshouse.efs.web.formtemplates.controller.FormTemplat
 
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Stream;
 import javax.servlet.ServletRequest;
 import javax.validation.Valid;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -108,6 +110,19 @@ public class FormTemplateControllerImpl extends BaseControllerImpl implements Fo
 
         formTemplateAttribute.setFormTemplateList(formList);
         formTemplateAttribute.setSubmissionId(submissionApi.getId());
+
+        final Optional<FormTemplateApi> selectedForm = formTemplateAttribute.getFormTemplateList().stream()
+            .filter(f -> f.getFormType().equals(formTemplateAttribute.getFormType()))
+            .findFirst();
+        // selected form category must match the category otherwise the user hasn't selected
+        // a form for the last selected category
+        final boolean formNotSelected = !selectedForm.isPresent()
+                                        || !StringUtils.equals(selectedForm.get().getFormCategory(),
+            categoryTemplateAttribute.getCategoryType());
+        if (formNotSelected) {
+            formTemplateAttribute.setDetails(new FormTemplateApi());
+        }
+
         model.addAttribute("categoryName", categoryTemplateAttribute.getCategoryName());
         model.addAttribute("isScottishCompany", isScottishCompany(companyNumber));
         addTrackingAttributeToModel(model);
@@ -125,6 +140,7 @@ public class FormTemplateControllerImpl extends BaseControllerImpl implements Fo
             BindingResult binding, Model model, ServletRequest servletRequest) {
 
         if (binding.hasErrors()) {
+            model.addAttribute("isScottishCompany", isScottishCompany(companyNumber));
             addTrackingAttributeToModel(model);
 
             return ViewConstants.DOCUMENT_SELECTION.asView();

@@ -12,7 +12,7 @@
     <a th:href="${@environment.getProperty('start.page.url')}" class="govuk-back-link" th:text="#{link.back}"></a>
     <main class="govuk-main-wrapper govuk-main-wrapper--auto-spacing" id="main-content" role="main">
         <div class="govuk-grid-row">
-            <div class="govuk-grid-column-two-thirds">
+            <div class="govuk-grid-column-two-thirds-from-desktop">
                 <span class="govuk-caption-xl" th:text="#{guidance.text}"></span>
                 <h1 class="govuk-heading-xl" th:text="#{guidance.page.title}"></h1>
                 <p class="govuk-body-l" th:text="#{guidance.how.to}"></p>
@@ -20,7 +20,8 @@
                     <span th:text="#{guidance.inset.text}"></span>
                 </div>
                 <hr class="govuk-section-break govuk-section-break--xl govuk-section-break--visible govuk-!-margin-bottom-3">
-                <p class="govuk-body-s govuk-!-margin-bottom-1" th:text="#{guidance.published.date}"></p>
+                <p class="govuk-body-s govuk-!-margin-bottom-1"
+                   th:text="#{guidance.published.date}"></p>
                 <p class="govuk-body-s">
                     <span th:text="#{guidance.from}"></span>
                     <a class="govuk-link govuk-!-font-weight-bold" th:href="${@environment.getProperty('govuk.ch.url')}">
@@ -71,16 +72,30 @@
                         <div id="accordion-default-content-1" class="govuk-accordion__section-content" aria-labelledby="accordion-default-heading-1">
                             <p class="govuk-body" th:text="#{guidance.documents.you.can.upload.insolvency.description}"></p>
                             <p class="govuk-body">
-                                <span th:text="#{guidance.documents.you.can.upload.insolvency.linkDescriptionText}"></span>
-                                <a th:href="${@environment.getProperty('company.registration.filing.forms')}" class="govuk-link"
-                                   th:text="#{guidance.documents.you.can.upload.insolvency.linkText}">
-                                </a>
+                                <a href="https://www.gov.uk/government/collections/companies-house-moratorium-forms"
+                                   th:text="#{guidance.documents.you.can.upload.moratorium}" class="govuk-link"></a>
+                            </p>
+                            <p class="govuk-body">
+                                <a href="https://www.gov.uk/government/collections/companies-house-forms-for-insolvency-rules-2016"
+                                   th:text="#{guidance.documents.you.can.upload.rules2016}" class="govuk-link"></a>
+                            </p>
+                            <p class="govuk-body">
+                                <a href="https://www.gov.uk/government/collections/companies-house-forms-for-insolvency"
+                                   th:text="#{guidance.documents.you.can.upload.1986}" class="govuk-link"></a>
+                            </p>
+                            <p class="govuk-body">
+                                <a href="https://www.gov.uk/government/collections/companies-house-forms-for-insolvency-scotland"
+                                   th:text="#{guidance.documents.you.can.upload.scotland}" class="govuk-link"></a>
                             </p>
                             <p class="govuk-body">
                                 <span th:text="#{guidance.documents.you.can.upload.insolvency.ad01.text1}"></span>
                                 <a href="https://www.gov.uk/government/publications/change-a-registered-office-address-ad01"
                                    th:text="#{guidance.documents.you.can.upload.insolvency.ad01.linkText}" class="govuk-link"></a>
                                 <span th:text="#{guidance.documents.you.can.upload.insolvency.ad01.text2}"></span>
+                            </p>
+                            <p>
+                                <span th:text="#{guidance.documents.you.can.upload.insolvency.read}"></span>
+                                <a class="govuk-link piwik-event" data-event-id="insolvency-guidance-link-top" th:href="${@environment.getProperty('insolvency.guidance.page.url')}" th:text="#{guidance.documents.you.can.upload.insolvency.link}"></a>
                             </p>
                         </div>
                     </div>
@@ -393,6 +408,8 @@
                     <li th:text="#{guidance.signature.item3}"></li>
                     <li th:text="#{guidance.signature.item4}"></li>
                 </ul>
+                <h3 class="govuk-heading-m" th:text="#{guidance.cover.letter}"></h3>
+                <p class="govuk-body" th:text="#{guidance.cover.letter.text}"></p>
                 <h2 class="govuk-heading-l" id="documents-that-need-evidence" th:text="#{guidance.documents.that.need.evidence}"></h2>
                 <h3 class="govuk-heading-m" th:text="#{guidance.documents.that.need.evidence.form.name}"></h3>
                 <p class="govuk-body" th:text="#{guidance.documents.that.need.evidence.guide}"></p>
@@ -419,6 +436,8 @@
                 <h2 class="govuk-heading-l" id="what-happens-next" th:text="#{guidance.what.happens.next}"></h2>
                 <p class="govuk-body" th:text="#{guidance.what.happens.next.text1}"></p>
                 <p class="govuk-body" th:text="#{guidance.what.happens.next.text2}"></p>
+                <h3 class="govuk-heading-s"
+                    th:text="#{guidance.what.happens.next.registrars.powers.heading}"></h3>
                 <p class="govuk-body" th:text="#{guidance.what.happens.next.text3}"></p>
                 <h2 class="govuk-heading-l" id="contact-us" th:text="#{guidance.contact.us}"></h2>
                 <p class="govuk-body">

@@ -11,7 +11,7 @@
     <div class="govuk-width-container">
         <main class="govuk-main-wrapper govuk-main-wrapper--auto-spacing" id="main-content" role="main">
             <div class="govuk-grid-row">
-                <div class="govuk-grid-column-two-thirds">
+                <div class="govuk-grid-column-two-thirds-from-desktop">
                     <h1 class="govuk-heading-xl" th:text="#{start.title}"></h1>
                     <p class="govuk-body-lead" th:text="#{start.service.description}"></p>
                     <p class="govuk-body" th:text="#{start.upload.certain.documents}"></p>
@@ -26,6 +26,10 @@
                     <p>
                         <a class="govuk-link piwik-event" data-event-id="guidance-link-top" th:href="${@environment.getProperty('guidance.page.url')}" th:text="#{start.list.of.documents}"></a>
                         <span th:text="#{start.service.text}"></span>
+                    </p>
+                    <p>
+                        <span th:text="#{start.insolvency.guidance.text}"></span>
+                        <a class="govuk-link piwik-event" data-event-id="insolvency-guidance-link-top" th:href="${@environment.getProperty('insolvency.guidance.page.url')}" th:text="#{start.insolvency.guidance.link}"></a>
                     </p>
                     <div class="govuk-inset-text" th:text="#{start.interim.service.covid.description}"></div>
                     <p class="govuk-body" th:text="#{start.list.title}"></p>

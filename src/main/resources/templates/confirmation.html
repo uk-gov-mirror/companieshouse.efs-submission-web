@@ -12,13 +12,14 @@
 <div class="govuk-width-container">
     <main class="govuk-main-wrapper govuk-main-wrapper--auto-spacing" id="main-content" role="main">
         <div class="govuk-grid-row">
-            <div class="govuk-grid-column-two-thirds">
+            <div class="govuk-grid-column-two-thirds-from-desktop">
                 <div class="govuk-panel govuk-panel--confirmation-green">
                     <h1 class="govuk-panel__title" th:text="#{confirmation.title}"></h1>
                     <div class="govuk-panel__body">
                         <span th:text="#{confirmation.banner.ref}"></span>
                         <br/>
-                        <span id="confirmation-ref" th:text="${#strings.replace(confirmationRef,' ','&ensp;')}"></span>
+                        <span id="confirmation-ref"
+                              th:text="${#strings.replace(confirmationRef,' ','&ensp;')}"></span>
                     </div>
                 </div>
                 <br/>
@@ -33,7 +34,7 @@
                 </div>
                 <div class="govuk-warning-text">
                     <span class="govuk-warning-text__icon" aria-hidden="true">!</span>
-                    <strong class="govuk-warning-text__text" style="padding-left: 65px;">
+                    <strong class="govuk-warning-text__text govuk-!-margin-left-2 govuk-!-margin-top-4">
                         <span class="govuk-warning-text__assistive">Warning</span>
                         <span th:text="#{confirmation.happens.warning.text}"></span>
                     </strong>

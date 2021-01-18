@@ -11,12 +11,13 @@
     <div class="govuk-width-container">
         <main class="govuk-main-wrapper govuk-main-wrapper--auto-spacing" id="main-content" role="main">
             <div class="govuk-grid-row">
-                <div class="govuk-grid-column-two-thirds">
+                <div class="govuk-grid-column-two-thirds-from-desktop">
                     <h1 class="govuk-heading-xl" th:text="#{accessibilityStatement.heading}">
                     </h1>
                     <p>
                         <span th:text="#{accessibilityStatement.runBy}"></span>
-                        <a th:href="${@environment.getProperty('govuk.ch.url')}" th:text="#{accessibilityStatement.companiesHouse}"></a>
+                        <a th:href="${@environment.getProperty('govuk.ch.url')}"
+                           th:text="#{accessibilityStatement.companiesHouse}"></a>
                         <span th:text="#{accessibilityStatement.asManyAsPossible}"></span>
                     </p>
                     <ul class="govuk-list govuk-list--bullet">

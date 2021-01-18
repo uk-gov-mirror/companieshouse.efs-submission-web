@@ -10,21 +10,26 @@
 <body class="govuk-template__body" layout:fragment="content">
 
 <form th:id="upload-form" th:action="@{/efs-submission/{id}/company/{companyNumber}/document-upload(id=*{submissionId}, companyNumber=*{companyNumber})}" th:object="${documentUpload}" method="post" enctype="multipart/form-data">
-
+    <a class="govuk-back-link"
+       th:href="@{/efs-submission/{id}/company/{companyNumber}/document-selection?category={category}(id=*{submissionId}, companyNumber=*{companyNumber}, category=${categoryTemplate.categoryType})}"
+       th:text="#{link.back}"></a>
     <!-- Main Content -->
     <main class="govuk-main-wrapper" id="main-content" role="main">
         <div class="govuk-grid-row">
-            <div class="govuk-grid-column-two-thirds">
+            <div class="govuk-grid-column-two-thirds-from-desktop">
                 <div th:replace="fragments/errorSummary :: errorSummary"></div>
-                <span class="govuk-caption-xl" th:text="#{documentUpload.companyNameLabel} + ' ' + *{#strings.replace(companyName,'&#10;','&lt;br&gt;')}"></span>
-                <h1 class="govuk-heading-xl govuk-!-margin-bottom-5" th:text="#{documentUpload.title}"></h1>
+                <span class="govuk-caption-xl"
+                      th:text="#{documentUpload.companyNameLabel} + ' ' + *{#strings.replace(companyName,'&#10;','&lt;br&gt;')}"></span>
+                <h1 class="govuk-heading-xl govuk-!-margin-bottom-5"
+                    th:text="#{documentUpload.title}"></h1>
 
                 <!-- Guidance text -->
                 <p class="govuk-body" th:text="#{documentUpload.guidance.heading}"></p>
                 <ul class="govuk-list govuk-list--bullet">
                     <li class="govuk-body" th:text="#{documentUpload.guidance.para1}"></li>
-                    <li class="govuk-body" th:text="#{documentUpload.guidance.para2(*{maximumUploadsAllowed})}"></li>
-                    <li class="govuk-body" th:text="#{documentUpload.guidance.para3}"></li>
+                    <li class="govuk-body"
+                        th:text="#{documentUpload.guidance.para2(*{maximumUploadsAllowed})}"></li>
+                    <li class="govuk-body" th:text="#{documentUpload.guidance.para3(${allowedFileExtensions})}"></li>
                 </ul>
                 <div th:unless="${showCcReminder}" th:if="*{maximumUploadsAllowed} &gt; 1" class="govuk-inset-text"
                      th:text="#{documentUpload.guidance.help}"></div>
