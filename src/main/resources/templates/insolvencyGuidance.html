@@ -140,6 +140,10 @@
                 <h3 class="govuk-heading-m" th:text="#{insolvency.guidance.cover.letter}"></h3>
                 <p class="govuk-body" th:text="#{insolvency.guidance.cover.letter.text}"></p>
 
+                <div th:replace="fragments/guidance/continuationPages :: continuationPages"></div>
+
+                <div th:replace="fragments/guidance/howToUploadDocuments :: howToUploadDocuments"></div>
+
                 <h2 class="govuk-heading-l" id="what-happens-next" th:text="#{guidance.what.happens.next}"></h2>
                 <p class="govuk-body" th:text="#{insolvency.guidance.what.happens.next.text1}"></p>
                 <p class="govuk-body" th:text="#{insolvency.guidance.what.happens.next.text2}"></p>
