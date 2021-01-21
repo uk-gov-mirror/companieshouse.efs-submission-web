@@ -41,6 +41,11 @@
                         </a>
                     </li>
                     <li>
+                        <a class="govuk-link govuk-body-s" href="#how-to-upload-documents">
+                            <span th:text="#{guidance.how.to.upload.documents}"></span>
+                        </a>
+                    </li>
+                    <li>
                         <a class="govuk-link govuk-body-s" href="#documents-that-need-evidence">
                             <span th:text="#{guidance.documents.that.need.evidence}"></span>
                         </a>
@@ -412,6 +417,10 @@
                 <p class="govuk-body" th:text="#{guidance.cover.letter.text}"></p>
                 <div th:replace="fragments/guidance/continuationPages :: continuationPages"></div>
                 <div th:replace="fragments/guidance/howToUploadDocuments :: howToUploadDocuments"></div>
+                <p class="govuk-body">
+                    <span th:text="#{guidance.how.to.upload.documents.para3}"></span>
+                    <span th:text="#{guidance.how.to.upload.documents.para4}"></span>
+                </p>
                 <h2 class="govuk-heading-l" id="documents-that-need-evidence" th:text="#{guidance.documents.that.need.evidence}"></h2>
                 <h3 class="govuk-heading-m" th:text="#{guidance.documents.that.need.evidence.form.name}"></h3>
                 <p class="govuk-body" th:text="#{guidance.documents.that.need.evidence.guide}"></p>

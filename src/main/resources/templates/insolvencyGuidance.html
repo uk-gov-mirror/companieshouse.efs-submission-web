@@ -46,6 +46,11 @@
                         </a>
                     </li>
                     <li>
+                        <a class="govuk-link govuk-body-s" href="#how-to-upload-documents">
+                            <span th:text="#{guidance.how.to.upload.documents}"></span>
+                        </a>
+                    </li>
+                    <li>
                         <a class="govuk-link govuk-body-s" href="#what-happens-next">
                             <span th:text="#{guidance.what.happens.next}"></span>
                         </a>
@@ -143,6 +148,9 @@
                 <div th:replace="fragments/guidance/continuationPages :: continuationPages"></div>
 
                 <div th:replace="fragments/guidance/howToUploadDocuments :: howToUploadDocuments"></div>
+                <p class="govuk-body">
+                    <span th:text="#{guidance.how.to.upload.documents.para3}"></span>
+                </p>
 
                 <h2 class="govuk-heading-l" id="what-happens-next" th:text="#{guidance.what.happens.next}"></h2>
                 <p class="govuk-body" th:text="#{insolvency.guidance.what.happens.next.text1}"></p>
