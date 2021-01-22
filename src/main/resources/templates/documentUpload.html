@@ -24,16 +24,9 @@
                     th:text="#{documentUpload.title}"></h1>
 
                 <!-- Guidance text -->
-                <p class="govuk-body" th:text="#{documentUpload.guidance.heading}"></p>
                 <div th:each="textId : ${messageTextList.list}">
                     <div th:replace="__${'fragments/documentUpload/guidance :: guidance' + textId}__"></div>
                 </div>
-                <div th:unless="${showCcReminder}" th:if="*{maximumUploadsAllowed} &gt; 1" class="govuk-inset-text"
-                     th:text="#{documentUpload.guidance.help}"></div>
-                <div th:unless="${showCcReminder}" th:if="*{maximumUploadsAllowed} == 1" class="govuk-inset-text"
-                     th:text="#{documentUpload.guidance.help.fes}"></div>
-                <div th:if="${showCcReminder}" class="govuk-inset-text"
-                     th:text="#{documentUpload.guidance.help.cc}"></div>
 
                 <!-- File Uploader -->
                 <div id="file-upload-panel" th:unless="*{maximumUploadLimitReached}">
