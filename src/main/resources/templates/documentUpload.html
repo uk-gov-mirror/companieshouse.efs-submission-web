@@ -25,12 +25,9 @@
 
                 <!-- Guidance text -->
                 <p class="govuk-body" th:text="#{documentUpload.guidance.heading}"></p>
-                <ul class="govuk-list govuk-list--bullet">
-                    <li class="govuk-body" th:text="#{documentUpload.guidance.para1}"></li>
-                    <li class="govuk-body"
-                        th:text="#{documentUpload.guidance.para2(*{maximumUploadsAllowed})}"></li>
-                    <li class="govuk-body" th:text="#{documentUpload.guidance.para3(${allowedFileExtensions})}"></li>
-                </ul>
+                <div th:each="textId : ${messageTextList.list}">
+                    <div th:replace="__${'fragments/documentUpload/guidance :: guidance' + textId}__"></div>
+                </div>
                 <div th:unless="${showCcReminder}" th:if="*{maximumUploadsAllowed} &gt; 1" class="govuk-inset-text"
                      th:text="#{documentUpload.guidance.help}"></div>
                 <div th:unless="${showCcReminder}" th:if="*{maximumUploadsAllowed} == 1" class="govuk-inset-text"

@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html
+        xmlns:th="http://www.thymeleaf.org"
+        lang="en">
+<head>
+    <title></title>
+</head>
+<body>
+<div th:fragment="guidance0">
+    <ul class="govuk-list govuk-list--bullet">
+        <li class="govuk-body" th:text="#{documentUpload.guidance0.para1}"></li>
+        <li class="govuk-body"
+            th:text="#{documentUpload.guidance0.para2(*{maximumUploadsAllowed})}"></li>
+        <li class="govuk-body" th:text="#{documentUpload.guidance0.para3(${allowedFileExtensions})}"></li>
+    </ul>
+</div>
+<div th:fragment="guidance1">
+    <div class="govuk-inset-text">phil test</div>
+</div>
+</body>
+</html>
