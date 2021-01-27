@@ -5,6 +5,7 @@ import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.when;
 
 import java.util.Collections;
+import org.hamcrest.MatcherAssert;
 import org.junit.Assert;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -23,7 +24,7 @@ import uk.gov.companieshouse.api.model.efs.submissions.SubmissionStatus;
 class ResolutionsInfoControllerImplTest extends BaseControllerImplTest {
 
     public static final FormTemplateApi RESOLUTIONS_FORM = new FormTemplateApi("RESOLUTIONS", "Resolutions",
-        "RESOLUTIONS", "", true, true);
+        "RESOLUTIONS", "", true, true, null);
 
     private ResolutionsInfoController testController;
 
@@ -37,7 +38,7 @@ class ResolutionsInfoControllerImplTest extends BaseControllerImplTest {
 
     @Test
     void getViewName() {
-        Assert.assertThat(((ResolutionsInfoControllerImpl) testController).getViewName(),
+        MatcherAssert.assertThat(((ResolutionsInfoControllerImpl) testController).getViewName(),
             is(ViewConstants.RESOLUTIONS_INFO.asView()));
     }
 

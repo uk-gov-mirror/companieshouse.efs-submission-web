@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html
+        xmlns:th="http://www.thymeleaf.org"
+        lang="en">
+<head>
+    <title></title>
+</head>
+<body>
+<div th:fragment="guidance0">
+    <p class="govuk-body" th:text="#{documentUpload.guidance.heading}"></p>
+    <ul class="govuk-list govuk-list--bullet">
+        <li class="govuk-body" th:text="#{documentUpload.guidance0.para1}"></li>
+        <li class="govuk-body"
+            th:text="#{documentUpload.guidance0.para2(*{maximumFileSize})}"></li>
+        <li class="govuk-body" th:text="#{documentUpload.guidance0.para3(${allowedFileExtensions})}"></li>
+    </ul>
+    <div th:unless="${showCcReminder}" th:if="*{maximumUploadsAllowed} &gt; 1" class="govuk-inset-text"
+         th:text="#{documentUpload.guidance.help}"></div>
+    <div th:unless="${showCcReminder}" th:if="*{maximumUploadsAllowed} == 1" class="govuk-inset-text"
+         th:text="#{documentUpload.guidance.help.fes}"></div>
+    <div th:if="${showCcReminder}" class="govuk-inset-text"
+         th:text="#{documentUpload.guidance.help.cc}"></div>
+</div>
+
+<div th:fragment="guidance1">
+    <p class="govuk-body" th:text="#{documentUpload.guidance.heading}"></p>
+    <ul class="govuk-list govuk-list--bullet">
+        <li class="govuk-body" th:text="#{documentUpload.guidance1.para1}"></li>
+        <li class="govuk-body" th:text="#{documentUpload.guidance1.para2(*{maximumFileSize})}"></li>
+        <li class="govuk-body" th:text="#{documentUpload.guidance1.para3(${allowedFileExtensions})}"></li>
+    </ul>
+</div>
+
+<div th:fragment="guidance2">
+    <p class="govuk-body" th:text="#{documentUpload.guidance2.para1}"></p>
+    <div class="govuk-inset-text" th:text="#{documentUpload.guidance2.para2}"></div>
+    <p class="govuk-body" th:text="#{documentUpload.guidance2.para3}"></p>
+</div>
+
+<div th:fragment="guidance3">
+    <p class="govuk-body" th:text="#{documentUpload.guidance.heading}"></p>
+    <ul class="govuk-list govuk-list--bullet">
+        <li class="govuk-body" th:text="#{documentUpload.guidance3.para1(${formType})}"></li>
+        <li class="govuk-body" th:text="#{documentUpload.guidance3.para2(${allowedFileExtensions})}"></li>
+        <li class="govuk-body" th:text="#{documentUpload.guidance3.para3}"></li>
+    </ul>
+    <div class="govuk-inset-text" th:text="#{documentUpload.guidance3.para4(*{maximumUploadsAllowed},${formType},*{maximumFileSize})}"></div>
+</div>
+
+</body>
+</html>
