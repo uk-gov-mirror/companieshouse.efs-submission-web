@@ -23,7 +23,7 @@ class FormTemplateModelTest {
     void setUp() {
 
         formTemplate = new FormTemplateApi("CC01", "Test01", "CC03",
-                "CC01", true, true);
+                "CC01", true, true, null);
         testFormTemplate = new FormTemplateModel(formTemplate);
     }
 

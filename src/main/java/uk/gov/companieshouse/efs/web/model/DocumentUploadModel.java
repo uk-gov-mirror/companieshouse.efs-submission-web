@@ -28,6 +28,7 @@ public class DocumentUploadModel {
 
     private Integer maximumUploadsAllowed;
     private Boolean maximumUploadLimitReached;
+    private String maximumFileSize;
     private String companyNumber;
     private String companyName;
     private ModelMap attributes;
@@ -69,6 +70,14 @@ public class DocumentUploadModel {
 
     public void setMaximumUploadLimitReached(Boolean maximumUploadLimitReached) {
         this.maximumUploadLimitReached = maximumUploadLimitReached;
+    }
+
+    public String getMaximumFileSize() {
+        return maximumFileSize;
+    }
+
+    public void setMaximumFileSize(final String maximumFileSize) {
+        this.maximumFileSize = maximumFileSize;
     }
 
     public String getCompanyNumber() {
@@ -179,6 +188,7 @@ public class DocumentUploadModel {
         return Objects.equals(config, that.config) && Objects.equals(getSubmissionId(), that.getSubmissionId())
             && Objects.equals(getMaximumUploadsAllowed(), that.getMaximumUploadsAllowed()) && Objects
             .equals(getMaximumUploadLimitReached(), that.getMaximumUploadLimitReached()) && Objects
+            .equals(getMaximumFileSize(), that.getMaximumFileSize()) && Objects
             .equals(getCompanyNumber(), that.getCompanyNumber()) && Objects
             .equals(getCompanyName(), that.getCompanyName()) && Objects.equals(getAttributes(), that.getAttributes())
             && Objects.equals(getSelectedFiles(), that.getSelectedFiles()) && Objects
@@ -188,7 +198,7 @@ public class DocumentUploadModel {
     @Override
     public int hashCode() {
         return Objects.hash(config, getSubmissionId(), getMaximumUploadsAllowed(), getMaximumUploadLimitReached(),
-            getCompanyNumber(), getCompanyName(), getAttributes(), getSelectedFiles(), getDetails());
+            getMaximumFileSize(), getCompanyNumber(), getCompanyName(), getAttributes(), getSelectedFiles(), getDetails());
     }
 
     @Override

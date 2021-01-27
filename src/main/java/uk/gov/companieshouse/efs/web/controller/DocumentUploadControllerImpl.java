@@ -116,6 +116,8 @@ public class DocumentUploadControllerImpl extends BaseControllerImpl implements 
         model.mergeAttributes(documentUploadAttribute.getAttributes());
         addTrackingAttributeToModel(model);
         model.addAttribute("allowedFileExtensions", documentUploadAttribute.getAllowedFileExtensions());
+        model.addAttribute("formType", formTemplate.getFormType());
+        model.addAttribute("messageTextList", formTemplate.getMessageTexts());
 
         return ViewConstants.DOCUMENT_UPLOAD.asView();
     }
@@ -229,6 +231,7 @@ public class DocumentUploadControllerImpl extends BaseControllerImpl implements 
         documentUploadAttribute.setCompanyName(submissionApi.getCompany().getCompanyName());
         documentUploadAttribute.setMaximumUploadsAllowed(maximumUploadsAllowed);
         documentUploadAttribute.setMaximumUploadLimitReached(maximumUploadsLimitReached);
+        documentUploadAttribute.setMaximumFileSize(fileUploadConfiguration.getMaximumFilesize());
         documentUploadAttribute.setDetails(uploadedFiles);
     }
 
