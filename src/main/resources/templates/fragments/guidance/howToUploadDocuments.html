@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html
+        xmlns:th="http://www.thymeleaf.org"
+        lang="en">
+<head>
+    <title></title>
+</head>
+<body>
+    <div th:fragment="howToUploadDocuments (include_para4)">
+        <h2 class="govuk-heading-l" id="how-to-upload-documents" th:text="#{guidance.how.to.upload.documents}"></h2>
+        <p class="govuk-body" th:text="#{guidance.how.to.upload.documents.para1}"></p>
+        <p class="govuk-body" th:text="#{guidance.how.to.upload.documents.para2}"></p>
+        <p class="govuk-body">
+            <span th:text="#{guidance.how.to.upload.documents.para3}"></span>
+            <span th:if="${include_para4}" th:text="#{guidance.how.to.upload.documents.para4}"></span>
+        </p>
+    </div>
+</body>
+</html>
