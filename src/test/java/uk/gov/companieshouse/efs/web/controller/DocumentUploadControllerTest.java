@@ -451,6 +451,16 @@ class DocumentUploadControllerTest extends BaseControllerImplTest {
         String submissionID = submissionApi.getId();
         String companyNumber = submissionApi.getCompany().getCompanyNumber();
 
+        ApiResponse<SubmissionApi> apiSubmissionResponse = mock(ApiResponse.class);
+        when(apiSubmissionResponse.getData()).thenReturn(submissionApi);
+        when(apiSubmissionResponse.getStatusCode()).thenReturn(200);
+        when(apiClientService.getSubmission(SUBMISSION_ID)).thenReturn(apiSubmissionResponse);
+
+        FormTemplateApi formTemplateApi = mock(FormTemplateApi.class);
+        ApiResponse<FormTemplateApi> apiFormTypeResponse = mock(ApiResponse.class);
+        when(apiFormTypeResponse.getData()).thenReturn(formTemplateApi);
+        when(formTemplateService.getFormTemplate(FORM_TYPE_CODE)).thenReturn(apiFormTypeResponse);
+
         List<FileApi> fileList = new ArrayList<>();
         fileList.add(new FileApi("my-file-upload-response-guid", "testfile.txt", 9L));
 
@@ -463,13 +473,22 @@ class DocumentUploadControllerTest extends BaseControllerImplTest {
         assertThat(viewName, is(ViewConstants.CHECK_DETAILS.asRedirectUri(CHS_URL, submissionApi.getId(), companyNumber)));
     }
 
-
     @Test
     void testFinishDocumentUploadFailure() {
         SubmissionApi submissionApi = createValidSubmissionApi(1);
 
         String submissionID = submissionApi.getId();
         String companyNumber = submissionApi.getCompany().getCompanyNumber();
+
+        ApiResponse<SubmissionApi> apiSubmissionResponse = mock(ApiResponse.class);
+        when(apiSubmissionResponse.getData()).thenReturn(submissionApi);
+        when(apiSubmissionResponse.getStatusCode()).thenReturn(200);
+        when(apiClientService.getSubmission(SUBMISSION_ID)).thenReturn(apiSubmissionResponse);
+
+        FormTemplateApi formTemplateApi = mock(FormTemplateApi.class);
+        ApiResponse<FormTemplateApi> apiFormTypeResponse = mock(ApiResponse.class);
+        when(apiFormTypeResponse.getData()).thenReturn(formTemplateApi);
+        when(formTemplateService.getFormTemplate(FORM_TYPE_CODE)).thenReturn(apiFormTypeResponse);
 
         when(documentUploadAttribute.getDetails()).thenReturn(new FileListApi());
 
