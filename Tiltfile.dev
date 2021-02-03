@@ -9,9 +9,22 @@ custom_build(
     'mvn -s settings.xml compile jib:dockerBuild -Dimage=$EXPECTED_REF',
     live_update = [
         sync(
-          local_path = './target/classes',
-          remote_path = '/app/classes'
+          local_path = './target/classes/uk',
+          remote_path = '/app/classes/uk'
         ),
+        sync(
+            local_path = './target/classes/templates',
+            remote_path = '/app/resources/templates'
+        ),
+        sync(
+            local_path = './target/classes/META-INF',
+            remote_path = '/app/classes/META-INF'
+        ),
+        sync(
+             local_path = './target/classes/*.properties',
+             remote_path = '/app/resources'
+        ),
+
         restart_container()
     ],
     deps = ['./target/classes']
