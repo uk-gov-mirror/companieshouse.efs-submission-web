@@ -118,6 +118,7 @@ public class DocumentUploadControllerImpl extends BaseControllerImpl implements 
         model.addAttribute("allowedFileExtensions", documentUploadAttribute.getAllowedFileExtensions());
         model.addAttribute("formType", formTemplate.getFormType());
         model.addAttribute("messageTextList", formTemplate.getMessageTexts());
+        logger.debug(String.format("Adding text fragments: %s", formTemplate.getMessageTexts()));
 
         return ViewConstants.DOCUMENT_UPLOAD.asView();
     }
