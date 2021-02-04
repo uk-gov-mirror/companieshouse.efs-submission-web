@@ -185,13 +185,15 @@ public class DocumentUploadControllerImpl extends BaseControllerImpl implements 
         Model model, HttpServletRequest servletRequest, HttpSession session) {
 
         final FileListApi files = getDocumentUploadAttribute().getDetails();
+        final SubmissionApi submissionApi = Objects.requireNonNull(getSubmission(id));
+        final FormTemplateApi formTemplate = getFormTemplateApi(submissionApi.getSubmissionForm().getFormType());
 
         model.mergeAttributes(documentUploadAttribute.getAttributes());
         if (files == null || files.getFiles().isEmpty()) {
             String message = resourceBundle.getString("no_file_selected.documentUpload");
             binding.rejectValue("selectedFiles", "error.minimum-file-limit", message);
             addTrackingAttributeToModel(model);
-
+            model.addAttribute("messageTextList", formTemplate.getMessageTexts());
             return ViewConstants.DOCUMENT_UPLOAD.asView();
         }
 

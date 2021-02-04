@@ -24,6 +24,7 @@ custom_build(
              local_path = './target/classes/*.properties',
              remote_path = '/app/resources'
         ),
+
         restart_container()
     ],
     deps = ['./target/classes']
