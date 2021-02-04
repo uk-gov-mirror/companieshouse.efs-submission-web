@@ -9,6 +9,19 @@
     <div th:fragment="continuationPages">
         <h3 class="govuk-heading-m" id="" th:text="#{guidance.continuation.pages}"></h3>
         <p class="govuk-body" th:text="#{guidance.continuation.pages.text}"></p>
+        <details class="govuk-details" data-module="govuk-details">
+            <summary class="govuk-details__summary">
+                <span class="govuk-details__summary-text" th:text="#{guidance.continuation.pages.summary}"></span>
+            </summary>
+            <div class="govuk-details__text">
+                <p class="govuk-body" th:text="#{guidance.continuation.pages.para1}"></p>
+                <ul class="govuk-list govuk-list--bullet">
+                    <li th:text="#{guidance.continuation.pages.list1}"></li>
+                    <li th:text="#{guidance.continuation.pages.list2}"></li>
+                    <li th:text="#{guidance.continuation.pages.list3}"></li>
+                </ul>
+            </div>
+        </details>
     </div>
 </body>
 </html>
