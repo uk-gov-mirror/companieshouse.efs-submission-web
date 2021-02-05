@@ -114,11 +114,7 @@ public class DocumentUploadControllerImpl extends BaseControllerImpl implements 
         addDataToPrepareModel(documentUploadAttribute, submissionApi, formTemplate, uploadedFiles);
         addDynamicHintText(documentUploadAttribute, formTemplate.getFormCategory());
         model.mergeAttributes(documentUploadAttribute.getAttributes());
-        addTrackingAttributeToModel(model);
-        model.addAttribute("allowedFileExtensions", documentUploadAttribute.getAllowedFileExtensions());
-        model.addAttribute("formType", formTemplate.getFormType());
-        model.addAttribute("messageTextList", formTemplate.getMessageTexts());
-        logger.debug(String.format("Adding text fragments: %s", formTemplate.getMessageTexts()));
+        addDataToModel(documentUploadAttribute, model, formTemplate);
 
         return ViewConstants.DOCUMENT_UPLOAD.asView();
     }
@@ -138,7 +134,7 @@ public class DocumentUploadControllerImpl extends BaseControllerImpl implements 
 
         model.mergeAttributes(documentUploadAttribute.getAttributes());
         if (!verifySubmission(submissionApi)) {
-            model.addAttribute("messageTextList", formTemplate.getMessageTexts());
+            addDataToModel(documentUploadAttribute, model, formTemplate);
             return ViewConstants.ERROR.asView();
         }
 
@@ -152,8 +148,7 @@ public class DocumentUploadControllerImpl extends BaseControllerImpl implements 
             .stream().collect(Collectors.toMap(file -> fileTransferApiClient.upload(file).getFileId(), file -> file));
 
         if (binding.hasErrors()) {
-            addTrackingAttributeToModel(model);
-            model.addAttribute("messageTextList", formTemplate.getMessageTexts());
+            addDataToModel(documentUploadAttribute, model, formTemplate);
             return ViewConstants.DOCUMENT_UPLOAD.asView();
         }
 
@@ -196,8 +191,7 @@ public class DocumentUploadControllerImpl extends BaseControllerImpl implements 
         if (files == null || files.getFiles().isEmpty()) {
             String message = resourceBundle.getString("no_file_selected.documentUpload");
             binding.rejectValue("selectedFiles", "error.minimum-file-limit", message);
-            addTrackingAttributeToModel(model);
-            model.addAttribute("messageTextList", formTemplate.getMessageTexts());
+            addDataToModel(documentUploadAttribute, model, formTemplate);
             return ViewConstants.DOCUMENT_UPLOAD.asView();
         }
 
@@ -224,7 +218,7 @@ public class DocumentUploadControllerImpl extends BaseControllerImpl implements 
         final SubmissionApi submissionApi, @NonNull FormTemplateApi formTemplate, final FileListApi uploadedFiles) {
         final boolean isFesEnabled = formTemplate.isFesEnabled();
 
-        /**
+        /*
          * Have to ascertain how many uploads can be supplied as part of a submission.
          * Depending on the type of form we are using, we may need to override the basic
          * configuration to restrict it to a single file (for FES enabled forms).
@@ -247,5 +241,13 @@ public class DocumentUploadControllerImpl extends BaseControllerImpl implements 
                 == CategoryTypeConstants.CHANGE_OF_CONSTITUTION);
     }
 
+    private void addDataToModel(@ModelAttribute(ATTRIBUTE_NAME) final DocumentUploadModel documentUploadAttribute,
+        final Model model, final FormTemplateApi formTemplate) {
+        model.addAttribute("allowedFileExtensions", documentUploadAttribute.getAllowedFileExtensions());
+        model.addAttribute("formType", formTemplate.getFormType());
+        model.addAttribute("messageTextList", formTemplate.getMessageTexts());
+        logger.debug(String.format("Adding text fragments: %s", formTemplate.getMessageTexts()));
+        addTrackingAttributeToModel(model);
+    }
 
 }
