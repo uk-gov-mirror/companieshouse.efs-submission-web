@@ -134,9 +134,11 @@ public class DocumentUploadControllerImpl extends BaseControllerImpl implements 
         HttpServletRequest servletRequest, HttpSession session) {
 
         final SubmissionApi submissionApi = Objects.requireNonNull(getSubmission(id));
+        final FormTemplateApi formTemplate = getFormTemplateApi(submissionApi.getSubmissionForm().getFormType());
 
         model.mergeAttributes(documentUploadAttribute.getAttributes());
         if (!verifySubmission(submissionApi)) {
+            model.addAttribute("messageTextList", formTemplate.getMessageTexts());
             return ViewConstants.ERROR.asView();
         }
 
@@ -151,6 +153,7 @@ public class DocumentUploadControllerImpl extends BaseControllerImpl implements 
 
         if (binding.hasErrors()) {
             addTrackingAttributeToModel(model);
+            model.addAttribute("messageTextList", formTemplate.getMessageTexts());
             return ViewConstants.DOCUMENT_UPLOAD.asView();
         }
 

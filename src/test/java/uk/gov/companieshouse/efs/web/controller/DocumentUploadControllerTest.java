@@ -326,6 +326,11 @@ class DocumentUploadControllerTest extends BaseControllerImplTest {
         when(sessionService.getSessionDataFromContext()).thenReturn(sessionContextData);
         when(sessionService.getUserEmail()).thenReturn(SIGNED_IN_USER);
 
+        FormTemplateApi formTemplateApi = mock(FormTemplateApi.class);
+        ApiResponse<FormTemplateApi> apiFormTypeResponse = mock(ApiResponse.class);
+        when(apiFormTypeResponse.getData()).thenReturn(formTemplateApi);
+        when(formTemplateService.getFormTemplate(FORM_TYPE_CODE)).thenReturn(apiFormTypeResponse);
+
         BindingResult binding = mock(BindingResult.class);
 
         String viewName = toTest.process(submissionID, companyNumber, documentUploadAttribute, binding, model, servletRequest, httpSession);
@@ -352,6 +357,11 @@ class DocumentUploadControllerTest extends BaseControllerImplTest {
         when(sessionService.getSessionDataFromContext()).thenReturn(sessionContextData);
         when(sessionService.getUserEmail()).thenReturn("wrong.user@ch.gov.uk");
 
+        FormTemplateApi formTemplateApi = mock(FormTemplateApi.class);
+        ApiResponse<FormTemplateApi> apiFormTypeResponse = mock(ApiResponse.class);
+        when(apiFormTypeResponse.getData()).thenReturn(formTemplateApi);
+        when(formTemplateService.getFormTemplate(FORM_TYPE_CODE)).thenReturn(apiFormTypeResponse);
+
         BindingResult binding = mock(BindingResult.class);
 
         String viewName = toTest.process(submissionID, companyNumber, documentUploadAttribute, binding, model, servletRequest, httpSession);
@@ -377,6 +387,11 @@ class DocumentUploadControllerTest extends BaseControllerImplTest {
 
         when(sessionService.getSessionDataFromContext()).thenReturn(sessionContextData);
         when(sessionService.getUserEmail()).thenReturn(SIGNED_IN_USER);
+
+        FormTemplateApi formTemplateApi = mock(FormTemplateApi.class);
+        ApiResponse<FormTemplateApi> apiFormTypeResponse = mock(ApiResponse.class);
+        when(apiFormTypeResponse.getData()).thenReturn(formTemplateApi);
+        when(formTemplateService.getFormTemplate(FORM_TYPE_CODE)).thenReturn(apiFormTypeResponse);
 
         BindingResult binding = mock(BindingResult.class);
         when(binding.hasErrors()).thenReturn(Boolean.TRUE);
@@ -407,6 +422,11 @@ class DocumentUploadControllerTest extends BaseControllerImplTest {
 
         when(sessionService.getSessionDataFromContext()).thenReturn(sessionContextData);
         when(sessionService.getUserEmail()).thenReturn(SIGNED_IN_USER);
+
+        FormTemplateApi formTemplateApi = mock(FormTemplateApi.class);
+        ApiResponse<FormTemplateApi> apiFormTypeResponse = mock(ApiResponse.class);
+        when(apiFormTypeResponse.getData()).thenReturn(formTemplateApi);
+        when(formTemplateService.getFormTemplate(FORM_TYPE_CODE)).thenReturn(apiFormTypeResponse);
 
         BindingResult binding = mock(BindingResult.class);
         when(binding.hasErrors()).thenReturn(Boolean.FALSE);
