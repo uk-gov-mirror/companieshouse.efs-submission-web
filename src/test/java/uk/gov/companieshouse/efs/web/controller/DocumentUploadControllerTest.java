@@ -5,6 +5,7 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 import static uk.gov.companieshouse.efs.web.controller.DocumentUploadControllerImpl.FILE_UPLOADS_ALLOWED_FOR_FES_ENABLED_FORMS;
 
@@ -123,11 +124,7 @@ class DocumentUploadControllerTest extends BaseControllerImplTest {
         String submissionID = submissionApi.getId();
         String companyNumber = submissionApi.getCompany().getCompanyNumber();
 
-        ApiResponse<SubmissionApi> apiSubmissionResponse = mock(ApiResponse.class);
-        when(apiSubmissionResponse.getData()).thenReturn(submissionApi);
-        when(apiSubmissionResponse.getStatusCode()).thenReturn(200);
-
-        when(apiClientService.getSubmission(SUBMISSION_ID)).thenReturn(apiSubmissionResponse);
+        expectSubmissionID(submissionApi);
 
         FormTemplateApi formTemplateApi = mock(FormTemplateApi.class);
         when(formTemplateApi.isFesEnabled()).thenReturn(Boolean.FALSE);
@@ -151,8 +148,7 @@ class DocumentUploadControllerTest extends BaseControllerImplTest {
         String viewName = toTest.prepare(submissionID, companyNumber, documentUploadAttribute, model, servletRequest, httpSession);
 
         verifyDocumentAttribute(submissionApi, submissionID, 10, false);
-        verify(model).mergeAttributes(attributes);
-        verify(model).addAttribute(TEMPLATE_NAME, "documentUpload");
+        verifyModelAttributes(formTemplateApi);
         assertThat(viewName, is(ViewConstants.DOCUMENT_UPLOAD.asView()));
     }
 
@@ -163,11 +159,7 @@ class DocumentUploadControllerTest extends BaseControllerImplTest {
         String submissionID = submissionApi.getId();
         String companyNumber = submissionApi.getCompany().getCompanyNumber();
 
-        ApiResponse<SubmissionApi> apiSubmissionResponse = mock(ApiResponse.class);
-        when(apiSubmissionResponse.getData()).thenReturn(submissionApi);
-        when(apiSubmissionResponse.getStatusCode()).thenReturn(200);
-
-        when(apiClientService.getSubmission(SUBMISSION_ID)).thenReturn(apiSubmissionResponse);
+        expectSubmissionID(submissionApi);
 
         FormTemplateApi formTemplateApi = mock(FormTemplateApi.class);
         when(formTemplateApi.isFesEnabled()).thenReturn(Boolean.TRUE);
@@ -177,19 +169,14 @@ class DocumentUploadControllerTest extends BaseControllerImplTest {
 
         when(formTemplateService.getFormTemplate(FORM_TYPE_CODE)).thenReturn(apiFormTypeResponse);
 
-        Map<String, Object> sessionContextData = new HashMap<>();
-        sessionContextData.put(ORIGINAL_SUBMISSION_ID, SUBMISSION_ID);
-
-        when(sessionService.getSessionDataFromContext()).thenReturn(sessionContextData);
-        when(sessionService.getUserEmail()).thenReturn(SIGNED_IN_USER);
+        expectSignedInUser(submissionApi, SUBMISSION_ID, SIGNED_IN_USER);
 
         when(documentUploadAttribute.getAttributes()).thenReturn(attributes);
 
         String viewName = toTest.prepare(submissionID, companyNumber, documentUploadAttribute, model, servletRequest, httpSession);
 
         verifyDocumentAttribute(submissionApi, submissionID, FILE_UPLOADS_ALLOWED_FOR_FES_ENABLED_FORMS, false);
-        verify(model).mergeAttributes(attributes);
-        verify(model).addAttribute(TEMPLATE_NAME, "documentUpload");
+        verifyModelAttributes(formTemplateApi);
         assertThat(viewName, is(ViewConstants.DOCUMENT_UPLOAD.asView()));
     }
 
@@ -200,11 +187,7 @@ class DocumentUploadControllerTest extends BaseControllerImplTest {
         String submissionID = submissionApi.getId();
         String companyNumber = submissionApi.getCompany().getCompanyNumber();
 
-        ApiResponse<SubmissionApi> apiSubmissionResponse = mock(ApiResponse.class);
-        when(apiSubmissionResponse.getData()).thenReturn(submissionApi);
-        when(apiSubmissionResponse.getStatusCode()).thenReturn(200);
-
-        when(apiClientService.getSubmission(SUBMISSION_ID)).thenReturn(apiSubmissionResponse);
+        expectSubmissionID(submissionApi);
 
         FormTemplateApi formTemplateApi = mock(FormTemplateApi.class);
         when(formTemplateApi.isFesEnabled()).thenReturn(Boolean.TRUE);
@@ -215,19 +198,14 @@ class DocumentUploadControllerTest extends BaseControllerImplTest {
 
         when(formTemplateService.getFormTemplate(FORM_TYPE_CODE)).thenReturn(apiFormTypeResponse);
 
-        Map<String, Object> sessionContextData = new HashMap<>();
-        sessionContextData.put(ORIGINAL_SUBMISSION_ID, SUBMISSION_ID);
-
-        when(sessionService.getSessionDataFromContext()).thenReturn(sessionContextData);
-        when(sessionService.getUserEmail()).thenReturn(SIGNED_IN_USER);
+        expectSignedInUser(submissionApi, SUBMISSION_ID, SIGNED_IN_USER);
 
         when(documentUploadAttribute.getAttributes()).thenReturn(attributes);
 
         String viewName = toTest.prepare(submissionID, companyNumber, documentUploadAttribute, model, servletRequest, httpSession);
 
         verifyDocumentAttribute(submissionApi, submissionID, FILE_UPLOADS_ALLOWED_FOR_FES_ENABLED_FORMS, true);
-        verify(model).mergeAttributes(attributes);
-        verify(model).addAttribute(TEMPLATE_NAME, "documentUpload");
+        verifyModelAttributes(formTemplateApi);
         assertThat(viewName, is(ViewConstants.DOCUMENT_UPLOAD.asView()));
     }
 
@@ -239,17 +217,8 @@ class DocumentUploadControllerTest extends BaseControllerImplTest {
         String submissionID = submissionApi.getId();
         String companyNumber = submissionApi.getCompany().getCompanyNumber();
 
-        ApiResponse<SubmissionApi> apiSubmissionResponse = mock(ApiResponse.class);
-        when(apiSubmissionResponse.getData()).thenReturn(submissionApi);
-        when(apiSubmissionResponse.getStatusCode()).thenReturn(200);
-
-        when(apiClientService.getSubmission(SUBMISSION_ID)).thenReturn(apiSubmissionResponse);
-
-        Map<String, Object> sessionContextData = new HashMap<>();
-        sessionContextData.put(ORIGINAL_SUBMISSION_ID, "wrong-submission-id");
-
-        when(sessionService.getSessionDataFromContext()).thenReturn(sessionContextData);
-        when(sessionService.getUserEmail()).thenReturn(SIGNED_IN_USER);
+        expectSubmissionID(submissionApi);
+        expectSignedInUser(submissionApi, "wrong-submission-id", SIGNED_IN_USER);
 
         String viewName = toTest.prepare(submissionID, companyNumber, documentUploadAttribute, model, servletRequest, httpSession);
 
@@ -263,17 +232,8 @@ class DocumentUploadControllerTest extends BaseControllerImplTest {
         String submissionID = submissionApi.getId();
         String companyNumber = submissionApi.getCompany().getCompanyNumber();
 
-        ApiResponse<SubmissionApi> apiSubmissionResponse = mock(ApiResponse.class);
-        when(apiSubmissionResponse.getData()).thenReturn(submissionApi);
-        when(apiSubmissionResponse.getStatusCode()).thenReturn(200);
-
-        when(apiClientService.getSubmission(SUBMISSION_ID)).thenReturn(apiSubmissionResponse);
-
-        Map<String, Object> sessionContextData = new HashMap<>();
-        sessionContextData.put(ORIGINAL_SUBMISSION_ID, SUBMISSION_ID);
-
-        when(sessionService.getSessionDataFromContext()).thenReturn(sessionContextData);
-        when(sessionService.getUserEmail()).thenReturn("wrong.user@ch.gov.uk");
+        expectSubmissionID(submissionApi);
+        expectSignedInUser(submissionApi, SUBMISSION_ID, "wrong.user@ch.gov.uk");
 
         String viewName = toTest.prepare(submissionID, companyNumber, documentUploadAttribute, model, servletRequest, httpSession);
 
@@ -290,17 +250,8 @@ class DocumentUploadControllerTest extends BaseControllerImplTest {
         String submissionID = submissionApi.getId();
         String companyNumber = submissionApi.getCompany().getCompanyNumber();
 
-        ApiResponse<SubmissionApi> apiSubmissionResponse = mock(ApiResponse.class);
-        when(apiSubmissionResponse.getData()).thenReturn(submissionApi);
-        when(apiSubmissionResponse.getStatusCode()).thenReturn(200);
-
-        when(apiClientService.getSubmission(SUBMISSION_ID)).thenReturn(apiSubmissionResponse);
-
-        Map<String, Object> sessionContextData = new HashMap<>();
-        sessionContextData.put(ORIGINAL_SUBMISSION_ID, SUBMISSION_ID);
-
-        when(sessionService.getSessionDataFromContext()).thenReturn(sessionContextData);
-        when(sessionService.getUserEmail()).thenReturn(SIGNED_IN_USER);
+        expectSubmissionID(submissionApi);
+        expectSignedInUser(submissionApi, SUBMISSION_ID, SIGNED_IN_USER);
 
         String viewName = toTest.prepare(submissionID, companyNumber, documentUploadAttribute, model, servletRequest, httpSession);
 
@@ -314,17 +265,13 @@ class DocumentUploadControllerTest extends BaseControllerImplTest {
         String submissionID = submissionApi.getId();
         String companyNumber = submissionApi.getCompany().getCompanyNumber();
 
-        ApiResponse<SubmissionApi> apiSubmissionResponse = mock(ApiResponse.class);
-        when(apiSubmissionResponse.getData()).thenReturn(submissionApi);
-        when(apiSubmissionResponse.getStatusCode()).thenReturn(200);
+        expectSubmissionID(submissionApi);
+        expectSignedInUser(submissionApi, "wrong-submission-id", SIGNED_IN_USER);
 
-        when(apiClientService.getSubmission(SUBMISSION_ID)).thenReturn(apiSubmissionResponse);
-
-        Map<String, Object> sessionContextData = new HashMap<>();
-        sessionContextData.put(ORIGINAL_SUBMISSION_ID, "wrong-submission-id");
-
-        when(sessionService.getSessionDataFromContext()).thenReturn(sessionContextData);
-        when(sessionService.getUserEmail()).thenReturn(SIGNED_IN_USER);
+        FormTemplateApi formTemplateApi = mock(FormTemplateApi.class);
+        ApiResponse<FormTemplateApi> apiFormTypeResponse = mock(ApiResponse.class);
+        when(apiFormTypeResponse.getData()).thenReturn(formTemplateApi);
+        when(formTemplateService.getFormTemplate(FORM_TYPE_CODE)).thenReturn(apiFormTypeResponse);
 
         BindingResult binding = mock(BindingResult.class);
 
@@ -340,17 +287,13 @@ class DocumentUploadControllerTest extends BaseControllerImplTest {
         String submissionID = submissionApi.getId();
         String companyNumber = submissionApi.getCompany().getCompanyNumber();
 
-        ApiResponse<SubmissionApi> apiSubmissionResponse = mock(ApiResponse.class);
-        when(apiSubmissionResponse.getData()).thenReturn(submissionApi);
-        when(apiSubmissionResponse.getStatusCode()).thenReturn(200);
+        expectSubmissionID(submissionApi);
+        expectSignedInUser(submissionApi, SUBMISSION_ID, "wrong.user@ch.gov.uk");
 
-        when(apiClientService.getSubmission(SUBMISSION_ID)).thenReturn(apiSubmissionResponse);
-
-        Map<String, Object> sessionContextData = new HashMap<>();
-        sessionContextData.put(ORIGINAL_SUBMISSION_ID, SUBMISSION_ID);
-
-        when(sessionService.getSessionDataFromContext()).thenReturn(sessionContextData);
-        when(sessionService.getUserEmail()).thenReturn("wrong.user@ch.gov.uk");
+        FormTemplateApi formTemplateApi = mock(FormTemplateApi.class);
+        ApiResponse<FormTemplateApi> apiFormTypeResponse = mock(ApiResponse.class);
+        when(apiFormTypeResponse.getData()).thenReturn(formTemplateApi);
+        when(formTemplateService.getFormTemplate(FORM_TYPE_CODE)).thenReturn(apiFormTypeResponse);
 
         BindingResult binding = mock(BindingResult.class);
 
@@ -366,20 +309,10 @@ class DocumentUploadControllerTest extends BaseControllerImplTest {
         String submissionID = submissionApi.getId();
         String companyNumber = submissionApi.getCompany().getCompanyNumber();
 
-        ApiResponse<SubmissionApi> apiSubmissionResponse = mock(ApiResponse.class);
-        when(apiSubmissionResponse.getData()).thenReturn(submissionApi);
-        when(apiSubmissionResponse.getStatusCode()).thenReturn(200);
+        expectSubmissionID(submissionApi);
+        expectSignedInUser(submissionApi, SUBMISSION_ID, SIGNED_IN_USER);
 
-        when(apiClientService.getSubmission(SUBMISSION_ID)).thenReturn(apiSubmissionResponse);
-
-        Map<String, Object> sessionContextData = new HashMap<>();
-        sessionContextData.put(ORIGINAL_SUBMISSION_ID, SUBMISSION_ID);
-
-        when(sessionService.getSessionDataFromContext()).thenReturn(sessionContextData);
-        when(sessionService.getUserEmail()).thenReturn(SIGNED_IN_USER);
-
-        BindingResult binding = mock(BindingResult.class);
-        when(binding.hasErrors()).thenReturn(Boolean.TRUE);
+        BindingResult binding = expectFileValidationError(submissionApi, Boolean.TRUE);
 
         when(documentUploadValidator.apply(documentUploadAttribute, binding)).thenReturn(new ArrayList<>());
 
@@ -396,20 +329,10 @@ class DocumentUploadControllerTest extends BaseControllerImplTest {
         String submissionID = submissionApi.getId();
         String companyNumber = submissionApi.getCompany().getCompanyNumber();
 
-        ApiResponse<SubmissionApi> apiSubmissionResponse = mock(ApiResponse.class);
-        when(apiSubmissionResponse.getData()).thenReturn(submissionApi);
-        when(apiSubmissionResponse.getStatusCode()).thenReturn(200);
+        expectSubmissionID(submissionApi);
+        expectSignedInUser(submissionApi, SUBMISSION_ID, SIGNED_IN_USER);
 
-        when(apiClientService.getSubmission(SUBMISSION_ID)).thenReturn(apiSubmissionResponse);
-
-        Map<String, Object> sessionContextData = new HashMap<>();
-        sessionContextData.put(ORIGINAL_SUBMISSION_ID, SUBMISSION_ID);
-
-        when(sessionService.getSessionDataFromContext()).thenReturn(sessionContextData);
-        when(sessionService.getUserEmail()).thenReturn(SIGNED_IN_USER);
-
-        BindingResult binding = mock(BindingResult.class);
-        when(binding.hasErrors()).thenReturn(Boolean.FALSE);
+        BindingResult binding = expectFileValidationError(submissionApi, Boolean.FALSE);
 
         List<MultipartFile> uploadedFiles = new ArrayList<>();
         uploadedFiles.add(new MockMultipartFile("data", "testfile.txt", "text/plain", "some text".getBytes()));
@@ -451,15 +374,8 @@ class DocumentUploadControllerTest extends BaseControllerImplTest {
         String submissionID = submissionApi.getId();
         String companyNumber = submissionApi.getCompany().getCompanyNumber();
 
-        ApiResponse<SubmissionApi> apiSubmissionResponse = mock(ApiResponse.class);
-        when(apiSubmissionResponse.getData()).thenReturn(submissionApi);
-        when(apiSubmissionResponse.getStatusCode()).thenReturn(200);
-        when(apiClientService.getSubmission(SUBMISSION_ID)).thenReturn(apiSubmissionResponse);
-
-        FormTemplateApi formTemplateApi = mock(FormTemplateApi.class);
-        ApiResponse<FormTemplateApi> apiFormTypeResponse = mock(ApiResponse.class);
-        when(apiFormTypeResponse.getData()).thenReturn(formTemplateApi);
-        when(formTemplateService.getFormTemplate(FORM_TYPE_CODE)).thenReturn(apiFormTypeResponse);
+        expectSubmissionID(submissionApi);
+        expectFormTypeSelection(submissionApi);
 
         List<FileApi> fileList = new ArrayList<>();
         fileList.add(new FileApi("my-file-upload-response-guid", "testfile.txt", 9L));
@@ -480,15 +396,8 @@ class DocumentUploadControllerTest extends BaseControllerImplTest {
         String submissionID = submissionApi.getId();
         String companyNumber = submissionApi.getCompany().getCompanyNumber();
 
-        ApiResponse<SubmissionApi> apiSubmissionResponse = mock(ApiResponse.class);
-        when(apiSubmissionResponse.getData()).thenReturn(submissionApi);
-        when(apiSubmissionResponse.getStatusCode()).thenReturn(200);
-        when(apiClientService.getSubmission(SUBMISSION_ID)).thenReturn(apiSubmissionResponse);
-
-        FormTemplateApi formTemplateApi = mock(FormTemplateApi.class);
-        ApiResponse<FormTemplateApi> apiFormTypeResponse = mock(ApiResponse.class);
-        when(apiFormTypeResponse.getData()).thenReturn(formTemplateApi);
-        when(formTemplateService.getFormTemplate(FORM_TYPE_CODE)).thenReturn(apiFormTypeResponse);
+        expectSubmissionID(submissionApi);
+        expectFormTypeSelection(submissionApi);
 
         when(documentUploadAttribute.getDetails()).thenReturn(new FileListApi());
 
@@ -509,5 +418,47 @@ class DocumentUploadControllerTest extends BaseControllerImplTest {
         verify(documentUploadAttribute).setMaximumUploadLimitReached(false);
         verify(documentUploadAttribute).setDetails(new FileListApi());
         verify(documentUploadAttribute).addAttribute(CC_REMINDER, b);
+        verify(documentUploadAttribute).addAttribute(CC_REMINDER, b);
+    }
+
+    private void verifyModelAttributes(final FormTemplateApi formTemplateApi) {
+        verify(model).mergeAttributes(attributes);
+        verify(model).addAttribute(TEMPLATE_NAME, "documentUpload");
+        verify(model).addAttribute("allowedFileExtensions", documentUploadAttribute.getAllowedFileExtensions());
+        verify(model).addAttribute("formType", formTemplateApi.getFormType());
+        verify(model).addAttribute("messageTextList", formTemplateApi.getMessageTexts());
+    }
+
+    private void expectFormTypeSelection(final SubmissionApi submissionApi) {
+        FormTemplateApi formTemplateApi = mock(FormTemplateApi.class);
+        ApiResponse<FormTemplateApi> apiFormTypeResponse = mock(ApiResponse.class);
+        when(apiFormTypeResponse.getData()).thenReturn(formTemplateApi);
+        when(formTemplateService.getFormTemplate(FORM_TYPE_CODE)).thenReturn(apiFormTypeResponse);
+    }
+
+    private void expectSubmissionID(final SubmissionApi submissionApi) {
+        ApiResponse<SubmissionApi> apiSubmissionResponse = mock(ApiResponse.class);
+        when(apiSubmissionResponse.getData()).thenReturn(submissionApi);
+        when(apiSubmissionResponse.getStatusCode()).thenReturn(200);
+        when(apiClientService.getSubmission(SUBMISSION_ID)).thenReturn(apiSubmissionResponse);
+    }
+
+    private void expectSignedInUser(final SubmissionApi submissionApi, final String s, final String signedInUser) {
+        Map<String, Object> sessionContextData = new HashMap<>();
+        sessionContextData.put(ORIGINAL_SUBMISSION_ID, s);
+
+        when(sessionService.getSessionDataFromContext()).thenReturn(sessionContextData);
+        when(sessionService.getUserEmail()).thenReturn(signedInUser);
+    }
+
+    private BindingResult expectFileValidationError(final SubmissionApi submissionApi, final Boolean expectBindingErrors) {
+        FormTemplateApi formTemplateApi = mock(FormTemplateApi.class);
+        ApiResponse<FormTemplateApi> apiFormTypeResponse = mock(ApiResponse.class);
+        when(apiFormTypeResponse.getData()).thenReturn(formTemplateApi);
+        when(formTemplateService.getFormTemplate(FORM_TYPE_CODE)).thenReturn(apiFormTypeResponse);
+
+        BindingResult binding = mock(BindingResult.class);
+        when(binding.hasErrors()).thenReturn(expectBindingErrors);
+        return binding;
     }
 }
