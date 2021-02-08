@@ -1,0 +1,15 @@
+{
+  "type": "Service",
+  "name": "efs-submission-web",
+  "description": "Web journey for the emergency filing service",
+  "owned_by": "Thundercats",
+  "calls_via": "TO BE ADDED",
+  "git_repo": "https://github.com/companieshouse/efs-submission-web",
+  "specification": "TO BE ADDED",
+  "public": "true",
+  "users": "public - Web",
+  "language": "Java",
+  "integration_outgoing": [
+    "efs_submission_api,CALLS_API"
+  ]
+}
