@@ -236,26 +236,31 @@ public abstract class BaseControllerImpl implements BaseController {
         boolean isVerified = isSameForm && isSameUser;
 
         if (!isVerified) {
-            Map<String, Object> logDetails = new HashMap<>();
-            String logMessage = "Verify submission failed.";
-
-            if (!isSameForm) {
-                logMessage += " Session submissionID doesn't match request submissionID.";
-                logDetails.put("sessionSubmissionID", originalSubmissionId);
-                logDetails.put("requestSubmissionID", submissionID);
-            }
-
-            if (!isSameUser) {
-                logMessage += " Session user email does not match request user email.";
-                logDetails.put("sessionUserEmail", sessionUserEmail);
-                logDetails.put("requestUserEmail", requestUserEmail);
-            }
-
-            String logContext = submissionApi.getId();
-            logger.errorContext(logContext, logMessage, null, logDetails);
+            logFailedVerifySubmission(submissionApi, originalSubmissionId,
+                    submissionID, sessionUserEmail, requestUserEmail, isSameForm, isSameUser);
         }
 
         return isVerified;
+    }
+
+    private void logFailedVerifySubmission(SubmissionApi submissionApi, String originalSubmissionId, String submissionID, String sessionUserEmail, String requestUserEmail, boolean isSameForm, boolean isSameUser) {
+        Map<String, Object> logDetails = new HashMap<>();
+        String logMessage = "Verify submission failed.";
+
+        if (!isSameForm) {
+            logMessage += " Session submissionID doesn't match request submissionID.";
+            logDetails.put("sessionSubmissionID", originalSubmissionId);
+            logDetails.put("requestSubmissionID", submissionID);
+        }
+
+        if (!isSameUser) {
+            logMessage += " Session user email does not match request user email.";
+            logDetails.put("sessionUserEmail", sessionUserEmail);
+            logDetails.put("requestUserEmail", requestUserEmail);
+        }
+
+        String logContext = submissionApi.getId();
+        logger.errorContext(logContext, logMessage, null, logDetails);
     }
 
 
