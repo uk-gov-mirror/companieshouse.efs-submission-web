@@ -128,7 +128,6 @@ public class RemoveDocumentControllerImpl extends BaseControllerImpl implements 
             if (!binding.hasErrors()) {
                 redirectUri = ViewConstants.DOCUMENT_UPLOAD.asRedirectUri(chsUrl, id, companyNumber);
 
-                // TODO: Find a better way of resetting this field.
                 removeDocumentAttribute.setRequired("");
             }
         }
