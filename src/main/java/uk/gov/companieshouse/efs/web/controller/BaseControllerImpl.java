@@ -239,6 +239,12 @@ public abstract class BaseControllerImpl implements BaseController {
             Map<String, Object> logDetails = new HashMap<>();
             String logMessage = "Verify submission failed.";
 
+            if (!isSameForm) {
+                logMessage += " Session submissionID doesn't match request submissionID.";
+                logDetails.put("sessionSubmissionID", originalSubmissionId);
+                logDetails.put("requestSubmissionID", submissionID);
+            }
+
             String logContext = submissionApi.getId();
             logger.errorContext(logContext, logMessage, null, logDetails);
         }
