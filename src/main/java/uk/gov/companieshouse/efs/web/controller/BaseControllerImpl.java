@@ -245,6 +245,12 @@ public abstract class BaseControllerImpl implements BaseController {
                 logDetails.put("requestSubmissionID", submissionID);
             }
 
+            if (!isSameUser) {
+                logMessage += " Session user email does not match request user email.";
+                logDetails.put("sessionUserEmail", sessionUserEmail);
+                logDetails.put("requestUserEmail", requestUserEmail);
+            }
+
             String logContext = submissionApi.getId();
             logger.errorContext(logContext, logMessage, null, logDetails);
         }
