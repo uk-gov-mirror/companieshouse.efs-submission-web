@@ -1,14 +1,5 @@
 package uk.gov.companieshouse.efs.web.controller;
 
-import java.text.MessageFormat;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Map;
-import java.util.Optional;
-import java.util.function.Predicate;
-import java.util.regex.Pattern;
-import java.util.stream.Stream;
-import javax.servlet.ServletRequest;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -29,6 +20,17 @@ import uk.gov.companieshouse.efs.web.service.session.SessionService;
 import uk.gov.companieshouse.logging.Logger;
 import uk.gov.companieshouse.session.Session;
 import uk.gov.companieshouse.session.handler.SessionHandler;
+
+import javax.servlet.ServletRequest;
+import java.text.MessageFormat;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
+import java.util.function.Predicate;
+import java.util.regex.Pattern;
+import java.util.stream.Stream;
 
 /**
  * Contains common code for handling the HTTP requests for the web application.
@@ -223,12 +225,27 @@ public abstract class BaseControllerImpl implements BaseController {
     boolean verifySubmission(final SubmissionApi submissionApi) {
         Map<String, Object> sessionDataFromContext = sessionService.getSessionDataFromContext();
         String originalSubmissionId = sessionDataFromContext.get(ORIGINAL_SUBMISSION_ID).toString();
+        String submissionID = submissionApi.getId();
 
-        boolean isSameForm = StringUtils.equals(originalSubmissionId, submissionApi.getId());
-        boolean isSameUser = StringUtils.equals(sessionService.getUserEmail(), submissionApi.getPresenter().getEmail());
+        String sessionUserEmail = sessionService.getUserEmail();
+        String requestUserEmail = submissionApi.getPresenter().getEmail();
 
-        return (isSameForm && isSameUser);
+        boolean isSameForm = StringUtils.equals(originalSubmissionId, submissionID);
+        boolean isSameUser = StringUtils.equals(sessionUserEmail, requestUserEmail);
+
+        boolean isVerified = isSameForm && isSameUser;
+
+        if (!isVerified) {
+            Map<String, Object> logDetails = new HashMap<>();
+            String logMessage = "Verify submission failed.";
+
+            String logContext = submissionApi.getId();
+            logger.errorContext(logContext, logMessage, null, logDetails);
+        }
+
+        return isVerified;
     }
+
 
     /**
      * Setter for chsUrl to facilitate testing.
