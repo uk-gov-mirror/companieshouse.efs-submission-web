@@ -26,7 +26,7 @@ import uk.gov.companieshouse.efs.web.service.session.SessionService;
 @ExtendWith(MockitoExtension.class)
 @TestInstance(Lifecycle.PER_CLASS)
 @MockitoSettings(strictness = Strictness.LENIENT)
-public class UserDetailsInterceptorTest {
+class UserDetailsInterceptorTest {
 
     private static final String SIGN_IN_KEY = "signin_info";
     private static final String USER_PROFILE_KEY = "user_profile";
@@ -71,7 +71,7 @@ public class UserDetailsInterceptorTest {
 
     @Test
     @DisplayName("Verify the email is not added to the session when a user is not logged in for a HTTP GET")
-    public void testEmailNotAddedToSessionWhenNotSignedInForGet() {
+    void testEmailNotAddedToSessionWhenNotSignedInForGet() {
         sessionData.put(SIGN_IN_KEY, null);
         when(request.getMethod()).thenReturn("GET");
         when(modelAndView.getViewName()).thenReturn(NON_REDIRECT_URL);
@@ -82,7 +82,7 @@ public class UserDetailsInterceptorTest {
 
     @Test
     @DisplayName("Verify the email is added to the session when a user is logged in for a HTTP GET")
-    public void testEmailAddedToSessionForGet() throws Exception {
+    void testEmailAddedToSessionForGet() throws Exception {
         when(request.getMethod()).thenReturn("GET");
         when(modelAndView.getViewName()).thenReturn(NON_REDIRECT_URL);
 
@@ -92,7 +92,7 @@ public class UserDetailsInterceptorTest {
 
     @Test
     @DisplayName("Verify the email is not added to the session when no details are provided for a HTTP GET")
-    public void testEmailNotAddedToSessionWithEmptyModelForGet() {
+    void testEmailNotAddedToSessionWithEmptyModelForGet() {
         when(request.getMethod()).thenReturn("GET");
         when(modelAndView.getViewName()).thenReturn(NON_REDIRECT_URL);
 
@@ -102,7 +102,7 @@ public class UserDetailsInterceptorTest {
 
     @Test
     @DisplayName("Verify the email is added when a user is logged in for a non-redirect HTTP POST")
-    public void testEmailAddedToSessionForNonRedirectPost() {
+    void testEmailAddedToSessionForNonRedirectPost() {
         when(request.getMethod()).thenReturn("POST");
         when(modelAndView.getViewName()).thenReturn(NON_REDIRECT_URL);
 
@@ -112,7 +112,7 @@ public class UserDetailsInterceptorTest {
 
     @Test
     @DisplayName("Verify the email is not added when a user is logged in for a redirect HTTP POST")
-    public void testEmailNotAddedToSessionForRedirectPost() {
+    void testEmailNotAddedToSessionForRedirectPost() {
         when(request.getMethod()).thenReturn("POST");
         when(modelAndView.getViewName()).thenReturn(REDIRECT_URL);
 
@@ -122,7 +122,7 @@ public class UserDetailsInterceptorTest {
 
     @Test
     @DisplayName("Verify the email is not added to the session when no details are provided for a HTTP POST")
-    public void testEmailNotAddedToSessionWithEmptyModelForPost() {
+    void testEmailNotAddedToSessionWithEmptyModelForPost() {
         when(request.getMethod()).thenReturn("POST");
         when(modelAndView.getViewName()).thenReturn(NON_REDIRECT_URL);
 
@@ -132,7 +132,7 @@ public class UserDetailsInterceptorTest {
 
     @Test
     @DisplayName("Verify the email is not added to the session when no details are provided for a HTTP PUT")
-    public void testEmailNotAddedToSessionForPut() {
+    void testEmailNotAddedToSessionForPut() {
         when(request.getMethod()).thenReturn("PUT");
         when(modelAndView.getViewName()).thenReturn(NON_REDIRECT_URL);
 
@@ -142,7 +142,7 @@ public class UserDetailsInterceptorTest {
 
     @Test
     @DisplayName("Verify the email is not added to the session when no details are provided for a HTTP PUT")
-    public void testEmailNotAddedToSessionWithEmptyModelForPut() {
+    void testEmailNotAddedToSessionWithEmptyModelForPut() {
         when(request.getMethod()).thenReturn("PUT");
         when(modelAndView.getViewName()).thenReturn(NON_REDIRECT_URL);
 

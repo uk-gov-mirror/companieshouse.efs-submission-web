@@ -12,7 +12,7 @@ import uk.gov.companieshouse.logging.Logger;
 import uk.gov.companieshouse.logging.util.RequestLogger;
 
 @ExtendWith(MockitoExtension.class)
-public class LoggingConfigTest {
+class LoggingConfigTest {
     private LoggingConfig testConfig;
 
     @Mock
