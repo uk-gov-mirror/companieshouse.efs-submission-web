@@ -163,14 +163,14 @@ public abstract class BaseControllerImplTest {
     @MethodSource("verifySubmissionTestCases")
     void verifySubmissionLogsOnFailure(String reqSubmissionID, String sessionSubmissionID,
                                        String requestUserEmail, String sessionUserEmail,
-                                       boolean isSamForm, boolean isSameUser) {
+                                       boolean isSameForm, boolean isSameUser) {
 
         setupForVerifySubmission(reqSubmissionID, sessionSubmissionID,
                 requestUserEmail, sessionUserEmail);
 
 
         boolean resp = baseController.verifySubmission(submission);
-        if (isSamForm && isSameUser) {
+        if (isSameForm && isSameUser) {
             assertTrue(resp);
         } else {
             String failedLogMessage = "Verify submission failed.";
@@ -183,7 +183,7 @@ public abstract class BaseControllerImplTest {
                         isNull(), anyMap());
             }
 
-            if (!isSamForm) {
+            if (!isSameForm) {
                 String sessionNotMatchedLogMessage = "Session submissionID doesn't match request submissionID.";
                 verify(logger).errorContext(any(), contains(sessionNotMatchedLogMessage),
                         isNull(), anyMap());
