@@ -1,13 +1,5 @@
 package uk.gov.companieshouse.efs.web.payment.controller;
 
-import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyNoInteractions;
-import static org.mockito.Mockito.when;
-
-import java.util.Collections;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -22,7 +14,15 @@ import uk.gov.companieshouse.efs.web.exception.ServiceException;
 import uk.gov.companieshouse.efs.web.payment.service.NonceService;
 import uk.gov.companieshouse.efs.web.payment.service.PaymentService;
 import uk.gov.companieshouse.efs.web.service.api.ApiClientService;
-import uk.gov.companieshouse.logging.Logger;
+
+import java.util.Collections;
+
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoInteractions;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class PaymentControllerImplTest extends BaseControllerImplTest {
@@ -40,8 +40,7 @@ class PaymentControllerImplTest extends BaseControllerImplTest {
     private PaymentService paymentService;
     @Mock
     private NonceService nonceService;
-    @Mock
-    private Logger logger;
+
     @Mock
     private SubmissionApi submission;
     private SessionListApi paymentSessions;
@@ -55,6 +54,7 @@ class PaymentControllerImplTest extends BaseControllerImplTest {
         ((PaymentControllerImpl) testController).setChsUrl(CHS_URL);
         paymentSessions = new SessionListApi();
         paySession = new SessionApi(PAYMENT_SESSION_ID, PAYMENT_SESSION_STATE);
+
     }
 
     @Test
