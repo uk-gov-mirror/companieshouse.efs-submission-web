@@ -95,7 +95,7 @@ class FileTransferGatewayClientIT {
     }
 
     @Test
-    public void willUploadFile() throws IOException {
+    void willUploadFile() throws IOException {
         final String filename = "test.png";
         final String fileFolder = "./src/test/resources/file-upload/";
         final String uploadFilePath =  fileFolder + filename;

@@ -22,7 +22,7 @@ import uk.gov.companieshouse.logging.util.LogContextProperties;
 
 @Tag("integration")
 @ExtendWith(SpringExtension.class)
-public class LoggingInterceptorTest {
+class LoggingInterceptorTest {
     private LoggingInterceptor interceptor;
 
     @Mock
@@ -47,14 +47,14 @@ public class LoggingInterceptorTest {
      * Tests setup.
      */
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         interceptor = new LoggingInterceptor(logger);
         when(session.getAttribute(LogContextProperties.START_TIME_KEY.value())).thenReturn(1L);
         when(request.getSession()).thenReturn(session);
     }
 
     @Test
-    public void preHandle() {
+    void preHandle() {
         // when
         interceptor.preHandle(request, response, handler);
         // then
@@ -62,7 +62,7 @@ public class LoggingInterceptorTest {
     }
 
     @Test
-    public void postHandle() {
+    void postHandle() {
         // when
         interceptor.postHandle(request, response, handler, modelAndView);
         // then

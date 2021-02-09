@@ -31,7 +31,7 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 
 @ExtendWith(MockitoExtension.class)
-public class FileTransferApiClientTest {
+class FileTransferApiClientTest {
 
     private static final String DUMMY_URL = "http://test";
     private static final String FILE_ID = "12345";
@@ -51,13 +51,13 @@ public class FileTransferApiClientTest {
     private MultipartFile file;
 
     @BeforeEach
-    public void setup() {
+    void setup() {
         ReflectionTestUtils.setField(fileTransferApiClient, "fileTransferApiUrl", DUMMY_URL);
         file = new MockMultipartFile("testFile", new byte[10]);
     }
 
     @Test
-    public void testUpload_success() {
+    void testUpload_success() {
         final ResponseEntity<FileTransferApiResponse> apiResponse = apiSuccessResponse();
 
         when(restTemplate.postForEntity(eq(DUMMY_URL), any(), eq(FileTransferApiResponse.class)))
@@ -71,7 +71,7 @@ public class FileTransferApiClientTest {
 
 
     @Test
-    public void testUpload_ApiThrowsIOException() throws IOException {
+    void testUpload_ApiThrowsIOException() throws IOException {
         final ResponseEntity<FileTransferApiResponse> apiErrorResponse = apiErrorResponse();
 
         MultipartFile mockFile = mock(MultipartFile.class);
@@ -84,7 +84,7 @@ public class FileTransferApiClientTest {
     }
 
     @Test
-    public void testUpload_ApiReturnsError() {
+    void testUpload_ApiReturnsError() {
         final ResponseEntity<FileTransferApiResponse> apiErrorResponse = apiErrorResponse();
 
         when(restTemplate.postForEntity(eq(DUMMY_URL), any(), eq(FileTransferApiResponse.class))).thenReturn(apiErrorResponse);
@@ -97,7 +97,7 @@ public class FileTransferApiClientTest {
     }
 
     @Test
-    public void testUpload_ApiReturnsSuccessButNoResponseBody() {
+    void testUpload_ApiReturnsSuccessButNoResponseBody() {
         final ResponseEntity<FileTransferApiResponse> apiResponse = apiSuccessButNoBodyResponse();
 
         when(restTemplate.postForEntity(eq(DUMMY_URL), any(), eq(FileTransferApiResponse.class)))
@@ -110,7 +110,7 @@ public class FileTransferApiClientTest {
     }
 
     @Test
-    public void testUpload_GenericExceptionResponse() {
+    void testUpload_GenericExceptionResponse() {
 
         when(restTemplate.postForEntity(eq(DUMMY_URL), any(), eq(FileTransferApiResponse.class))).thenReturn(null);
 

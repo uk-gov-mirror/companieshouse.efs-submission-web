@@ -13,7 +13,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import uk.gov.companieshouse.efs.web.service.session.SessionService;
 
 @ExtendWith(MockitoExtension.class)
-public class SessionServiceTest {
+class SessionServiceTest {
 
     @Mock
     private SessionService sessionService;
