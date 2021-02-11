@@ -1,24 +1,43 @@
 package uk.gov.companieshouse.efs.web.controller;
 
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.Matchers.hasEntry;
 import static org.junit.Assert.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.contains;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.ArgumentMatchers.refEq;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
+import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.http.HttpStatus;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.web.server.ResponseStatusException;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import uk.gov.companieshouse.api.model.ApiResponse;
 import uk.gov.companieshouse.api.model.efs.submissions.CompanyApi;
 import uk.gov.companieshouse.api.model.efs.submissions.PresenterApi;
 import uk.gov.companieshouse.api.model.efs.submissions.SubmissionResponseApi;
 import uk.gov.companieshouse.efs.web.model.company.CompanyDetail;
+
+import java.util.Arrays;
+import java.util.Map;
+import java.util.function.Predicate;
+import java.util.stream.Stream;
 
 @ExtendWith(MockitoExtension.class)
 class NewSubmissionControllerImplTest extends BaseControllerImplTest {
@@ -58,12 +77,18 @@ class NewSubmissionControllerImplTest extends BaseControllerImplTest {
     }
 
     @Test
-    void newSubmissionWhenRuntimeError() {
+    void newSubmissionWhenRuntimeError() throws Exception {
         doThrow(new RuntimeException("dummy exception")).when(sessionService).getUserEmail();
 
-        final String result = testController.newSubmission(companyDetail, sessionStatus, request, attributes);
+        mockMvc = MockMvcBuilders.standaloneSetup(testController)
+                .setControllerAdvice(new GlobalExceptionHandler(logger))
+                .build();
 
-        assertThat(result, is(ViewConstants.ERROR.asView()));
+        String newSubmissionUrl = "/efs-submission/new-submission/";
+        mockMvc.perform(get(newSubmissionUrl).flashAttr("companyDetail", companyDetail))
+                .andExpect(status().isInternalServerError())
+                .andExpect(view().name(ViewConstants.ERROR.asView()))
+                .andReturn();
     }
 
     @Test
@@ -101,6 +126,40 @@ class NewSubmissionControllerImplTest extends BaseControllerImplTest {
             testController.newSubmissionForCompany(COMPANY_NUMBER, companyDetail, sessionStatus, request, attributes);
 
         assertThat(result, is(ViewConstants.ERROR.asView()));
+    }
+
+    @ParameterizedTest
+    @MethodSource("non200StatusCodes")
+    void testLogNon200ErrorCodes(HttpStatus status) throws Exception {
+
+        mockMvc = MockMvcBuilders.standaloneSetup(testController)
+                .setControllerAdvice(new GlobalExceptionHandler(logger))
+                .build();
+
+        when(apiClientService.createSubmission(any()))
+                .thenThrow(new ResponseStatusException(status));
+
+        String newSubmissionUrl = "/efs-submission/new-submission/";
+        mockMvc.perform(get(newSubmissionUrl).flashAttr("companyDetail", companyDetail))
+                .andExpect(status().is(status.value()))
+                .andReturn();
+
+        ArgumentCaptor<Map<String, Object>> logDetailsCapture = ArgumentCaptor.forClass(Map.class);
+        verify(logger).errorContext(eq(""),
+                contains("Received non 200 series response from API"),
+                any(ResponseStatusException.class), logDetailsCapture.capture());
+
+        assertThat(logDetailsCapture.getValue(), hasEntry("statusCode", status.value()));
+    }
+
+
+    private static Stream<Arguments> non200StatusCodes() {
+        Predicate<HttpStatus> isNon200 = status ->
+                status.series() != HttpStatus.Series.SUCCESSFUL;
+
+        return Arrays.stream(HttpStatus.values())
+                .filter(isNon200)
+                .map(Arguments::of);
     }
 
     private SubmissionResponseApi createSubmissionResponse() {
