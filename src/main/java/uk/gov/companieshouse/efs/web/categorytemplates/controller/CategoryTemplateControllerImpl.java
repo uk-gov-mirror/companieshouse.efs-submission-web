@@ -25,6 +25,8 @@ import org.springframework.web.bind.annotation.SessionAttributes;
 import uk.gov.companieshouse.api.model.ApiResponse;
 import uk.gov.companieshouse.api.model.efs.categorytemplates.CategoryTemplateApi;
 import uk.gov.companieshouse.api.model.efs.categorytemplates.CategoryTemplateListApi;
+import uk.gov.companieshouse.api.model.efs.formtemplates.FormTemplateApi;
+import uk.gov.companieshouse.api.model.efs.formtemplates.FormTemplateListApi;
 import uk.gov.companieshouse.api.model.efs.submissions.SubmissionApi;
 import uk.gov.companieshouse.api.model.efs.submissions.SubmissionStatus;
 import uk.gov.companieshouse.efs.web.categorytemplates.model.CategoryTemplateModel;
@@ -100,12 +102,12 @@ public class CategoryTemplateControllerImpl extends BaseControllerImpl implement
         final boolean sequenceHasInsolvency =
                 categorySequenceList != null && categorySequenceList.contains(
                         INSOLVENCY.getValue());
-        final CategoryTemplateListApi allCategoryTemplates =
+        CategoryTemplateListApi allCategoryTemplates =
                 categoryTemplateService.getCategoryTemplates().getData();
         final List<String> categoryTypesList = Optional.ofNullable(allCategoryTemplates.getList())
                 .orElseGet(ArrayList::new).stream().map(CategoryTemplateApi::getCategoryType)
                 .collect(Collectors.toList());
-        final boolean sequenceValid = categorySequenceList == null || categoryTypesList.containsAll(
+        boolean sequenceValid = categorySequenceList == null || categoryTypesList.containsAll(
                 categorySequenceList);
 
         if (!sequenceValid || (sequenceHasInsolvency && !isEmailAllowed)) {
@@ -124,9 +126,36 @@ public class CategoryTemplateControllerImpl extends BaseControllerImpl implement
         categoryTemplateAttribute.setDetails(childTemplate == null
                 ? new CategoryTemplateApi(CategoryTemplateModel.ROOT_CATEGORY)
                 : childTemplate);
-        categoryTemplateAttribute.setCategoryTemplateList(
-                getChildCategoryTemplateList(parentCategoryId,
-                        submissionApi.getPresenter().getEmail()));
+
+        List<CategoryTemplateApi> categoryTemplates = getChildCategoryTemplateList(parentCategoryId,
+            submissionApi.getPresenter().getEmail());
+
+        // Check if we are registering a new company?
+        final List<CategoryTemplateApi> restricted = new ArrayList<>();
+        final List<CategoryTemplateApi> nonRegistration = new ArrayList<>();
+        for (CategoryTemplateApi category : categoryTemplates) {
+            String type = category.getCategoryType();
+            ApiResponse<FormTemplateListApi> listings = formTemplateService.getFormTemplatesByCategory(type);
+            List<FormTemplateApi> unregisteredForms = listings.getData().getList().stream()
+                .filter(f -> !f.isCompanyRequired())
+                .collect(Collectors.toList());
+
+            if (!unregisteredForms.isEmpty()) {
+                restricted.add(category);
+            } else {
+                nonRegistration.add(category);
+            }
+        }
+
+        categoryTemplates.clear();
+        if (submissionApi.getCompany().getCompanyNumber().equals("99999999")) {
+            categoryTemplates.addAll(restricted);
+        } else {
+            categoryTemplates.addAll(nonRegistration);
+        }
+
+        categoryTemplateAttribute.setCategoryTemplateList(categoryTemplates);
+
         addTrackingAttributeToModel(model);
 
         return ViewConstants.CATEGORY_SELECTION.asView();

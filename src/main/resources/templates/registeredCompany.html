@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layouts/baseLayout}"
+      lang="en">
+<head>
+    <title th:text="${#fields.hasErrors('${registeredCompany.*}')} ? #{error} + ' ' + #{registeredCompany.title}"></title>
+</head>
+<body class="govuk-template__body" layout:fragment="content">
+
+<form th:action="@{/efs-submission/registered-company}" th:object="${registeredCompany}" method="post">
+
+    <!-- Back Link -->
+    <a class="govuk-back-link" th:href="@{/efs-submission/start}" th:text="#{link.back}"></a>
+
+    <!-- Main Content -->
+    <main class="govuk-main-wrapper" id="main-content" role="main">
+
+        <!-- Main Wrapper -->
+        <div class="govuk-grid-row">
+            <div class="govuk-grid-column-two-thirds">
+                <div th:replace="fragments/errorSummary :: errorSummary"></div>
+
+                <!-- Page Content -->
+                <div id="content-wrapper" class="govuk-form-group" th:classappend="${#fields.hasErrors('registered')} ? govuk-form-group--error : noerror">
+
+                    <fieldset class="govuk-fieldset" aria-describedby="page-heading">
+
+                        <!-- Display Question -->
+                        <legend class="govuk-fieldset__legend govuk-fieldset__legend--l">
+                            <h1 id="page-heading" class="govuk-fieldset__heading" style="word-break: break-word" th:text="#{registeredCompany.title}"></h1>
+                        </legend>
+
+                        <!-- Error Message -->
+                        <span id="required-error" class="govuk-error-message" th:if="${#fields.hasErrors('registered')}" th:text="#{registeredCompany.error}"></span>
+
+                        <!-- Display Answers -->
+                        <div class="govuk-radios govuk-radios--inline">
+                            <div class="govuk-radios__item">
+                                <input class="govuk-radios__input" id="answer-yes" name="registered" type="radio" th:checked="*{getRegistered() == 'Y'}" value="Y">
+                                <label class="govuk-label govuk-radios__label" for="answer-yes" th:text="#{registeredCompany.button.yes}"></label>
+                            </div>
+                            <div class="govuk-radios__item">
+                                <input class="govuk-radios__input" id="answer-no" name="registered" type="radio" th:checked="*{getRegistered() == 'N'}" value="N">
+                                <label class="govuk-label govuk-radios__label" for="answer-no" th:text="#{registeredCompany.button.no}"></label>
+                            </div>
+                        </div>
+
+                    </fieldset>
+                </div>
+
+                <div>
+                    <button data-prevent-double-click="true" id="submit-all" type="submit" class="govuk-button" name="action" value="submit" th:text="#{registeredCompany.button.continue}">Continue</button>
+                </div>
+
+            </div>
+        </div>
+
+    </main>
+</form>
+</body>
+</html>

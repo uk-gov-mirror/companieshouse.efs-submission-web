@@ -58,13 +58,13 @@ class CompanyAuthFilterTest {
     private static final String VALID_AUTH_SCOPE = "https://chs.companieshouse.gov.uk/company/" + COMPANY_NUMBER;
 
     public static final FormTemplateApi INSOLVENCY_WITH_AUTH_REQUIRED_FORM_TEMPLATE =
-        new FormTemplateApi("REC01", null, "REC", null, true, false, null);
+        new FormTemplateApi("REC01", null, "REC", null, true, false, true, null);
 
     public static final FormTemplateApi AUTH_REQUIRED_FORM_TEMPLATE =
-        new FormTemplateApi("CC02", null, "CC", null, true, false, null);
+        new FormTemplateApi("CC02", null, "CC", null, true, false, true, null);
 
     public static final FormTemplateApi AUTH_NOT_REQUIRED_FORM_TEMPLATE =
-        new FormTemplateApi("CC01", null, "CC", null, false, false, null);
+        new FormTemplateApi("CC01", null, "CC", null, false, false, true, null);
     private static final String TEST_EMAIL = "testing@test.com";
 
     public static final String NON_MATCHING_FINE_GRAINED_SCOPE = " /company/12345678/admin.write-full";

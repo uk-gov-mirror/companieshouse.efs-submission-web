@@ -62,8 +62,7 @@ public class ConfirmationControllerImpl extends BaseControllerImpl implements Co
         logApiResponse(response, id, "PUT /efs-submission-api/submission/" + id);
         model.addAttribute("confirmationRef", submission.getConfirmationReference());
         model.addAttribute("companyName", submission.getCompany().getCompanyName());
-        model.addAttribute("newSubmissionUri",
-            ViewConstants.NEW_SUBMISSION.asUriForCompany(chsUrl, submission.getCompany().getCompanyNumber()));
+        model.addAttribute("newSubmissionUri", ViewConstants.NEW_COMPANY_SUBMISSION.asUri(chsUrl));
 
         SubmissionFormApi submissionFormApi = submission.getSubmissionForm();
 

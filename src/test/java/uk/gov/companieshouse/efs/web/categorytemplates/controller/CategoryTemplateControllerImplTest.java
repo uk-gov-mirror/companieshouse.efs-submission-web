@@ -3,6 +3,7 @@ package uk.gov.companieshouse.efs.web.categorytemplates.controller;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.sameInstance;
 import static org.junit.Assert.assertThat;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoInteractions;
@@ -19,6 +20,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import uk.gov.companieshouse.api.model.ApiResponse;
 import uk.gov.companieshouse.api.model.efs.categorytemplates.CategoryTemplateApi;
 import uk.gov.companieshouse.api.model.efs.categorytemplates.CategoryTemplateListApi;
+import uk.gov.companieshouse.api.model.efs.formtemplates.FormTemplateApi;
+import uk.gov.companieshouse.api.model.efs.formtemplates.FormTemplateListApi;
 import uk.gov.companieshouse.api.model.efs.submissions.PresenterApi;
 import uk.gov.companieshouse.api.model.efs.submissions.SubmissionApi;
 import uk.gov.companieshouse.api.model.efs.submissions.SubmissionStatus;
@@ -65,6 +68,10 @@ public class CategoryTemplateControllerImplTest extends BaseControllerImplTest {
     private static final String RESOLUTIONS_ID = "RESOLUTIONS";
     private static final String ARTICLES_ID = "MA";
 
+    public static final FormTemplateApi FORM_TEMPLATE_1 = new FormTemplateApi("CC01", "Test01",
+        "CAT1_SUB_LEVEL1","100", true, true,
+        true, null);
+    public static final List<FormTemplateApi> FORM_TEMPLATE_LIST = Arrays.asList(FORM_TEMPLATE_1);
 
     private CategoryTemplateController testController;
 
@@ -351,6 +358,7 @@ public class CategoryTemplateControllerImplTest extends BaseControllerImplTest {
             final CategoryTemplateApi removedCategoryId) {
         when(apiClientService.getSubmission(SUBMISSION_ID)).thenReturn(
                 getSubmissionOkResponse(submission));
+        when(formTemplateService.getFormTemplatesByCategory(any())).thenReturn(new ApiResponse(200, getHeaders(), new FormTemplateListApi(FORM_TEMPLATE_LIST)));
         when(categoryTemplateAttribute.rewindCategoryStack(leafCategoryId)).thenReturn(
                 removedCategoryId);
         when(categoryTemplateService.getCategoryTemplates()).thenReturn(

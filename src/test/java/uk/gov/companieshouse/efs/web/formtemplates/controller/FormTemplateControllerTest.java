@@ -58,12 +58,12 @@ class FormTemplateControllerTest extends BaseControllerImplTest {
             "INS_SUB_LEVEL1", "Dummy ins category 1, subcategory level 1", "INS", null);
 
     public static final FormTemplateApi FORM_TEMPLATE_1 = new FormTemplateApi("CC01", "Test01", "CAT1_SUB_LEVEL1",
-            "100", true, true, null);
+            "100", true, true, true, null);
     public static final FormTemplateApi FORM_TEMPLATE_2 = new FormTemplateApi("CC02", "Test02", "CAT1_SUB_LEVEL1",
-            "100", true, true, null);
-    public static final FormTemplateApi FORM_TEMPLATE_3 = new FormTemplateApi("CC03", "Test03", "CAT1_SUB_LEVEL1",                          "100", true, true, null);
+            "100", true, true, true, null);
+    public static final FormTemplateApi FORM_TEMPLATE_3 = new FormTemplateApi("CC03", "Test03", "CAT1_SUB_LEVEL1",                          "100", true, true, true, null);
     public static final FormTemplateApi INS_TEMPLATE_1 = new FormTemplateApi("INS", "InsTest04", "INS_SUB_LEVEL1",
-            "100", true, true, null);
+            "100", true, true, true, null);
     public static final List<FormTemplateApi> FORM_TEMPLATE_LIST = Arrays.asList(FORM_TEMPLATE_1, FORM_TEMPLATE_2, FORM_TEMPLATE_3);
 
     private FormTemplateController testController;

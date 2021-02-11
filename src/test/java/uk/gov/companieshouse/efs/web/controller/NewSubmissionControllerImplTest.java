@@ -42,14 +42,14 @@ class NewSubmissionControllerImplTest extends BaseControllerImplTest {
     @Test
     void getViewName() {
         assertThat(((NewSubmissionControllerImpl) testController).getViewName(),
-            is(ViewConstants.NEW_SUBMISSION.asView()));
+            is(ViewConstants.NEW_COMPANY_SUBMISSION.asView()));
     }
 
     @Test
     void newSubmission() {
         expectCreateSubmission();
 
-        final String result = testController.newSubmission(companyDetail, sessionStatus, request, attributes);
+        final String result = testController.newCompanySubmission(companyDetail, sessionStatus, request, attributes);
 
         verify(companyDetail).clear();
         verify(attributes)
@@ -61,7 +61,7 @@ class NewSubmissionControllerImplTest extends BaseControllerImplTest {
     void newSubmissionWhenRuntimeError() {
         doThrow(new RuntimeException("dummy exception")).when(sessionService).getUserEmail();
 
-        final String result = testController.newSubmission(companyDetail, sessionStatus, request, attributes);
+        final String result = testController.newCompanySubmission(companyDetail, sessionStatus, request, attributes);
 
         assertThat(result, is(ViewConstants.ERROR.asView()));
     }

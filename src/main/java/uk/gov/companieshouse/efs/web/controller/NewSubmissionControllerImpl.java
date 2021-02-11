@@ -1,6 +1,7 @@
 package uk.gov.companieshouse.efs.web.controller;
 
 import java.text.MessageFormat;
+import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +14,7 @@ import uk.gov.companieshouse.api.model.ApiResponse;
 import uk.gov.companieshouse.api.model.efs.submissions.CompanyApi;
 import uk.gov.companieshouse.api.model.efs.submissions.PresenterApi;
 import uk.gov.companieshouse.api.model.efs.submissions.SubmissionResponseApi;
+import uk.gov.companieshouse.efs.web.model.ProposedCompanyModel;
 import uk.gov.companieshouse.efs.web.model.company.CompanyDetail;
 import uk.gov.companieshouse.efs.web.service.api.ApiClientService;
 import uk.gov.companieshouse.efs.web.service.session.SessionService;
@@ -36,11 +38,11 @@ public class NewSubmissionControllerImpl extends BaseControllerImpl implements N
 
     @Override
     public String getViewName() {
-        return ViewConstants.NEW_SUBMISSION.asView();
+        return ViewConstants.NEW_COMPANY_SUBMISSION.asView();
     }
 
     @Override
-    public String newSubmission(
+    public String newCompanySubmission(
         @ModelAttribute(CompanyDetailControllerImpl.ATTRIBUTE_NAME) CompanyDetail companyDetailAttribute,
         final SessionStatus sessionStatus, final HttpServletRequest request, RedirectAttributes attributes) {
 
@@ -87,6 +89,39 @@ public class NewSubmissionControllerImpl extends BaseControllerImpl implements N
 
         return ViewConstants.CATEGORY_SELECTION
             .asRedirectUri(chsUrl, newSubmissionId, companyDetailAttribute.getCompanyNumber());
+    }
+
+    @Override
+    public String newBlankSubmission(@ModelAttribute(ProposedCompanyControllerImpl.ATTRIBUTE_NAME)
+        ProposedCompanyModel proposedCompanyModel,
+        final SessionStatus sessionStatus, final HttpServletRequest request) {
+        String newSubmissionId;
+
+        final String companyNumber = "99999999";
+        final String companyName = proposedCompanyModel.getName();
+
+        try {
+            PresenterApi sessionPresenter = new PresenterApi(sessionService.getUserEmail());
+            ApiResponse<SubmissionResponseApi> response = apiClientService.createSubmission(sessionPresenter);
+
+            logApiResponse(response, "", "POST /efs-submission-api/submissions/new");
+
+            newSubmissionId = response.getData().getId();
+
+            response = apiClientService.putCompany(newSubmissionId, new CompanyApi(companyNumber, companyName));
+
+            logApiResponse(response, "", "PUT /efs-submission-api/submission/" + newSubmissionId + "/company");
+
+            // Store the original submission that we started the journey with.
+            Map<String, Object> sessionDataFromContext = sessionService.getSessionDataFromContext();
+            sessionDataFromContext.put(ORIGINAL_SUBMISSION_ID, newSubmissionId);
+
+        } catch (RuntimeException e) {
+            logger.errorRequest(request, e.getMessage(), e);
+            return ViewConstants.ERROR.asView();
+        }
+
+        return ViewConstants.CATEGORY_SELECTION.asRedirectUri(chsUrl, newSubmissionId, companyNumber);
     }
 
     private String createNewSubmission() {

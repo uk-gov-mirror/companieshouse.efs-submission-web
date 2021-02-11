@@ -13,9 +13,9 @@ import org.mockito.junit.jupiter.MockitoExtension;
 class ViewConstantsTest {
     private static final String CHS_URL = "http://web.chs-dev:4000";
     private static final String SUB_ID = "4480ac41f5c0b596";
-    private static final String NEW_SUBMISSION = "new-submission";
+    private static final String NEW_COMPANY_SUBMISSION = "new-company-submission";
     private static final String EFS_ID_PAGE = "/efs-submission/" + SUB_ID;
-    private static final String EFS_PAGE = "/efs-submission/" + NEW_SUBMISSION;
+    private static final String EFS_PAGE = "/efs-submission/" + NEW_COMPANY_SUBMISSION;
     private static final String REDIRECT_ID_PAGE = "redirect:" + CHS_URL + EFS_ID_PAGE;
     private static final String REDIRECT_PAGE = "redirect:" + CHS_URL + EFS_PAGE;
     private static final String COMPANY_NUMBER = "11111111";
@@ -42,7 +42,7 @@ class ViewConstantsTest {
 
     @Test
     void asRedirectUriWithoutId() {
-        assertThat(ViewConstants.NEW_SUBMISSION.asRedirectUri(CHS_URL), is(REDIRECT_PAGE));
+        assertThat(ViewConstants.NEW_COMPANY_SUBMISSION.asRedirectUri(CHS_URL), is(REDIRECT_PAGE));
     }
 
     @ParameterizedTest
@@ -54,8 +54,8 @@ class ViewConstantsTest {
 
     @Test
     void asUriForCompany() {
-        assertThat(ViewConstants.NEW_SUBMISSION.asUriForCompany(CHS_URL, COMPANY_NUMBER),
-            is(String.format("%s/efs-submission/company/%s/%s", CHS_URL, COMPANY_NUMBER, NEW_SUBMISSION)));
+        assertThat(ViewConstants.NEW_COMPANY_SUBMISSION.asUriForCompany(CHS_URL, COMPANY_NUMBER),
+            is(String.format("%s/efs-submission/company/%s/%s", CHS_URL, COMPANY_NUMBER, NEW_COMPANY_SUBMISSION)));
     }
 
 }

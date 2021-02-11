@@ -8,6 +8,7 @@ import static uk.gov.companieshouse.efs.web.formtemplates.controller.FormTemplat
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import javax.servlet.ServletRequest;
 import javax.validation.Valid;
@@ -104,9 +105,20 @@ public class FormTemplateControllerImpl extends BaseControllerImpl implements Fo
             return ViewConstants.MISSING.asView();
         }
 
+        // Are we using an existing company, or filing for a non-registered one?
+        boolean isNewCompany = submissionApi.getCompany().getCompanyNumber().equals("99999999");
+
         // refresh form template list from repository
-        final ApiResponse<FormTemplateListApi> formResponse = formTemplateService.getFormTemplatesByCategory(category);
-        final List<FormTemplateApi> formList = formResponse.getData().getList();
+        ApiResponse<FormTemplateListApi> formResponse = formTemplateService.getFormTemplatesByCategory(category);
+        List<FormTemplateApi> formList = formResponse.getData().stream()
+            .filter(FormTemplateApi::isCompanyRequired)
+            .collect(Collectors.toList());
+
+        if (isNewCompany) {
+            formList = formResponse.getData().stream()
+                .filter(f -> !f.isCompanyRequired())
+                .collect(Collectors.toList());
+        }
 
         formTemplateAttribute.setFormTemplateList(formList);
         formTemplateAttribute.setSubmissionId(submissionApi.getId());

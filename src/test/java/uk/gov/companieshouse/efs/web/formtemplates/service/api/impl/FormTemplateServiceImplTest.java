@@ -60,9 +60,9 @@ class FormTemplateServiceImplTest {
     @Mock
     private PrivateFormTemplateListGetByCategory formTemplatesGetByCategory;
 
-    FormTemplateApi formTemplateApi = new FormTemplateApi("CC01", "Test01", "CC03", "CC01", true, true, null);
-    FormTemplateApi formTemplateApi2 = new FormTemplateApi("O/C STAY", "O/C STAY", "LIQ", "", true, true, null);
-    FormTemplateApi formTemplateApi3 = new FormTemplateApi("O&C STAY", "O&C STAY", "LIQ", "", true, true, null);
+    FormTemplateApi formTemplateApi = new FormTemplateApi("CC01", "Test01", "CC03", "CC01", true, true, true, null);
+    FormTemplateApi formTemplateApi2 = new FormTemplateApi("O/C STAY", "O/C STAY", "LIQ", "", true, true, true, null);
+    FormTemplateApi formTemplateApi3 = new FormTemplateApi("O&C STAY", "O&C STAY", "LIQ", "", true, true, true, null);
 
     @BeforeEach
     void setUp() {

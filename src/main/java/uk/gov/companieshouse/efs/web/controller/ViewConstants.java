@@ -12,7 +12,10 @@ public enum ViewConstants {
     START("start", "start"),
     GUIDANCE("guidance", "guidance"),
     INSOLVENCY_GUIDANCE("insolvency-guidance", "insolvencyGuidance"),
-    NEW_SUBMISSION("new-submission", null),
+    REGISTERED_COMPANY("registered-company", "registeredCompany"),
+    PROPOSED_COMPANY("proposed-company", "proposedCompany"),
+    NEW_BLANK_SUBMISSION("new-blank-submission", null),
+    NEW_COMPANY_SUBMISSION("new-company-submission", null),
     COMPANY_LOOKUP("companyLookup", null),
     COMPANY_DETAIL("details", "companyDetail"),
     CATEGORY_SELECTION("category-selection", "categorySelection"),
@@ -85,6 +88,10 @@ public enum ViewConstants {
 
     public String asRedirectUri(final String chsUrl, final String id, final String companyNumber, final String category) {
         return MessageFormat.format(REDIRECT, asUri(chsUrl, id, companyNumber, category));
+    }
+
+    public String asRedirectUriWithCompanyName(final String chsUrl, final String companyName) {
+        return MessageFormat.format(REDIRECT, asUri(chsUrl, companyName));
     }
 
     public String asUri(final String id, final String chsUrl) {
