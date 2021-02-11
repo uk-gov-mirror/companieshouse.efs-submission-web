@@ -44,7 +44,7 @@ class CompanyDetailControllerImplTest extends BaseControllerImplTest {
         ((CompanyDetailControllerImpl) testController).setChsUrl(CHS_URL);
 
         mockMvc = MockMvcBuilders.standaloneSetup(testController)
-                .setControllerAdvice(new GlobalExceptionHandler())
+                .setControllerAdvice(new GlobalExceptionHandler(logger))
                 .build();
     }
 
