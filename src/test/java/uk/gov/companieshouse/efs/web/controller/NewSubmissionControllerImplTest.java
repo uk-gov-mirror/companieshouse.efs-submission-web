@@ -141,7 +141,6 @@ class NewSubmissionControllerImplTest extends BaseControllerImplTest {
 
         String newSubmissionUrl = "/efs-submission/new-submission/";
         mockMvc.perform(get(newSubmissionUrl).flashAttr("companyDetail", companyDetail))
-                .andExpect(status().is(status.value()))
                 .andReturn();
 
         ArgumentCaptor<Map<String, Object>> logDetailsCapture = ArgumentCaptor.forClass(Map.class);
