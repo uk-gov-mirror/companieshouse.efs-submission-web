@@ -32,8 +32,6 @@ Requirements
 
 1. Clone [Docker CHS Development](https://github.com/companieshouse/docker-chs-development) and follow the steps in the README.
 
-1. Enable the `platform` module
-
 1. Enable the `efs` module
 
 1. Run `tilt up` and wait for all services to start
