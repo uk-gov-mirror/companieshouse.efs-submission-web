@@ -47,14 +47,11 @@ public class NewSubmissionControllerImpl extends BaseControllerImpl implements N
         String newSubmissionId;
 
         companyDetailAttribute.clear();
-        try {
-            newSubmissionId = createNewSubmission();
-            companyDetailAttribute.setSubmissionId(newSubmissionId);
-            storeOriginalSubmissionId(newSubmissionId);
-        } catch (RuntimeException ex) {
-            logger.errorRequest(request, ex.getMessage(), ex);
-            return ViewConstants.ERROR.asView();
-        }
+
+        newSubmissionId = createNewSubmission();
+        companyDetailAttribute.setSubmissionId(newSubmissionId);
+        storeOriginalSubmissionId(newSubmissionId);
+
         attributes.addAttribute("forward",
             String.format("/efs-submission/%s/company/{companyNumber}/details", newSubmissionId));
 
@@ -70,20 +67,16 @@ public class NewSubmissionControllerImpl extends BaseControllerImpl implements N
             logger.errorRequest(request, "Company number in URL does not match companyDetailAttribute.companyNumber");
             return ViewConstants.ERROR.asView();
         }
-        try {
-            newSubmissionId = createNewSubmission();
 
-            ApiResponse<SubmissionResponseApi> response = apiClientService.putCompany(newSubmissionId,
-                new CompanyApi(companyDetailAttribute.getCompanyNumber(), companyDetailAttribute.getCompanyName()));
+        newSubmissionId = createNewSubmission();
 
-            logApiResponse(response, "",
-                MessageFormat.format("PUT /efs-submission-api/submission/{0}/company", newSubmissionId));
-            storeOriginalSubmissionId(newSubmissionId);
+        ApiResponse<SubmissionResponseApi> response = apiClientService.putCompany(newSubmissionId,
+            new CompanyApi(companyDetailAttribute.getCompanyNumber(), companyDetailAttribute.getCompanyName()));
 
-        } catch (RuntimeException ex) {
-            logger.errorRequest(request, ex.getMessage(), ex);
-            return ViewConstants.ERROR.asView();
-        }
+        logApiResponse(response, "",
+            MessageFormat.format("PUT /efs-submission-api/submission/{0}/company", newSubmissionId));
+        storeOriginalSubmissionId(newSubmissionId);
+
 
         return ViewConstants.CATEGORY_SELECTION
             .asRedirectUri(chsUrl, newSubmissionId, companyDetailAttribute.getCompanyNumber());
