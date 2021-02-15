@@ -115,17 +115,22 @@ class NewSubmissionControllerImplTest extends BaseControllerImplTest {
     }
 
     @Test
-    void newSubmissionForCompanyWhenRuntimeError() {
+    void newSubmissionForCompanyWhenRuntimeError() throws Exception {
         expectCreateSubmission();
         when(companyDetail.getCompanyNumber()).thenReturn(COMPANY_NUMBER);
         when(companyDetail.getCompanyName()).thenReturn(COMPANY_NAME);
         when(apiClientService.putCompany(eq(SUBMISSION_ID), refEq(company)))
             .thenThrow(new RuntimeException("dummy exception"));
 
-        final String result =
-            testController.newSubmissionForCompany(COMPANY_NUMBER, companyDetail, sessionStatus, request, attributes);
+        mockMvc = MockMvcBuilders.standaloneSetup(testController)
+                .setControllerAdvice(new GlobalExceptionHandler(logger))
+                .build();
 
-        assertThat(result, is(ViewConstants.ERROR.asView()));
+        String newSubmissionUrl = String.format("/efs-submission/company/%s/new-submission", COMPANY_NUMBER);
+        mockMvc.perform(get(newSubmissionUrl).flashAttr("companyDetail", companyDetail))
+                .andExpect(status().isInternalServerError())
+                .andExpect(view().name(ViewConstants.ERROR.asView()))
+                .andReturn();
     }
 
     @ParameterizedTest
