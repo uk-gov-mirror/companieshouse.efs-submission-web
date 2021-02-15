@@ -14,6 +14,16 @@ Requirements
 * [efs-submission-api](https://github.com/companieshouse/efs-submission-api)
 * Internal Companies House core services
 
+
+## Building and Running Locally
+
+**Note**: As this project has dependencies on internal Companies House libraries, you will need access to private GitHub repositories to build successfully. To run the service locally, you will need the CHS developer environment.  
+
+1. From the command line, in the same folder as the Makefile run `make clean build`
+1. Configure project environment variables where necessary
+1. Start the service in the CHS developer environment
+1. Access the web application, running in the CHS developer environment, on the host and port configured in application.properties
+
 ## Building the docker image 
 
     mvn -s settings.xml compile jib:dockerBuild -Dimage=169942020521.dkr.ecr.eu-west-1.amazonaws.com/local/efs-submission-api
@@ -28,19 +38,10 @@ Requirements
 
 1. Run `tilt up` and wait for all services to start
 
-**note**: The database is populated with potentially old data. If you need the most up to date categories, forms, or payment templates; follow step 6 of the vagrant setup in the [API](https://github.com/companieshouse/efs-submission-api/blob/master/README.md#building-and-running-locally-using-vagrant), or enable [devlopment mode for the API](https://github.com/companieshouse/efs-submission-api/blob/master/README.md#to-make-local-changes). 
+**note**: The database is populated with potentially old data. If you need the most up to date categories, forms, or payment templates; follow step 6 of the local setup in the [API](https://github.com/companieshouse/efs-submission-api/blob/master/README.md#building-and-running-locally), or enable [devlopment mode for the API](https://github.com/companieshouse/efs-submission-api/blob/master/README.md#to-make-local-changes). 
 
 ### To make local changes
 
 Development mode is available for this service in [Docker CHS Development](https://github.com/companieshouse/docker-chs-development).
 
     ./bin/chs-dev development enable efs-submission-web
-
-## Building and Running Locally with Vagrant 
-
-**Note**: As this project has dependencies on internal Companies House libraries, you will need access to private GitHub repositories to build successfully. To run the service locally, you will need the CHS developer environment.  
-
-1. From the command line, in the same folder as the Makefile run `make clean build`
-1. Configure project environment variables where necessary
-1. Start the service in the CHS developer environment
-1. Access the web application, running in the CHS developer environment, on the host and port configured in application.properties
