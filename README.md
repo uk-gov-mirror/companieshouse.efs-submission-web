@@ -46,4 +46,4 @@ Development mode is available for this service in [Docker CHS Development](https
 
     ./bin/chs-dev development enable efs-submission-web
 
-This will clone the efs-submission-web into the repositories folder inside of docker-chs-dev folder. Any changes to the code will automatically trigger a rebuild and reluanch.
+This will clone the efs-submission-web into the repositories folder inside of docker-chs-dev folder. Any changes to the code or resources will automatically trigger a rebuild and reluanch.
