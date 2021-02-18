@@ -54,6 +54,7 @@ import static org.mockito.ArgumentMatchers.anyMap;
 import static org.mockito.ArgumentMatchers.contains;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.ArgumentMatchers.isNull;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -291,5 +292,18 @@ public abstract class BaseControllerImplTest {
                         new ApiError()
                 ))
         );
+    }
+
+    @Test
+    void testGetChsSessionId() {
+        Session session = mock(Session.class);
+        when(request.getAttribute(SessionHandler.CHS_SESSION_REQUEST_ATT_KEY))
+                .thenReturn(session);
+        baseController.getChsSessionId(request);
+        verify(session).getCookieId();
+
+        when(request.getAttribute(SessionHandler.CHS_SESSION_REQUEST_ATT_KEY))
+                .thenReturn(null);
+        assertNull(baseController.getChsSessionId(request));
     }
 }
