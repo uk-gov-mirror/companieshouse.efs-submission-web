@@ -15,6 +15,8 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.support.SessionStatus;
+import uk.gov.companieshouse.api.ApiClient;
+import uk.gov.companieshouse.api.error.ApiError;
 import uk.gov.companieshouse.api.model.ApiResponse;
 import uk.gov.companieshouse.api.model.efs.submissions.CompanyApi;
 import uk.gov.companieshouse.api.model.efs.submissions.PresenterApi;
@@ -37,7 +39,9 @@ import javax.servlet.http.HttpSession;
 import java.text.MessageFormat;
 import java.time.Instant;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
@@ -50,6 +54,7 @@ import static org.mockito.ArgumentMatchers.anyMap;
 import static org.mockito.ArgumentMatchers.contains;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.ArgumentMatchers.isNull;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -248,7 +253,43 @@ public abstract class BaseControllerImplTest {
                 .map(Arguments::of);
     }
 
-    private void setUpApiResponse(HttpStatus status) {
+    private void setUpApiResponse(HttpStatus status, List<ApiError> errors) {
         when(apiResponse.getStatusCode()).thenReturn(status.value());
+    }
+
+    private void setUpApiResponse(HttpStatus status) {
+        setUpApiResponse(status, Collections.emptyList());
+    }
+
+    private void setUpApiResponse(List<ApiError> errors) {
+        setUpApiResponse(HttpStatus.OK, errors);
+        if (!errors.isEmpty()) {
+            when(apiResponse.hasErrors()).thenReturn(true);
+            when(apiResponse.getErrors()).thenReturn(errors);
+        } else {
+            when(apiResponse.hasErrors()).thenReturn(false);
+        }
+    }
+
+    @ParameterizedTest
+    @MethodSource("apiErrors")
+    void testLogApiResponseErrors(List<ApiError> apiErrors) {
+        setUpApiResponse(apiErrors);
+
+        baseController.logApiResponse(apiResponse, SUBMISSION_ID, "");
+
+        verify(logger, times(apiErrors.size()))
+                .errorContext(eq(SUBMISSION_ID), contains("error="), isNull(), isNull());
+    }
+
+    private static Stream<Arguments> apiErrors() {
+        return Stream.of(
+                Arguments.of(Collections.emptyList()),
+                Arguments.of(Collections.singletonList(new ApiError())),
+                Arguments.of(Arrays.asList(
+                        new ApiError(),
+                        new ApiError()
+                ))
+        );
     }
 }
