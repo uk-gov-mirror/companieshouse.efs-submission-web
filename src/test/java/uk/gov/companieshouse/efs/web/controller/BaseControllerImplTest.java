@@ -1,5 +1,6 @@
 package uk.gov.companieshouse.efs.web.controller;
 
+import org.codehaus.plexus.util.cli.Arg;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -35,8 +36,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.text.MessageFormat;
 import java.time.Instant;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Predicate;
 import java.util.stream.Stream;
 
 import static org.junit.Assert.assertNull;
@@ -102,6 +105,8 @@ public abstract class BaseControllerImplTest {
     protected FormTemplateService formTemplateService;
     @Mock
     protected FileTransferApiClient fileTransferApiClient;
+    @Mock
+    private ApiResponse<String> apiResponse;
 
     protected MockMvc mockMvc;
 
@@ -225,5 +230,25 @@ public abstract class BaseControllerImplTest {
     void testGetViewName() {
         String viewName = baseController.getViewName();
         assertNull("Base controllers view should be null", viewName);
+    }
+
+    @ParameterizedTest
+    @MethodSource("errorStatusCodes")
+    void testLogOnApiResponse(HttpStatus status) {
+        setUpApiResponse(status);
+
+        baseController.logApiResponse(apiResponse, SUBMISSION_ID, "");
+
+        verify(logger).errorContext(eq(SUBMISSION_ID), contains("API response"), isNull(), isNull());
+    }
+
+    private static Stream<Arguments> errorStatusCodes() {
+        return Arrays.stream(HttpStatus.values())
+                .filter(HttpStatus::isError)
+                .map(Arguments::of);
+    }
+
+    private void setUpApiResponse(HttpStatus status) {
+        when(apiResponse.getStatusCode()).thenReturn(status.value());
     }
 }
