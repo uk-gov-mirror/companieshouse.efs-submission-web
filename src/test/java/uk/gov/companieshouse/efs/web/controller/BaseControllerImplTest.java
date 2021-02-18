@@ -1,5 +1,6 @@
 package uk.gov.companieshouse.efs.web.controller;
 
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -38,6 +39,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Stream;
 
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyMap;
@@ -216,5 +219,11 @@ public abstract class BaseControllerImplTest {
 
     // Needed to instantiate a class for testing
     private static class BaseControllerTestClass extends BaseControllerImpl {
+    }
+
+    @Test
+    void testGetViewName() {
+        String viewName = baseController.getViewName();
+        assertNull("Base controllers view should be null", viewName);
     }
 }
