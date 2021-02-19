@@ -38,12 +38,14 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.text.MessageFormat;
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Predicate;
+import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 import static org.junit.Assert.assertNull;
@@ -51,6 +53,7 @@ import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyMap;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.contains;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.ArgumentMatchers.isNull;
@@ -305,5 +308,22 @@ public abstract class BaseControllerImplTest {
         when(request.getAttribute(SessionHandler.CHS_SESSION_REQUEST_ATT_KEY))
                 .thenReturn(null);
         assertNull(baseController.getChsSessionId(request));
+    }
+
+    @Test
+    void testAddAnyErrorsFromResponse() {
+        String fieldName = "testAnyErrorsFromResponse";
+        String location = String.format("a.b.%s", fieldName);
+
+        BindingResult bindingResult = mock(BindingResult.class);
+        ApiError apiError = mock(ApiError.class);
+
+        when(apiResponse.getErrors()).thenReturn(Collections.singletonList(apiError));
+        when(apiError.getLocation()).thenReturn(location);
+        when(apiError.getErrorValues()).thenReturn(null);
+
+        baseController.addAnyErrorsFromResponse(bindingResult, apiResponse, x -> true);
+
+        verify(bindingResult).rejectValue(eq(fieldName), isNull(), isNull(), anyString());
     }
 }
