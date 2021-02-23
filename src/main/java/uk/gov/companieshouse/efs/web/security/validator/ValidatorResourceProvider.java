@@ -1,19 +1,20 @@
 package uk.gov.companieshouse.efs.web.security.validator;
 
+import java.util.Optional;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import javax.servlet.http.HttpServletRequest;
 import uk.gov.companieshouse.api.model.ApiResponse;
 import uk.gov.companieshouse.api.model.efs.formtemplates.FormTemplateApi;
 import uk.gov.companieshouse.api.model.efs.submissions.SubmissionApi;
 import uk.gov.companieshouse.api.model.efs.submissions.SubmissionFormApi;
 import uk.gov.companieshouse.efs.web.formtemplates.service.api.FormTemplateService;
 import uk.gov.companieshouse.efs.web.service.api.ApiClientService;
+import uk.gov.companieshouse.logging.Logger;
+import uk.gov.companieshouse.logging.LoggerFactory;
 import uk.gov.companieshouse.session.Session;
 import uk.gov.companieshouse.session.handler.SessionHandler;
 import uk.gov.companieshouse.session.model.SignInInfo;
-
-import javax.servlet.http.HttpServletRequest;
-import java.util.Optional;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
  * To validate whether a request requires authorisation information about that request must be gathered
@@ -27,6 +28,7 @@ import java.util.regex.Pattern;
  * One they have been computed, their value is saved.
  */
 public class ValidatorResourceProvider {
+    private static final Logger logger = LoggerFactory.getLogger(ValidatorResourceProvider.class.getCanonicalName());
     private static final Pattern EFS_SUBMISSION_WITH_COMPANY = Pattern.compile(
             "^/efs-submission/(?<submissionId>[a-fA-F\\d]{24}+)/company/(?<companyNumber>[a-zA-Z\\d]{8}+)[^a-zA-Z\\d]?+");
 
@@ -36,6 +38,7 @@ public class ValidatorResourceProvider {
     private SubmissionApi submission;
     private FormTemplateApi form;
     private SignInInfo signInInfo;
+    private static int getSubmissionCounter;
 
     public ValidatorResourceProvider(ApiClientService apiClientService,
                                      FormTemplateService formTemplateService) {
@@ -58,12 +61,18 @@ public class ValidatorResourceProvider {
                     .getSubmission(submissionId))
                     .map(ApiResponse::getData);
 
+            logGetSubmission();
             maybeSubmission.ifPresent(submissionApi -> submission = submissionApi);
 
             return maybeSubmission;
         }
 
         return Optional.empty();
+    }
+
+    private static synchronized void logGetSubmission() {
+        logger.debug(String.format("%s getSubmission() count: % 3d",
+                ValidatorResourceProvider.class.getSimpleName(), ++getSubmissionCounter));
     }
 
     /**
@@ -77,7 +86,7 @@ public class ValidatorResourceProvider {
         if (submission != null) {
             return Optional.of(submission);
         }
-
+        
         return getSubmissionFromRequest();
     }
 

@@ -20,6 +20,7 @@ import uk.gov.companieshouse.logging.Logger;
 @Controller
 public class ResolutionsInfoControllerImpl extends BaseControllerImpl implements ResolutionsInfoController {
 
+    private int getSubmissionCounter;
 
     /**
      * Constructor used by child controllers.
@@ -42,6 +43,9 @@ public class ResolutionsInfoControllerImpl extends BaseControllerImpl implements
         CategoryTemplateModel categoryTemplateAttribute, Model model, HttpServletRequest servletRequest) {
 
         final SubmissionApi submissionApi = Objects.requireNonNull(getSubmission(id));
+
+        logger.debug(String.format("GET %s getSubmission() count: % 3d", getClass().getSimpleName(),
+                ++getSubmissionCounter));
         categoryTemplateAttribute.setSubmissionId(submissionApi.getId());
 
         if (submissionApi.getStatus() != SubmissionStatus.OPEN) {

@@ -52,6 +52,7 @@ import uk.gov.companieshouse.logging.Logger;
 public class FormTemplateControllerImpl extends BaseControllerImpl implements FormTemplateController {
 
     private FormTemplateModel formTemplateAttribute;
+    private int getSubmissionCounter;
 
     /**
      * Define the model name for this action.
@@ -92,6 +93,8 @@ public class FormTemplateControllerImpl extends BaseControllerImpl implements Fo
 
         final SubmissionApi submissionApi = Objects.requireNonNull(getSubmission(id));
 
+        logger.debug(String.format("GET %s getSubmission() count: % 3d", getClass().getSimpleName(),
+                ++getSubmissionCounter));
         if (submissionApi.getStatus() != SubmissionStatus.OPEN) {
             return ViewConstants.GONE.asView();
         }

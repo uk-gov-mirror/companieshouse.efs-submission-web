@@ -27,6 +27,8 @@ import uk.gov.companieshouse.logging.Logger;
 @SessionAttributes({FormTemplateControllerImpl.ATTRIBUTE_NAME, CategoryTemplateControllerImpl.ATTRIBUTE_NAME})
 public class ConfirmationControllerImpl extends BaseControllerImpl implements ConfirmationController {
 
+    private int getSubmissionCounter;
+
     /**
      * Constructor used by child controllers.
      *
@@ -53,6 +55,8 @@ public class ConfirmationControllerImpl extends BaseControllerImpl implements Co
 
         final SubmissionApi submission = getSubmission(id);
 
+        logger.debug(String.format("GET %s getSubmission() count: % 3d", getClass().getSimpleName(),
+                ++getSubmissionCounter));
         if (submission.getStatus() != SubmissionStatus.OPEN) {
             return ViewConstants.GONE.asView();
         }

@@ -18,11 +18,12 @@ public class DataCacheConfig {
     public static final String CATEGORY_BY_PARENT = "category-by-parent";
     public static final String TOP_LEVEL_CATEGORY = "top-level-category";
     public static final String IP_ALLOW_LIST = "ip-allow-list";
+    public static final String SUBMISSION_BY_ID = "submission-by-id";
 
     // although this method is unused it prevents sonar considering this a utility class
     // with a public constructor
     @Bean
     public List<String> cacheNames() {
-        return Arrays.asList(ALL_CATEGORIES, CATEGORY_BY_ID, CATEGORY_BY_PARENT, TOP_LEVEL_CATEGORY, IP_ALLOW_LIST);
+        return Arrays.asList(ALL_CATEGORIES, CATEGORY_BY_ID, CATEGORY_BY_PARENT, TOP_LEVEL_CATEGORY, IP_ALLOW_LIST, SUBMISSION_BY_ID);
     }
 }

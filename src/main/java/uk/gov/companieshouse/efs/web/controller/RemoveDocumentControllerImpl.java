@@ -50,6 +50,7 @@ public class RemoveDocumentControllerImpl extends BaseControllerImpl implements 
 
     private FileTransferApiClient fileTransferApiClient;
     private RemoveDocumentModel removeDocumentAttribute;
+    private int getSubmissionCounter;
 
     /**
      * Constructor used by child controllers.
@@ -81,6 +82,8 @@ public class RemoveDocumentControllerImpl extends BaseControllerImpl implements 
         HttpServletRequest servletRequest) {
 
         final SubmissionApi submissionApi = Objects.requireNonNull(getSubmission(id));
+        logger.debug(String.format("GET %s getSubmission() count: % 3d", getClass().getSimpleName(),
+                ++getSubmissionCounter));
 
         if (!verifySubmission(submissionApi)) {
             return ViewConstants.ERROR.asView();
@@ -111,6 +114,9 @@ public class RemoveDocumentControllerImpl extends BaseControllerImpl implements 
 
         final SubmissionApi submissionApi = Objects.requireNonNull(getSubmission(id));
 
+        logger.debug(
+                String.format("POST %s getSubmission() count: % 3d", getClass().getSimpleName(),
+                        ++getSubmissionCounter));
         if (!verifySubmission(submissionApi)) {
             return ViewConstants.ERROR.asView();
         }
@@ -140,6 +146,9 @@ public class RemoveDocumentControllerImpl extends BaseControllerImpl implements 
 
         final SubmissionApi submissionApi = Objects.requireNonNull(getSubmission(id));
 
+        logger.debug(
+                String.format("remove %s getSubmission() count: % 3d", getClass().getSimpleName(),
+                        ++getSubmissionCounter));
         if (!verifySubmission(submissionApi)) {
             return ViewConstants.ERROR.asView();
         }

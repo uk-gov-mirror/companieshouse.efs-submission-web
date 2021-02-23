@@ -61,6 +61,7 @@ public class DocumentUploadControllerImpl extends BaseControllerImpl implements 
     private DocumentUploadValidator documentUploadValidator;
     private DocumentUploadModel documentUploadAttribute;
     private ResourceBundle resourceBundle;
+    private int getSubmissionCounter;
 
     /**
      * Constructor used by child controllers.
@@ -100,6 +101,8 @@ public class DocumentUploadControllerImpl extends BaseControllerImpl implements 
 
         final SubmissionApi submissionApi = Objects.requireNonNull(getSubmission(id));
 
+        logger.debug(String.format("GET %s getSubmission() count: % 3d", getClass().getSimpleName(),
+                ++getSubmissionCounter));
         if (!verifySubmission(submissionApi)) {
             return ViewConstants.ERROR.asView();
         }
@@ -130,6 +133,11 @@ public class DocumentUploadControllerImpl extends BaseControllerImpl implements 
         HttpServletRequest servletRequest, HttpSession session) {
 
         final SubmissionApi submissionApi = Objects.requireNonNull(getSubmission(id));
+
+        logger.debug(
+                String.format("POST %s getSubmission() count: % 3d", getClass().getSimpleName(),
+                        ++getSubmissionCounter));
+        
         final FormTemplateApi formTemplate = getFormTemplateApi(submissionApi.getSubmissionForm().getFormType());
 
         model.mergeAttributes(documentUploadAttribute.getAttributes());
@@ -185,6 +193,10 @@ public class DocumentUploadControllerImpl extends BaseControllerImpl implements 
 
         final FileListApi files = getDocumentUploadAttribute().getDetails();
         final SubmissionApi submissionApi = Objects.requireNonNull(getSubmission(id));
+
+        logger.debug(String.format("submit POST %s getSubmission() count: % 3d",
+                getClass().getSimpleName(), ++getSubmissionCounter));
+
         final FormTemplateApi formTemplate = getFormTemplateApi(submissionApi.getSubmissionForm().getFormType());
 
         model.mergeAttributes(documentUploadAttribute.getAttributes());

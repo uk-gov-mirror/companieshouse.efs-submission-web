@@ -46,6 +46,7 @@ public class CheckDetailsControllerImpl extends BaseControllerImpl implements Ch
      * Define the model name for this action.
      */
     public static final String ATTRIBUTE_NAME = "checkDetails";
+    private int getSubmissionCounter;
 
     /**
      * Constructor used by child controllers.
@@ -82,6 +83,8 @@ public class CheckDetailsControllerImpl extends BaseControllerImpl implements Ch
         Model model, HttpServletRequest request, HttpSession session, SessionStatus sessionStatus) {
 
         final SubmissionApi submission = getSubmission(id);
+        logger.debug(String.format("GET %s getSubmission() count: % 3d", getClass().getSimpleName(),
+                ++getSubmissionCounter));
 
         if (submission.getStatus() != SubmissionStatus.OPEN) {
             return ViewConstants.GONE.asView();
@@ -97,6 +100,9 @@ public class CheckDetailsControllerImpl extends BaseControllerImpl implements Ch
         BindingResult binding, final Model model, final HttpServletRequest request) {
 
         final SubmissionApi submission = getSubmission(id);
+        logger.debug(
+                String.format("POST %s getSubmission() count: % 3d", getClass().getSimpleName(),
+                        ++getSubmissionCounter));
         confirmAuthorisedValidator.isValid(submission, checkDetailsAttribute, binding);
 
         if (binding.hasErrors()) {

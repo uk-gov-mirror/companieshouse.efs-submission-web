@@ -33,6 +33,7 @@ public class PaymentControllerImpl extends BaseControllerImpl implements Payment
 
     private PaymentService paymentService;
     private NonceService nonceService;
+    private int getSubmissionCounter;
 
     /**
      * Constructor sets the service bean dependencies.
@@ -72,6 +73,8 @@ public class PaymentControllerImpl extends BaseControllerImpl implements Payment
         ApiResponse<SubmissionApi> response = apiClientService.getSubmission(id);
 
         logApiResponse(response, id, MessageFormat.format("GET " + BaseApiClientServiceImpl.SUB_URI + "{0}", id));
+        logger.debug(String.format("callback GET %s getSubmission() count: % 3d",
+                getClass().getSimpleName(), ++getSubmissionCounter));
 
         SessionListApi paymentSessions = Objects.requireNonNull(response.getData()).getPaymentSessions();
 
@@ -98,6 +101,9 @@ public class PaymentControllerImpl extends BaseControllerImpl implements Payment
             SessionListApi paymentSessions = new SessionListApi();
 
             Optional.ofNullable(getSubmission(submissionId).getPaymentSessions()).ifPresent(paymentSessions::addAll);
+            logger.debug(
+                    String.format("GET %s getSubmission() count: % 3d", getClass().getSimpleName(),
+                            ++getSubmissionCounter));
             paymentSessions.add(paymentSession);
 
             final ApiResponse<SubmissionResponseApi> response =

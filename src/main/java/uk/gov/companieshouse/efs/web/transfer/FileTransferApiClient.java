@@ -12,6 +12,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
+import uk.gov.companieshouse.logging.Logger;
 
 /**
  * Client for using the File-Transfer-Api for upload / download / delete of files.
@@ -24,6 +25,7 @@ public class FileTransferApiClient {
     private static final String UPLOAD = "upload";
     private static final String CONTENT_DISPOSITION_VALUE = "form-data; name=%s; filename=%s";
 
+    private Logger logger;
     private RestTemplate restTemplate;
 
     @Value("${file.transfer.api.key}")
@@ -32,9 +34,12 @@ public class FileTransferApiClient {
     @Value("${file.transfer.api.url}")
     private String fileTransferApiUrl;
 
+    private int uploadRequestCounter;
+
     @Autowired
-    public FileTransferApiClient(final RestTemplate restTemplate) {
+    public FileTransferApiClient(final RestTemplate restTemplate, final Logger logger) {
         this.restTemplate = restTemplate;
+        this.logger = logger;
     }
 
     private <T> FileTransferApiClientResponse makeApiCall(FileTransferOperation<T> operation, FileTransferResponseBuilder<T> responseBuilder) {
@@ -60,6 +65,10 @@ public class FileTransferApiClient {
      * @return FileTransferApiClientResponse containing the file id if successful, and http status
      */
     public FileTransferApiClientResponse upload(final MultipartFile fileToUpload) {
+        logger.debug(
+                String.format("File upload request % 3d: %s", ++uploadRequestCounter,
+                        fileToUpload.getOriginalFilename()));
+
         return makeApiCall(
                 // FileTransferOperation
                 () -> {

@@ -52,6 +52,7 @@ public class CategoryTemplateControllerImpl extends BaseControllerImpl implement
     public static final String ATTRIBUTE_NAME = "categoryTemplate";
 
     private CategoryTemplateModel categoryTemplateAttribute;
+    private int getSubmissionCounter;
 
     /**
      * Constructor.
@@ -91,6 +92,8 @@ public class CategoryTemplateControllerImpl extends BaseControllerImpl implement
 
         final SubmissionApi submissionApi = Objects.requireNonNull(getSubmission(id));
 
+        logger.debug(String.format("GET %s getSubmission() count: % 3d", getClass().getSimpleName(),
+                ++getSubmissionCounter));
         if (submissionApi.getStatus() != SubmissionStatus.OPEN) {
             return ViewConstants.GONE.asView();
         }
