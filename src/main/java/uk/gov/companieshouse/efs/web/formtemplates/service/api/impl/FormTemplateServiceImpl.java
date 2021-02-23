@@ -27,6 +27,7 @@ public class FormTemplateServiceImpl extends BaseApiClientServiceImpl
     private static final String TYPE_ID_TEMPLATE = "type={id}";
 
     private ApiClientService apiClientService;
+    private int getFormCounter;
 
     /**
      * Construct an {@link ApiClientServiceImpl}.
@@ -61,6 +62,8 @@ public class FormTemplateServiceImpl extends BaseApiClientServiceImpl
 
         final String uri = components.toUriString();
 
+        logger.debug(
+                String.format("%s getFormTemplate() count: % 3d", getClass().getSimpleName(), ++getFormCounter));
         return executeOp("getFormTemplate", uri,
                 getApiClient().privateEfsResourceHandler().formTemplates().formTemplate().get(uri));
     }
