@@ -16,6 +16,7 @@ import uk.gov.companieshouse.api.model.efs.submissions.SubmissionFormApi;
 import uk.gov.companieshouse.api.model.efs.submissions.SubmissionStatus;
 import uk.gov.companieshouse.efs.web.model.RemoveDocumentModel;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
@@ -124,6 +125,24 @@ class RemoveDocumentControllerImplTest extends BaseControllerImplTest {
                 .getRemoveDocumentAttribute();
 
         assertThat(gottenModel, sameInstance(originalModel));
+    }
+
+    @Test
+    void errorWhenNotVerified() {
+        SubmissionApi submission = createValidSubmissionApi(new FileDetailListApi());
+        when(apiClientService.getSubmission(SUBMISSION_ID))
+                .thenReturn(getSubmissionOkResponse(submission));
+
+        Map<String, Object> sessionContextData = new HashMap<>();
+        sessionContextData.put(ORIGINAL_SUBMISSION_ID, SUBMISSION_ID);
+
+        when(sessionService.getSessionDataFromContext()).thenReturn(sessionContextData);
+        when(sessionService.getUserEmail()).thenReturn("");
+
+        String viewName = testController.process(SUBMISSION_ID, COMPANY_NUMBER, FILE_ID1, removeDocumentAttribute,
+                bindingResult, model, request, session);
+
+        assertThat(viewName, is(ViewConstants.ERROR.asView()));
     }
 
     private FileDetailApi createFileDetailApi(String fileName, String fileId) {
