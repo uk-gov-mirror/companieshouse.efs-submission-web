@@ -22,10 +22,12 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
+import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.sameInstance;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.contains;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.ArgumentMatchers.notNull;
 import static org.mockito.Mockito.verify;
@@ -161,6 +163,25 @@ class RemoveDocumentControllerImplTest extends BaseControllerImplTest {
                 bindingResult, model, request, session);
         assertThat(viewName, is(ViewConstants.REMOVE_DOCUMENT.asView()));
         verify(model).addAttribute(eq(TEMPLATE_NAME), anyString());
+    }
+
+    @Test
+    void testProcessRedirectWhenNotRequired() {
+        SubmissionApi submission = createValidSubmissionApi(new FileDetailListApi());
+        when(apiClientService.getSubmission(SUBMISSION_ID))
+                .thenReturn(getSubmissionOkResponse(submission));
+
+        createValidSession();
+
+        when(bindingResult.hasErrors()).thenReturn(false);
+
+        String viewName = testController.process(SUBMISSION_ID, COMPANY_NUMBER, FILE_ID1, removeDocumentAttribute,
+                bindingResult, model, request, session);
+
+        String expectedRedirectUrl = String.format("/efs-submission/%s/company/%s/document-upload",
+            SUBMISSION_ID, COMPANY_NUMBER);
+        assertThat(viewName, containsString("redirect"));
+        assertThat(viewName, containsString(expectedRedirectUrl));
     }
 
     private void createValidSession() {
