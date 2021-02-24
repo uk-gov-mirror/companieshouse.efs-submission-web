@@ -25,6 +25,8 @@ import java.util.Map;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.sameInstance;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.ArgumentMatchers.notNull;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -143,6 +145,30 @@ class RemoveDocumentControllerImplTest extends BaseControllerImplTest {
                 bindingResult, model, request, session);
 
         assertThat(viewName, is(ViewConstants.ERROR.asView()));
+    }
+
+    @Test
+    void returnWithErrorsWhenBindingFails() {
+        SubmissionApi submission = createValidSubmissionApi(new FileDetailListApi());
+        when(apiClientService.getSubmission(SUBMISSION_ID))
+                .thenReturn(getSubmissionOkResponse(submission));
+
+        createValidSession();
+
+        when(bindingResult.hasErrors()).thenReturn(true);
+
+        String viewName = testController.process(SUBMISSION_ID, COMPANY_NUMBER, FILE_ID1, removeDocumentAttribute,
+                bindingResult, model, request, session);
+        assertThat(viewName, is(ViewConstants.REMOVE_DOCUMENT.asView()));
+        verify(model).addAttribute(eq(TEMPLATE_NAME), anyString());
+    }
+
+    private void createValidSession() {
+        Map<String, Object> sessionContextData = new HashMap<>();
+        sessionContextData.put(ORIGINAL_SUBMISSION_ID, SUBMISSION_ID);
+
+        when(sessionService.getSessionDataFromContext()).thenReturn(sessionContextData);
+        when(sessionService.getUserEmail()).thenReturn(SIGNED_IN_USER);
     }
 
     private FileDetailApi createFileDetailApi(String fileName, String fileId) {
