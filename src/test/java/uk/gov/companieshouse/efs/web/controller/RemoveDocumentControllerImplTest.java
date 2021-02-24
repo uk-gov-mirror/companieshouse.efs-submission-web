@@ -16,18 +16,15 @@ import uk.gov.companieshouse.api.model.efs.submissions.SubmissionFormApi;
 import uk.gov.companieshouse.api.model.efs.submissions.SubmissionStatus;
 import uk.gov.companieshouse.efs.web.model.RemoveDocumentModel;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.sameInstance;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.ArgumentMatchers.contains;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.ArgumentMatchers.notNull;
 import static org.mockito.Mockito.verify;
@@ -178,10 +175,34 @@ class RemoveDocumentControllerImplTest extends BaseControllerImplTest {
         String viewName = testController.process(SUBMISSION_ID, COMPANY_NUMBER, FILE_ID1, removeDocumentAttribute,
                 bindingResult, model, request, session);
 
-        String expectedRedirectUrl = String.format("/efs-submission/%s/company/%s/document-upload",
-            SUBMISSION_ID, COMPANY_NUMBER);
-        assertThat(viewName, containsString("redirect"));
-        assertThat(viewName, containsString(expectedRedirectUrl));
+        assertThat(viewName, isDocumentUploadUrl(viewName));
+    }
+
+    @Test
+    void testProcessRedirectWhenRequiredButDoesntHaveAnyFiles() {
+        SubmissionApi submission = createValidSubmissionApi(new FileDetailListApi());
+        when(apiClientService.getSubmission(SUBMISSION_ID))
+                .thenReturn(getSubmissionOkResponse(submission));
+
+        createValidSession();
+
+        when(bindingResult.hasErrors()).thenReturn(false);
+        when(removeDocumentAttribute.getRequired()).thenReturn("Y");
+
+        String viewName = testController.process(SUBMISSION_ID, COMPANY_NUMBER, FILE_ID1, removeDocumentAttribute,
+                bindingResult, model, request, session);
+
+        assertThat(viewName, isDocumentUploadUrl(viewName));
+    }
+
+    private boolean isDocumentUploadUrl(String url) {
+        String documentUploadUrl = String.format("/efs-submission/%s/company/%s/document-upload",
+                SUBMISSION_ID, COMPANY_NUMBER);
+
+        boolean isRedirect = url.contains("redirect");
+        boolean isDocumentUpload = url.contains(documentUploadUrl);
+
+        return isRedirect && isDocumentUpload;
     }
 
     private void createValidSession() {
