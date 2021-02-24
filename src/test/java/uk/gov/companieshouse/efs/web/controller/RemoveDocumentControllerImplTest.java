@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.test.util.ReflectionTestUtils;
 import uk.gov.companieshouse.api.model.efs.submissions.CompanyApi;
 import uk.gov.companieshouse.api.model.efs.submissions.FileDetailApi;
 import uk.gov.companieshouse.api.model.efs.submissions.FileDetailListApi;
@@ -21,7 +22,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.sameInstance;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.mockito.ArgumentMatchers.notNull;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -111,6 +114,16 @@ class RemoveDocumentControllerImplTest extends BaseControllerImplTest {
 
         assertThat(testController.prepare(SUBMISSION_ID, COMPANY_NUMBER, FILE_ID,
                 removeDocumentAttribute, model, servletRequest), is("error"));
+    }
+
+    @Test
+    void getRemoveDocumentAttribute() {
+        RemoveDocumentModel originalModel = (RemoveDocumentModel) ReflectionTestUtils
+                .getField(testController, "removeDocumentAttribute");
+        RemoveDocumentModel gottenModel = ((RemoveDocumentControllerImpl)testController)
+                .getRemoveDocumentAttribute();
+
+        assertThat(gottenModel, sameInstance(originalModel));
     }
 
     private FileDetailApi createFileDetailApi(String fileName, String fileId) {
