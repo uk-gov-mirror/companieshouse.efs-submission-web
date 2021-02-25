@@ -1,10 +1,9 @@
 package uk.gov.companieshouse.efs.web.security;
 
+import nl.jqno.equalsverifier.EqualsVerifier;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.ArgumentCaptor;
-import org.mockito.Captor;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
@@ -89,6 +88,13 @@ class LoggingAuthFilterTest {
 
         assertThat(exception.getCause(), isA(URISyntaxException.class));
     }
+
+    @Test
+    void equalsAndHash() {
+        EqualsVerifier.forClass(LoggingAuthFilter.class)
+                .withOnlyTheseFields("signoutRestartPath").verify();
+    }
+
 
     private void setupRequest() {
         when(request.getRequestURL()).thenReturn(
