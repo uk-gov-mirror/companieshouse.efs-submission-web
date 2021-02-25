@@ -11,7 +11,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import uk.gov.companieshouse.efs.web.exception.ServiceException;
-import uk.gov.companieshouse.environment.EnvironmentReader;
 import uk.gov.companieshouse.session.Session;
 import uk.gov.companieshouse.session.model.SignInInfo;
 import uk.gov.companieshouse.session.model.UserProfile;
@@ -22,10 +21,10 @@ import java.net.URISyntaxException;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.isA;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.contains;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
+import static com.github.stefanbirkner.systemlambda.SystemLambda.withEnvironmentVariable;
 
 @ExtendWith(MockitoExtension.class)
 class LoggingAuthFilterTest {
@@ -39,9 +38,6 @@ class LoggingAuthFilterTest {
 
     @Mock
     HttpServletResponse response;
-
-    @Mock
-    EnvironmentReader environmentReader;
 
     @Mock
     SignInInfo signInInfo;
@@ -58,10 +54,21 @@ class LoggingAuthFilterTest {
 
     @BeforeEach
     void setUp() {
-        when(environmentReader.getMandatoryString(anyString())).thenReturn("");
-        when(environmentReader.getMandatoryString("OAUTH2_REQUEST_KEY"))
-                .thenReturn(randomEncryptionKey);
-        testFilter = new LoggingAuthFilter(environmentReader, signOutRedirectPath);
+        try {
+            testFilter = createLoggingAuthFilter();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    LoggingAuthFilter createLoggingAuthFilter() throws Exception {
+        return withEnvironmentVariable("OAUTH2_REQUEST_KEY", randomEncryptionKey)
+                .and("OAUTH2_AUTH_URI", "a")
+                .and("OAUTH2_CLIENT_ID", "a")
+                .and("OAUTH2_REDIRECT_URI", "a")
+                .and("COOKIE_SECRET", "a")
+                .and("USE_FINE_GRAIN_SCOPES_MODEL", "a")
+                .execute(() -> new LoggingAuthFilter(signOutRedirectPath));
     }
 
     void setupUserProfile() {

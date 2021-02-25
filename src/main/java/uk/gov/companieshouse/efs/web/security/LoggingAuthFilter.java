@@ -10,7 +10,6 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.http.client.utils.URIBuilder;
 import uk.gov.companieshouse.auth.filter.UserAuthFilter;
 import uk.gov.companieshouse.efs.web.exception.ServiceException;
-import uk.gov.companieshouse.environment.EnvironmentReader;
 import uk.gov.companieshouse.session.Session;
 
 /**
@@ -28,11 +27,6 @@ public final class LoggingAuthFilter extends UserAuthFilter {
      */
     public LoggingAuthFilter(final String signoutRedirectPath) {
         this.signoutRestartPath = signoutRedirectPath;
-    }
-
-    public LoggingAuthFilter(EnvironmentReader environmentReader, String signoutRestartPath) {
-        super(environmentReader);
-        this.signoutRestartPath = signoutRestartPath;
     }
 
     @Override
