@@ -19,7 +19,9 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.isA;
+import static org.hamcrest.Matchers.startsWith;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.contains;
 import static org.mockito.Mockito.verify;
@@ -63,11 +65,11 @@ class LoggingAuthFilterTest {
 
     LoggingAuthFilter createLoggingAuthFilter() throws Exception {
         return withEnvironmentVariable("OAUTH2_REQUEST_KEY", randomEncryptionKey)
-                .and("OAUTH2_AUTH_URI", "a")
-                .and("OAUTH2_CLIENT_ID", "a")
-                .and("OAUTH2_REDIRECT_URI", "a")
-                .and("COOKIE_SECRET", "a")
-                .and("USE_FINE_GRAIN_SCOPES_MODEL", "a")
+                .and("OAUTH2_AUTH_URI", "oauth2_auth_uri")
+                .and("OAUTH2_CLIENT_ID", "oauth_client_id")
+                .and("OAUTH2_REDIRECT_URI", "oauth2_redirect_uri")
+                .and("COOKIE_SECRET", "cookie_secret")
+                .and("USE_FINE_GRAIN_SCOPES_MODEL", "user_fine_grained_scope")
                 .execute(() -> new LoggingAuthFilter(signOutRedirectPath));
     }
 
@@ -94,6 +96,18 @@ class LoggingAuthFilterTest {
         });
 
         assertThat(exception.getCause(), isA(URISyntaxException.class));
+    }
+
+    @Test
+    void testCreateAuthorisedURI() {
+        String authoriseURI = testFilter.createAuthoriseURI("original_request_uri", "scope",
+                "nonce");
+
+        assertThat(authoriseURI, startsWith("oauth2_auth_uri?"));
+        assertThat(authoriseURI, containsString("client_id=oauth_client_id"));
+        assertThat(authoriseURI, containsString("redirect_uri=oauth2_redirect_uri"));
+        assertThat(authoriseURI, containsString("scope=scope"));
+        assertThat(authoriseURI, containsString("state="));
     }
 
     @Test
