@@ -11,13 +11,18 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import uk.gov.companieshouse.efs.web.exception.ServiceException;
 import uk.gov.companieshouse.environment.EnvironmentReader;
 import uk.gov.companieshouse.session.Session;
 import uk.gov.companieshouse.session.model.SignInInfo;
 import uk.gov.companieshouse.session.model.UserProfile;
 
 import java.io.IOException;
+import java.net.URISyntaxException;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.isA;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.contains;
 import static org.mockito.Mockito.verify;
@@ -44,9 +49,6 @@ class LoggingAuthFilterTest {
 
     @Mock
     UserProfile userProfile;
-
-    @Captor
-    ArgumentCaptor<String> stringArgumentCaptor;
 
     final static String USER_EMAIL = "tester@test.com";
 
@@ -77,6 +79,15 @@ class LoggingAuthFilterTest {
         testFilter.redirectForAuth(session, request, response, "11111111", true);
 
         verify(response).sendRedirect(contains("scope="));
+    }
+
+    @Test
+    void testCreateAuthoriseURIInvalidUriSyntax() {
+        ServiceException exception = assertThrows(ServiceException.class, () -> {
+            testFilter.createAuthoriseURI("^", "", "");
+        });
+
+        assertThat(exception.getCause(), isA(URISyntaxException.class));
     }
 
     private void setupRequest() {
