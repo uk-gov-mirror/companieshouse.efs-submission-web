@@ -1,5 +1,6 @@
 package uk.gov.companieshouse.efs.web.service.api.impl;
 
+import static com.github.stefanbirkner.systemlambda.SystemLambda.withEnvironmentVariable;
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -46,14 +47,26 @@ class ApiClientServiceImplIT {
     }
 
     @Test
-    void getApiClient() {
-        session = new SessionImpl(store, "", new HashMap<>());
+    void getApiClient() throws Exception {
+        session = withEnvironmentVariable("COOKIE_SECRET", "a")
+                .and("DEFAULT_SESSION_EXPIRATION", "1")
+                .execute(() -> new SessionImpl(store, "", new HashMap<>()));
+
         final ServletRequestAttributes attributes = new ServletRequestAttributes(request);
 
         RequestContextHolder.setRequestAttributes(attributes);
         createSessionDataSignedInWithOAuth();
 
-        ApiClient client = testService.getApiClient();
+        ApiClient client = withEnvironmentVariable("COOKIE_NAME", "a")
+                .and("COOKIE_DOMAIN", "a")
+                .and("COOKIE_SECURE_ONLY", "a")
+                .and("OAUTH2_CLIENT_ID", "a")
+                .and("OAUTH2_CLIENT_SECRET", "a")
+                .and("OAUTH2_TOKEN_URI", "a")
+                .and("API_URL", "a")
+                .and("PAYMENTS_API_URL", "a")
+                .and("INTERNAL_API_URL", "a")
+                .execute(() -> testService.getApiClient());
 
         assertOAuthClientAsExpected(client.getHttpClient());
     }
