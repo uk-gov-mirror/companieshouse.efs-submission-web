@@ -209,6 +209,7 @@
             <artifactId>system-lambda</artifactId>
             <version>1.2.0</version>
         </dependency>
+
     </dependencies>
 
     <build>
@@ -224,6 +225,9 @@
                         </goals>
                     </execution>
                 </executions>
+                <configuration>
+                    <classifier>exec</classifier>
+                </configuration>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
