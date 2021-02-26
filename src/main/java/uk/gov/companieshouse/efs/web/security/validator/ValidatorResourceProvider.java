@@ -28,7 +28,8 @@ import uk.gov.companieshouse.session.model.SignInInfo;
  * One they have been computed, their value is saved.
  */
 public class ValidatorResourceProvider {
-    private static final Logger logger = LoggerFactory.getLogger(ValidatorResourceProvider.class.getCanonicalName());
+    private static final Logger LOGGER =
+            LoggerFactory.getLogger(ValidatorResourceProvider.class.getCanonicalName());
     private static final Pattern EFS_SUBMISSION_WITH_COMPANY = Pattern.compile(
             "^/efs-submission/(?<submissionId>[a-fA-F\\d]{24}+)/company/(?<companyNumber>[a-zA-Z\\d]{8}+)[^a-zA-Z\\d]?+");
 
@@ -71,7 +72,7 @@ public class ValidatorResourceProvider {
     }
 
     private static synchronized void logGetSubmission() {
-        logger.debug(String.format("%s getSubmission() count: % 3d",
+        LOGGER.debug(String.format("%s getSubmission() count: % 3d",
                 ValidatorResourceProvider.class.getSimpleName(), ++getSubmissionCounter));
     }
 

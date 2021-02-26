@@ -15,6 +15,7 @@ public abstract class BaseApiClientServiceImpl {
     public static final String SUB_URI = ROOT_URI + "/submission/";
 
     protected Logger logger;
+    protected int operationCounter;
 
     public BaseApiClientServiceImpl(final Logger logger) {
         this.logger = logger;
@@ -33,6 +34,7 @@ public abstract class BaseApiClientServiceImpl {
             final Executor<ApiResponse<T>> executor) {
         final Map<String, Object> debugMap = new HashMap<>();
 
+        debugMap.put("operationCounter", ++operationCounter);
         debugMap.put("operationName", operationName);
         debugMap.put("requestUri", uri);
         try {
