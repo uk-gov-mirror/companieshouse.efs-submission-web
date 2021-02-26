@@ -113,6 +113,28 @@ class WebApplicationSecurityTest {
                 .addFilterBefore(any(CompanyAuthFilter.class), eq(BasicAuthenticationFilter.class));
     }
 
+    @Test
+    void efsWebResourceFilterConfigTest() {
+        final WebApplicationSecurity webApplicationSecurity = new WebApplicationSecurity(
+                apiClientService, formTemplateService, categoryTemplateService, environmentReader);
+
+        final WebApplicationSecurity.EfsWebResourceFilterConfig testConfig =
+                webApplicationSecurity.new EfsWebResourceFilterConfig();
+
+        when(httpSecurity.antMatcher(anyString())).thenReturn(httpSecurity);
+        when(httpSecurity.addFilterBefore(any(), any())).thenReturn(httpSecurity);
+
+        withLoggingAuthFilterEnvironment(() -> testConfig.configure(httpSecurity));
+
+        verify(httpSecurity).antMatcher("/efs-submission/**");
+        verify(httpSecurity)
+                .addFilterBefore(any(SessionHandler.class), eq(BasicAuthenticationFilter.class));
+        verify(httpSecurity)
+                .addFilterBefore(any(HijackFilter.class), eq(BasicAuthenticationFilter.class));
+        verify(httpSecurity)
+                .addFilterBefore(any(LoggingAuthFilter.class), eq(BasicAuthenticationFilter.class));
+    }
+
     void withLoggingAuthFilterEnvironment(Statement callback) {
         try {
             withEnvironmentVariable("OAUTH2_REQUEST_KEY", randomEncryptionKey)
