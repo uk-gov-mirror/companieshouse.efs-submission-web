@@ -79,4 +79,22 @@ public class AspectLoggerTest {
         Map<String, Object> debugMap = debugMapCaptor.getValue();
         assertThat(debugMap, hasKey("formSelected"));
     }
+
+    @Test
+    void testSubmissionCompletedLog() {
+        Map<String, Object> args = new HashMap<>();
+        args.put("formTemplateAttribute", mockFormTemplate);
+        args.put("id", SUBMISSION_ID);
+        setUpJoinPointArgs(args);
+
+        when(mockFormTemplate.getFormName()).thenReturn("");
+
+        testLogger.submissionCompleted(joinPoint);
+
+        verify(logger).infoContext(eq(SUBMISSION_ID), eq("Submission completed"),
+                debugMapCaptor.capture());
+
+        Map<String, Object> debugMap = debugMapCaptor.getValue();
+        assertThat(debugMap, hasKey("formName"));
+    }
 }
