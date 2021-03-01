@@ -27,7 +27,9 @@
     <th:block th:if="${@environment.getProperty('cookie_consent') == 'true'}">
         <div th:replace="fragments/piwikWithCookieCheck :: piwikWithCookieCheck (moduleName = 'efs')"></div>
         <div th:replace="fragments/piwikWithCookieCheck :: cookieBanner"></div>
-        <script th:src="@{{cdnUrl}/javascripts/app/cookie-consent-poc.js(cdnUrl=${@environment.getProperty('cdn.url')})}" type="text/javascript"></script>
+        <script th:src="@{{cdnUrl}/javascripts/app/cookie-consent/cookie-consent-1.0.0.js(cdnUrl=${@environment.getProperty('cdn.url')})}" type="text/javascript"></script>
+<!--        <script th:src="@{{cdnUrl}/javascripts/app/cookie-consent/matomo-only-cookie-consent.js(cdnUrl=${@environment.getProperty('cdn.url')})}" type="text/javascript"></script>-->
+<!--        <script th:src="@{{cdnUrl}/javascripts/app/cookie-consent/piwik-only-cookie-consent.js(cdnUrl=${@environment.getProperty('cdn.url')})}" type="text/javascript"></script>-->
     </th:block>
     <th:block th:unless="${@environment.getProperty('cookie_consent') == 'true'}">
         <div th:replace="fragments/piwik :: piwik"></div>
