@@ -1,8 +1,8 @@
 package uk.gov.companieshouse.efs.web.configuration;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.hasEntry;
 import static org.hamcrest.collection.IsMapWithSize.anEmptyMap;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
@@ -93,6 +93,6 @@ class ConfigurationDumperTest {
         verify(logger).trace("Active profiles: [test]");
         verify(logger).trace(eq("PROPERTIES"), captor.capture());
         
-        assertThat(captor.getValue().entrySet(), contains("key", "value"));
+        assertThat(captor.getValue(), hasEntry("key", "value"));
     }
 }
