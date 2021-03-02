@@ -1,6 +1,5 @@
 package uk.gov.companieshouse.efs.web.service.api.impl;
 
-import static com.github.stefanbirkner.systemlambda.SystemLambda.withEnvironmentVariable;
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -20,6 +19,7 @@ import uk.gov.companieshouse.api.ApiClient;
 import uk.gov.companieshouse.api.http.HttpClient;
 import uk.gov.companieshouse.api.http.OAuthHttpClient;
 import uk.gov.companieshouse.efs.web.service.api.ApiClientService;
+import uk.gov.companieshouse.efs.web.util.IntegrationTestHelper;
 import uk.gov.companieshouse.logging.Logger;
 import uk.gov.companieshouse.session.Session;
 import uk.gov.companieshouse.session.SessionImpl;
@@ -48,27 +48,23 @@ class ApiClientServiceImplIT {
 
     @Test
     void getApiClient() throws Exception {
-        session = withEnvironmentVariable("COOKIE_SECRET", "a")
-                .and("DEFAULT_SESSION_EXPIRATION", "1")
-                .execute(() -> new SessionImpl(store, "", new HashMap<>()));
+        IntegrationTestHelper.withSpringEnvironment()
+                .and("LOGGING_LEVEL", "DEBUG")
+                .execute(() -> {
+                    session = new SessionImpl(store, "", new HashMap<>());
 
-        final ServletRequestAttributes attributes = new ServletRequestAttributes(request);
+                    final ServletRequestAttributes attributes =
+                            new ServletRequestAttributes(request);
 
-        RequestContextHolder.setRequestAttributes(attributes);
-        createSessionDataSignedInWithOAuth();
+                    RequestContextHolder.setRequestAttributes(attributes);
+                    createSessionDataSignedInWithOAuth();
 
-        ApiClient client = withEnvironmentVariable("COOKIE_NAME", "a")
-                .and("COOKIE_DOMAIN", "a")
-                .and("COOKIE_SECURE_ONLY", "a")
-                .and("OAUTH2_CLIENT_ID", "a")
-                .and("OAUTH2_CLIENT_SECRET", "a")
-                .and("OAUTH2_TOKEN_URI", "a")
-                .and("API_URL", "a")
-                .and("PAYMENTS_API_URL", "a")
-                .and("INTERNAL_API_URL", "a")
-                .execute(() -> testService.getApiClient());
+                    ApiClient client = testService.getApiClient();
 
-        assertOAuthClientAsExpected(client.getHttpClient());
+                    assertOAuthClientAsExpected(client.getHttpClient());
+
+                    return null;
+                });
     }
     private void createSessionDataSignedInWithOAuth() {
         Map<String, Object> accessTokenData = new HashMap<>();

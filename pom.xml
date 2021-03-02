@@ -29,6 +29,7 @@
         <thymeleaf-layout-dialect.version>2.3.0</thymeleaf-layout-dialect.version>
         <commons-lang3.version>3.10</commons-lang3.version>
         <equalsverifier.version>3.1.6</equalsverifier.version>
+        <system-lambda.version>1.2.0</system-lambda.version>
 
         <mock-server.version>5.5.4</mock-server.version>
 
@@ -189,6 +190,13 @@
             <scope>test</scope>
         </dependency>
         <dependency>
+            <groupId>com.github.stefanbirkner</groupId>
+            <artifactId>system-lambda</artifactId>
+            <version>${system-lambda.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <!-- for JUnit 5 -->
+        <dependency>
             <groupId>org.awaitility</groupId>
             <artifactId>awaitility</artifactId>
             <version>3.1.6</version>
@@ -218,6 +226,9 @@
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <version>${spring-boot-maven-plugin.version}</version>
+                <configuration>
+                    <classifier>exec</classifier>
+                </configuration>
                 <executions>
                     <execution>
                         <goals>
