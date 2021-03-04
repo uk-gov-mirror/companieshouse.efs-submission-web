@@ -1,6 +1,7 @@
 package uk.gov.companieshouse.efs.web.formtemplates.service.api.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.util.UriComponents;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -8,6 +9,7 @@ import uk.gov.companieshouse.api.InternalApiClient;
 import uk.gov.companieshouse.api.model.ApiResponse;
 import uk.gov.companieshouse.api.model.efs.formtemplates.FormTemplateApi;
 import uk.gov.companieshouse.api.model.efs.formtemplates.FormTemplateListApi;
+import uk.gov.companieshouse.efs.web.configuration.DataCacheConfig;
 import uk.gov.companieshouse.efs.web.formtemplates.service.api.FormTemplateService;
 import uk.gov.companieshouse.efs.web.service.api.ApiClientService;
 import uk.gov.companieshouse.efs.web.service.api.impl.ApiClientServiceImpl;
@@ -45,6 +47,7 @@ public class FormTemplateServiceImpl extends BaseApiClientServiceImpl
     }
 
     @Override
+    @Cacheable(value = DataCacheConfig.ALL_FORMS, sync = true)
     public ApiResponse<FormTemplateListApi> getFormTemplates() {
 
         final String uri = BaseApiClientServiceImpl.ROOT_URI + FORM_TEMPLATES_FRAGMENT;
@@ -54,6 +57,7 @@ public class FormTemplateServiceImpl extends BaseApiClientServiceImpl
     }
 
     @Override
+    @Cacheable(value = DataCacheConfig.FORM_BY_ID, sync = true)
     public ApiResponse<FormTemplateApi> getFormTemplate(String id) {
         final String path = BaseApiClientServiceImpl.ROOT_URI + FORM_TEMPLATE_FRAGMENT;
         final UriComponents components = UriComponentsBuilder.fromPath(path).query(TYPE_ID_TEMPLATE)
@@ -66,6 +70,7 @@ public class FormTemplateServiceImpl extends BaseApiClientServiceImpl
     }
 
     @Override
+    @Cacheable(value = DataCacheConfig.FORM_BY_CATEGORY, sync = true)
     public ApiResponse<FormTemplateListApi> getFormTemplatesByCategory(String id) {
 
         final String path = ROOT_URI + FORM_TEMPLATES_FRAGMENT;
