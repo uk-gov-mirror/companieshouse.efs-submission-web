@@ -23,6 +23,7 @@
         <sdk-manager-java.version>1.5.10</sdk-manager-java.version>
         <rest-service-common-library.version>0.0.3</rest-service-common-library.version>
         <environment-reader-library.version>1.3.2</environment-reader-library.version>
+        <common-web-java.version>1.5.0</common-web-java.version>
         <commons-fileupload.version>1.4</commons-fileupload.version>
         <structured-logging.version>1.9.0</structured-logging.version>
 
@@ -207,7 +208,7 @@
         <dependency>
             <groupId>uk.gov.companieshouse</groupId>
             <artifactId>common-web-java</artifactId>
-            <version>unversioned</version>
+            <version>${common-web-java.version}</version>
         </dependency>
     </dependencies>
 
