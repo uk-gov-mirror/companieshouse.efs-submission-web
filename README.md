@@ -36,12 +36,10 @@ Requirements
 
 1. Run `tilt up` and wait for all services to start
 
-**note**: The database is populated with potentially old data. If you need the most up to date categories, forms, or payment templates; follow step 6 of the local setup in the [API](https://github.com/companieshouse/efs-submission-api/blob/master/README.md#building-and-running-locally), or enable [devlopment mode for the API](https://github.com/companieshouse/efs-submission-api/blob/master/README.md#to-make-local-changes). 
-
 ### To make local changes
 
 Development mode is available for this service in [Docker CHS Development](https://github.com/companieshouse/docker-chs-development).
 
     ./bin/chs-dev development enable efs-submission-web
 
-This will clone the efs-submission-web into the repositories folder inside of docker-chs-dev folder. Any changes to the code or resources will automatically trigger a rebuild and reluanch.
+This will clone the efs-submission-web into the repositories folder inside docker-chs-dev folder. Any changes to the code or resources will automatically trigger a rebuild and reluanch.
