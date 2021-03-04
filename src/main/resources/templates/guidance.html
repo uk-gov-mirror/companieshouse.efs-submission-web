@@ -238,6 +238,7 @@
                             </div>
                         </div>
                         <div id="accordion-default-content-4" class="govuk-accordion__section-content" aria-labelledby="accordion-default-heading-4">
+                            <p th:text="#{guidance.documents.you.can.upload.one.doc}"></p>
                             <p class="govuk-body">
                                 <a href="https://www.gov.uk/government/publications/give-notice-of-restriction-on-the-companys-articles-cc01"
                                    th:text="#{guidance.documents.you.can.upload.cc01}" class="govuk-link"></a>
@@ -258,13 +259,6 @@
                                 <a href="https://www.gov.uk/government/publications/change-constitution-by-order-of-court-or-other-authority-cc06"
                                    th:text="#{guidance.documents.you.can.upload.cc06}" class="govuk-link"></a>
                             </p>
-                            <p class="govuk-body" th:text="#{guidance.documents.you.can.upload.articles.title}"></p>
-                            <p class="govuk-body" th:text="#{guidance.documents.you.can.upload.resolutions.title}"></p>
-                            <p class="govuk-body govuk-!-font-weight-bold" th:text="#{guidance.documents.you.can.upload.resolutions.exceptions}"></p>
-                            <ul class="govuk-list govuk-list--bullet">
-                                <li th:text="#{guidance.documents.you.can.upload.resolutions.exceptions.nameChange}"></li>
-                                <li th:text="#{guidance.documents.you.can.upload.resolutions.exceptions.cicConversion}"></li>
-                            </ul>
                         </div>
                     </div>
                     <div class="govuk-accordion__section">
@@ -381,6 +375,29 @@
                                 <a href="https://www.gov.uk/government/publications/give-notice-of-update-to-psc-statements-for-a-scottish-qualifying-partnership-sqp-sqp-psc09"
                                    th:text="#{guidance.documents.you.can.upload.sqppsc09}" class="govuk-link"></a>
                             </p>
+                        </div>
+                    </div>
+                    <div class="govuk-accordion__section">
+                        <div class="govuk-accordion__section-header">
+                            <h2 class="govuk-accordion__section-heading">
+                                <span class="govuk-accordion__section-button" id="accordion-default-heading-7" th:text="#{guidance.documents.you.can.upload.articles.resolutions.title}"></span>
+                            </h2>
+                        </div>
+                        <div id="accordion-default-content-7" class="govuk-accordion__section-content" aria-labelledby="accordion-default-heading-6">
+                            <p th:text="#{guidance.documents.you.can.upload.one.doc}"></p>
+                            <p class="govuk-body">
+                                <a href="https://www.gov.uk/guidance/model-articles-of-association-for-limited-companies"
+                                   th:text="#{guidance.documents.you.can.upload.articles.title}" class="govuk-link"></a>
+                            </p>
+                            <p class="govuk-body">
+                                <a href="https://www.gov.uk/government/publications/give-notice-of-a-special-written-or-ordinary-resolution"
+                                   th:text="#{guidance.documents.you.can.upload.resolutions.title}" class="govuk-link"></a>
+                            </p>
+                            <p class="govuk-body govuk-!-font-weight-bold" th:text="#{guidance.documents.you.can.upload.resolutions.exceptions}"></p>
+                            <ul class="govuk-list govuk-list--bullet">
+                                <li th:text="#{guidance.documents.you.can.upload.resolutions.exceptions.nameChange}"></li>
+                                <li th:text="#{guidance.documents.you.can.upload.resolutions.exceptions.cicConversion}"></li>
+                            </ul>
                         </div>
                     </div>
                 </div>
