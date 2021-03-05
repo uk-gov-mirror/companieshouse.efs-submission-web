@@ -1,6 +1,7 @@
 package uk.gov.companieshouse.efs.web.cache.service;
 
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.atLeastOnce;
 import static org.mockito.Mockito.verify;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -31,7 +32,7 @@ class DataCacheServiceImplTest {
     void clearAllCategories() {
         testService.clearAllCaches();
 
-        verify(logger).debug(anyString());
+        verify(logger, atLeastOnce()).debug(anyString());
     }
 
 }
