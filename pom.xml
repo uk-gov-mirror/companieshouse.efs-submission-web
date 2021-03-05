@@ -252,6 +252,9 @@
                 <configuration>
                     <!--suppress UnresolvedMavenProperty -->
                     <argLine>${failsafeArgLine}</argLine>
+
+                    <!--This is a workaround for failsafe not running integration tests-->
+                    <!-- https://stackoverflow.com/a/52532095 -->
                     <classesDirectory>${project.build.outputDirectory}</classesDirectory>
                 </configuration>
                 <executions>
