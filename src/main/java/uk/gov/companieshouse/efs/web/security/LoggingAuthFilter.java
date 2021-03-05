@@ -15,7 +15,7 @@ import uk.gov.companieshouse.session.Session;
 /**
  * Manages user authentication.
  */
-public class LoggingAuthFilter extends UserAuthFilter {
+public final class LoggingAuthFilter extends UserAuthFilter {
     private static final String CONFIRMATION_FRAGMENT = "confirmation";
     protected final String signoutRestartPath;
 

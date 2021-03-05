@@ -4,15 +4,17 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 import static org.mockserver.integration.ClientAndServer.startClientAndServer;
-import static org.mockserver.model.HttpRequest.request;
 import static org.mockserver.model.HttpResponse.response;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.github.stefanbirkner.systemlambda.SystemLambda;
 import com.google.common.net.MediaType;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletResponse;
@@ -20,34 +22,39 @@ import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.disk.DiskFileItem;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
+import org.mockserver.client.ForwardChainExpectation;
 import org.mockserver.integration.ClientAndServer;
+import org.mockserver.model.HttpRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.commons.CommonsMultipartFile;
+import uk.gov.companieshouse.efs.web.util.IntegrationTestHelper;
 
 /**
  * FileTransferGatewayClientIT
  */
 @Tag("integration")
-@ExtendWith(SpringExtension.class)
+//@TestPropertySource
+@ActiveProfiles("test")
 @SpringBootTest
 class FileTransferGatewayClientIT {
+    private static Map<String, String> storedEnvironment;
+    public static SystemLambda.WithEnvironmentVariables springEnvironment;
 
     @Autowired
     private FileTransferApiClient fileTransferApiClient;
-
-    @Mock
-    private HttpServletResponse mockHttpServletResponse;
 
     @Value("${http_proxy:}")
     private String envHttpProxy;
@@ -55,16 +62,30 @@ class FileTransferGatewayClientIT {
     @Value("${https_proxy:}")
     private String envHttpsProxy;
 
-    private ClientAndServer server;
+    private ClientAndServer mockServer;
+
+    @BeforeAll
+    static void setUpSpringEnvironment() {
+        storedEnvironment = new HashMap<>(System.getenv());
+        springEnvironment = IntegrationTestHelper.withSpringEnvironment()
+                .and("LOGGING_LEVEL", "DEBUG");
+
+        ReflectionTestUtils.invokeMethod(springEnvironment, "setEnvironmentVariables");
+    }
+
+    @AfterAll
+    static void tearDownSpringEnvironment() {
+        ReflectionTestUtils.invokeMethod(springEnvironment, "restoreOriginalVariables", storedEnvironment);
+    }
 
     @BeforeEach
-    public void startServer() {
-        server = startClientAndServer(1080);
+    void startServer() {
+        mockServer = startClientAndServer(1080);
     }
 
     @AfterEach
     public void stopServer() {
-        server.stop();
+        mockServer.stop();
     }
 
     @PostConstruct
@@ -95,20 +116,22 @@ class FileTransferGatewayClientIT {
     }
 
     @Test
-    void willUploadFile() throws IOException {
+    void willUploadFile() throws Exception {
         final String filename = "test.png";
         final String fileFolder = "./src/test/resources/file-upload/";
-        final String uploadFilePath =  fileFolder + filename;
+        final String uploadFilePath = fileFolder + filename;
         final String downloadFilePath = fileFolder + "download-" + filename;
 
         // Prepare upload
         FileTransferApiResponse mockResponse = new FileTransferApiResponse();
-        mockResponse.setId(UUID.randomUUID().toString());
+        mockResponse.setId(UUID.randomUUID()
+                .toString());
 
         final String responseBody = new ObjectMapper().writeValueAsString(mockResponse);
 
-        server.when(request().withMethod("POST").withPath("/"))
-                .respond(response().withBody(responseBody, MediaType.JSON_UTF_8).withStatusCode(201));
+        mockServerExpectation("/", "POST").respond(
+                response().withBody(responseBody, MediaType.JSON_UTF_8)
+                        .withStatusCode(201));
 
         // Upload
         File uploadFile = new File(uploadFilePath);
@@ -118,8 +141,11 @@ class FileTransferGatewayClientIT {
         assertTrue(StringUtils.isNotBlank(uploadResponse.getFileId()));
     }
 
-    private FileTransferApiClientResponse uploadFile(final File uploadFile) throws IOException {
-        FileItem fileItem = new DiskFileItem("file", Files.probeContentType(uploadFile.toPath()), false, uploadFile.getName(), (int) uploadFile.length(), uploadFile.getParentFile());
+    private FileTransferApiClientResponse uploadFile(final File uploadFile) throws Exception {
+        FileItem fileItem =
+                new DiskFileItem("file", Files.probeContentType(uploadFile.toPath()), false,
+                        uploadFile.getName(), (int) uploadFile.length(),
+                        uploadFile.getParentFile());
         try {
             IOUtils.copy(new FileInputStream(uploadFile), fileItem.getOutputStream());
         } catch (Exception e) {
@@ -131,5 +157,9 @@ class FileTransferGatewayClientIT {
         System.out.println("Calling upload...");
 
         return fileTransferApiClient.upload(multipartFile);
+    }
+
+    private ForwardChainExpectation mockServerExpectation(String path, String httpMethod) throws IOException {
+        return mockServer.when(HttpRequest.request().withMethod(httpMethod).withPath(path).withKeepAlive(true));
     }
 }

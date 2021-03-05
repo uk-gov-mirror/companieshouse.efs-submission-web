@@ -1,5 +1,7 @@
 package uk.gov.companieshouse.efs.web.controller;
 
+import org.codehaus.plexus.util.cli.Arg;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -13,6 +15,8 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.support.SessionStatus;
+import uk.gov.companieshouse.api.ApiClient;
+import uk.gov.companieshouse.api.error.ApiError;
 import uk.gov.companieshouse.api.model.ApiResponse;
 import uk.gov.companieshouse.api.model.efs.submissions.CompanyApi;
 import uk.gov.companieshouse.api.model.efs.submissions.PresenterApi;
@@ -34,16 +38,27 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.text.MessageFormat;
 import java.time.Instant;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.function.Predicate;
+import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyMap;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.contains;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.ArgumentMatchers.isNull;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -99,6 +114,8 @@ public abstract class BaseControllerImplTest {
     protected FormTemplateService formTemplateService;
     @Mock
     protected FileTransferApiClient fileTransferApiClient;
+    @Mock
+    private ApiResponse<String> apiResponse;
 
     protected MockMvc mockMvc;
 
@@ -216,5 +233,97 @@ public abstract class BaseControllerImplTest {
 
     // Needed to instantiate a class for testing
     private static class BaseControllerTestClass extends BaseControllerImpl {
+    }
+
+    @Test
+    void testGetViewName() {
+        String viewName = baseController.getViewName();
+        assertNull("Base controllers view should be null", viewName);
+    }
+
+    @ParameterizedTest
+    @MethodSource("errorStatusCodes")
+    void testLogOnApiResponse(HttpStatus status) {
+        setUpApiResponse(status);
+
+        baseController.logApiResponse(apiResponse, SUBMISSION_ID, "");
+
+        verify(logger).errorContext(eq(SUBMISSION_ID), contains("API response"), isNull(), isNull());
+    }
+
+    private static Stream<Arguments> errorStatusCodes() {
+        return Arrays.stream(HttpStatus.values())
+                .filter(HttpStatus::isError)
+                .map(Arguments::of);
+    }
+
+    private void setUpApiResponse(HttpStatus status, List<ApiError> errors) {
+        when(apiResponse.getStatusCode()).thenReturn(status.value());
+    }
+
+    private void setUpApiResponse(HttpStatus status) {
+        setUpApiResponse(status, Collections.emptyList());
+    }
+
+    private void setUpApiResponse(List<ApiError> errors) {
+        setUpApiResponse(HttpStatus.OK, errors);
+        if (!errors.isEmpty()) {
+            when(apiResponse.hasErrors()).thenReturn(true);
+            when(apiResponse.getErrors()).thenReturn(errors);
+        } else {
+            when(apiResponse.hasErrors()).thenReturn(false);
+        }
+    }
+
+    @ParameterizedTest
+    @MethodSource("apiErrors")
+    void testLogApiResponseErrors(List<ApiError> apiErrors) {
+        setUpApiResponse(apiErrors);
+
+        baseController.logApiResponse(apiResponse, SUBMISSION_ID, "");
+
+        verify(logger, times(apiErrors.size()))
+                .errorContext(eq(SUBMISSION_ID), contains("error="), isNull(), isNull());
+    }
+
+    private static Stream<Arguments> apiErrors() {
+        return Stream.of(
+                Arguments.of(Collections.emptyList()),
+                Arguments.of(Collections.singletonList(new ApiError())),
+                Arguments.of(Arrays.asList(
+                        new ApiError(),
+                        new ApiError()
+                ))
+        );
+    }
+
+    @Test
+    void testGetChsSessionId() {
+        Session session = mock(Session.class);
+        when(request.getAttribute(SessionHandler.CHS_SESSION_REQUEST_ATT_KEY))
+                .thenReturn(session);
+        baseController.getChsSessionId(request);
+        verify(session).getCookieId();
+
+        when(request.getAttribute(SessionHandler.CHS_SESSION_REQUEST_ATT_KEY))
+                .thenReturn(null);
+        assertNull(baseController.getChsSessionId(request));
+    }
+
+    @Test
+    void testAddAnyErrorsFromResponse() {
+        String fieldName = "testAnyErrorsFromResponse";
+        String location = String.format("a.b.%s", fieldName);
+
+        BindingResult bindingResult = mock(BindingResult.class);
+        ApiError apiError = mock(ApiError.class);
+
+        when(apiResponse.getErrors()).thenReturn(Collections.singletonList(apiError));
+        when(apiError.getLocation()).thenReturn(location);
+        when(apiError.getErrorValues()).thenReturn(null);
+
+        baseController.addAnyErrorsFromResponse(bindingResult, apiResponse, x -> true);
+
+        verify(bindingResult).rejectValue(eq(fieldName), isNull(), isNull(), anyString());
     }
 }

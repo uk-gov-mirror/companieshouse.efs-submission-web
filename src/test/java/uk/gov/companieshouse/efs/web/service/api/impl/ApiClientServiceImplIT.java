@@ -19,6 +19,7 @@ import uk.gov.companieshouse.api.ApiClient;
 import uk.gov.companieshouse.api.http.HttpClient;
 import uk.gov.companieshouse.api.http.OAuthHttpClient;
 import uk.gov.companieshouse.efs.web.service.api.ApiClientService;
+import uk.gov.companieshouse.efs.web.util.IntegrationTestHelper;
 import uk.gov.companieshouse.logging.Logger;
 import uk.gov.companieshouse.session.Session;
 import uk.gov.companieshouse.session.SessionImpl;
@@ -46,16 +47,24 @@ class ApiClientServiceImplIT {
     }
 
     @Test
-    void getApiClient() {
-        session = new SessionImpl(store, "", new HashMap<>());
-        final ServletRequestAttributes attributes = new ServletRequestAttributes(request);
+    void getApiClient() throws Exception {
+        IntegrationTestHelper.withSpringEnvironment()
+                .and("LOGGING_LEVEL", "DEBUG")
+                .execute(() -> {
+                    session = new SessionImpl(store, "", new HashMap<>());
 
-        RequestContextHolder.setRequestAttributes(attributes);
-        createSessionDataSignedInWithOAuth();
+                    final ServletRequestAttributes attributes =
+                            new ServletRequestAttributes(request);
 
-        ApiClient client = testService.getApiClient();
+                    RequestContextHolder.setRequestAttributes(attributes);
+                    createSessionDataSignedInWithOAuth();
 
-        assertOAuthClientAsExpected(client.getHttpClient());
+                    ApiClient client = testService.getApiClient();
+
+                    assertOAuthClientAsExpected(client.getHttpClient());
+
+                    return null;
+                });
     }
     private void createSessionDataSignedInWithOAuth() {
         Map<String, Object> accessTokenData = new HashMap<>();
