@@ -9,7 +9,7 @@
         th:href="@{{cdnUrl}/stylesheets/js.css(cdnUrl=${@environment.getProperty('cdn.url')})}"
         media="all" rel="stylesheet" type="text/css" />
     <link
-        th:href="@{{cdnUrl}/stylesheets/govuk-frontend/v3.6.0/pre-assessment-govuk-frontend-3.6.0.min.css(cdnUrl=${@environment.getProperty('cdn.url')})}"
+        th:href="@{{cdnUrl}/stylesheets/govuk-frontend/v3.11.0/govuk-frontend-3.11.0.min.css(cdnUrl=${@environment.getProperty('cdn.url')})}"
         media="all" rel="stylesheet" type="text/css" />
     <link
         th:href="@{{cdnUrl}/images/favicon.ico(cdnUrl=${@environment.getProperty('cdn.url')})}"
@@ -17,12 +17,19 @@
     <meta charset="UTF-8" name="viewport" content="width=device-width, initial-scale=1.0">
     <title layout:title-pattern="$CONTENT_TITLE"></title>
     <div id="templateName" th:attr="data-id=${templateName}" hidden></div>
+    <script th:inline="javascript">
+        window.SERVICE_NAME = 'efs'
+        window.PIWIK_URL = [[${@environment.getProperty('piwik.url')}]];
+        window.PIWIK_SITE_ID = [[${@environment.getProperty('piwik.site.id')}]];
+    </script>
 </head>
 <body>
     <script th:src="@{{cdnUrl}/javascripts/app/body-js-enable.js(cdnUrl=${@environment.getProperty('cdn.url')})}"
             type="text/javascript"></script>
     <script th:src="@{{cdnUrl}/javascripts/vendor/jquery-3.3.1.min.js(cdnUrl=${@environment.getProperty('cdn.url')})}"
             type="text/javascript"></script>
+
+    <div th:replace="fragments/piwikWithCookieCheck :: cookieBanner"></div>
 
     <a href="#main-content" class="govuk-skip-link">Skip to main content</a>
     <div class="entire-wrapper">
@@ -39,14 +46,17 @@
             type="text/javascript"></script>
     <script th:src="@{{cdnUrl}/javascripts/vendor/application.js(cdnUrl=${@environment.getProperty('cdn.url')})}"
             type="text/javascript"></script>
-    <script th:src="@{{cdnUrl}/javascripts/govuk-frontend/v3.6.0/govuk-frontend-3.6.0.min.js(cdnUrl=${@environment.getProperty('cdn.url')})}"
+    <script th:src="@{{cdnUrl}/javascripts/govuk-frontend/v3.11.0/govuk-frontend-3.11.0.min.js(cdnUrl=${@environment.getProperty('cdn.url')})}"
             type="text/javascript"></script>
     <script type="text/javascript">window.GOVUKFrontend.initAll()</script>
     <script th:src="@{{cdnUrl}/javascripts/app/piwik-enable.js(cdnUrl=${@environment.getProperty('cdn.url')})}"
             type="text/javascript"></script>
     <script th:src="@{{cdnUrl}/javascripts/lib/company-accounts-web/details-polyfill.js(cdnUrl=${@environment.getProperty('cdn.url')})}"
             type="text/javascript"></script>
+    <script th:src="@{{cdnUrl}/javascripts/app/cookie-consent/cookie-consent-1.0.0.js(cdnUrl=${@environment.getProperty('cdn.url')})}"
+            type="text/javascript"></script>
+    <script th:src="@{{cdnUrl}/javascripts/app/cookie-consent/matomo-only-cookie-consent.js(cdnUrl=${@environment.getProperty('cdn.url')})}"
+            type="text/javascript"></script>
 
-    <div th:replace="fragments/piwik :: piwik"></div>
 </body>
 </html>
