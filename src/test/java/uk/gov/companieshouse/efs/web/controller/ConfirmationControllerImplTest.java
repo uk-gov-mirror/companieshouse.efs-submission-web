@@ -30,7 +30,7 @@ class ConfirmationControllerImplTest extends BaseControllerImplTest {
 
     @BeforeEach
     protected void setup() {
-        super.setUp();
+        setUpHeaders();
         testController = new ConfirmationControllerImpl(logger, sessionService,
                 apiClientService, formTemplateService, categoryTemplateService);
     }

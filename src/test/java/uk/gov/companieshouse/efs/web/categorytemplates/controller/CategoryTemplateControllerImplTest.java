@@ -68,10 +68,9 @@ public class CategoryTemplateControllerImplTest extends BaseControllerImplTest {
 
     private CategoryTemplateController testController;
 
-    @Override
     @BeforeEach
     protected void setUp() {
-        super.setUp();
+        setUpHeaders();
         testController = new CategoryTemplateControllerImpl(categoryTemplateService,
                 apiClientService, sessionService, formTemplateService, logger,
                 categoryTemplateAttribute);

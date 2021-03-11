@@ -25,7 +25,7 @@ class StaticPageControllerImplTest extends BaseControllerImplTest {
 
     @BeforeEach
     protected void setUp() {
-        super.setUp();
+        setUpHeaders();
         testController = new StaticPageControllerImpl(logger);
         ((StaticPageControllerImpl) testController).setChsUrl(CHS_URL);
     }

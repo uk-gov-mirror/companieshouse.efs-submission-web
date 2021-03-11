@@ -30,7 +30,7 @@ class ResolutionsInfoControllerImplTest extends BaseControllerImplTest {
 
     @BeforeEach
     private void setup() {
-        super.setUp();
+        setUpHeaders();
         testController = new ResolutionsInfoControllerImpl(logger, sessionService, apiClientService,
             formTemplateService, categoryTemplateService);
         ((ResolutionsInfoControllerImpl) testController).setChsUrl(CHS_URL);

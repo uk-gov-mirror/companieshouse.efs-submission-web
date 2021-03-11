@@ -38,7 +38,7 @@ class CompanyDetailControllerImplTest extends BaseControllerImplTest {
 
     @BeforeEach
     private void setup() {
-        super.setUp();
+        setUpHeaders();
         testController = new CompanyDetailControllerImpl(companyService, sessionService, apiClientService, logger,
                 companyDetailAttribute);
         ((CompanyDetailControllerImpl) testController).setChsUrl(CHS_URL);

@@ -73,7 +73,7 @@ class DocumentUploadControllerTest extends BaseControllerImplTest {
 
     @BeforeEach
     private void start() {
-        super.setUp();
+        setUpHeaders();
 
         MockitoAnnotations.initMocks(this);
 
