@@ -23,7 +23,7 @@ import java.util.regex.Pattern;
 @Component
 public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     private final Logger structuredLogger;
-    private static final Pattern submissionID = Pattern.compile("[0-9a-fA-F]{24}");
+    private static final Pattern submissionIDPattern = Pattern.compile("[0-9a-fA-F]{24}");
 
     @Autowired
     public GlobalExceptionHandler(Logger logger) {
@@ -60,7 +60,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
      * @return - The submissionID. It will be an empty string if there was no submissionID
      */
     private static String submissionIDFromURI(final String uri) {
-        Matcher submissionIDMatcher = submissionID.matcher(uri);
+        Matcher submissionIDMatcher = submissionIDPattern.matcher(uri);
         if (!submissionIDMatcher.find()) {
             return "";
         }
