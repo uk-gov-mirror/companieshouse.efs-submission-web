@@ -13,7 +13,6 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 import uk.gov.companieshouse.logging.Logger;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Matcher;
@@ -23,12 +22,12 @@ import java.util.regex.Pattern;
 @ControllerAdvice
 @Component
 public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
-    private final Logger logger;
+    private final Logger structuredLogger;
     private static final Pattern submissionID = Pattern.compile("[0-9a-fA-F]{24}");
 
     @Autowired
     public GlobalExceptionHandler(Logger logger) {
-        this.logger = logger;
+        this.structuredLogger = logger;
     }
 
     private static final String SERVICE_PROBLEM_PAGE = ViewConstants.ERROR.asView();
@@ -49,7 +48,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         logDetails.put("statusCode", ex.getStatus().value());
         logDetails.put("statusMessage", ex.getStatus().getReasonPhrase());
 
-        logger.errorContext(submissionID, "Received non 200 series response from API",
+        structuredLogger.errorContext(submissionID, "Received non 200 series response from API",
                 ex, logDetails);
     }
 
