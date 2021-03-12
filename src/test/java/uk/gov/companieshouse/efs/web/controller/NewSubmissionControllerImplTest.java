@@ -52,7 +52,7 @@ class NewSubmissionControllerImplTest extends BaseControllerImplTest {
 
     @BeforeEach
     protected void setUp() {
-        super.setUp();
+        setUpHeaders();
         testController = new NewSubmissionControllerImpl(logger, sessionService, apiClientService);
         ((NewSubmissionControllerImpl) testController).setChsUrl(CHS_URL);
         company = new CompanyApi(COMPANY_NUMBER, COMPANY_NAME);

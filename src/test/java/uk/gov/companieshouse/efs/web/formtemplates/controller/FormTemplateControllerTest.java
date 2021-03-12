@@ -73,10 +73,9 @@ class FormTemplateControllerTest extends BaseControllerImplTest {
     final static String SCOTTISH_COMPANY_NUMBER_2 = "SF000000";
     final static String SCOTTISH_COMPANY_NUMBER_3 = "SO000000";
 
-    @Override
     @BeforeEach
     protected void setUp() {
-        super.setUp();
+        setUpHeaders();
         testController = new FormTemplateControllerImpl(categoryTemplateService,
                 formTemplateService, apiClientService, sessionService, logger,
                 formTemplateAttribute);

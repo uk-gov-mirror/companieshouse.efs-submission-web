@@ -40,7 +40,7 @@ class CheckDetailsControllerImplTest extends BaseControllerImplTest {
 
     @BeforeEach
     protected void setUp() {
-        super.setUp();
+        setUpHeaders();
         testController = new CheckDetailsControllerImpl(logger, sessionService, apiClientService, formTemplateService,
             categoryTemplateService, checkDetailsAttribute, confirmAuthorisedValidator);
         ((CheckDetailsControllerImpl) testController).setChsUrl(CHS_URL);

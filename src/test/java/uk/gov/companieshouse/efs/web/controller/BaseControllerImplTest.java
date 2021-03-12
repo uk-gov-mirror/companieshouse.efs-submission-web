@@ -130,7 +130,7 @@ public abstract class BaseControllerImplTest {
     @Mock
     private SubmissionApi submission;
 
-    protected void setUp() {
+    protected void setUpHeaders() {
         headers = new HashMap<>();
     }
 

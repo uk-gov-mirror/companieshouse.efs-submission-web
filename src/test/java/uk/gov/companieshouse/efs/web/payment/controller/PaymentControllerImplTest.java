@@ -46,10 +46,9 @@ class PaymentControllerImplTest extends BaseControllerImplTest {
     private SessionListApi paymentSessions;
     private SessionApi paySession;
 
-    @Override
     @BeforeEach
     public void setUp() {
-        super.setUp();
+        setUpHeaders();
         testController = new PaymentControllerImpl(apiClientService, paymentService, nonceService, logger);
         ((PaymentControllerImpl) testController).setChsUrl(CHS_URL);
         paymentSessions = new SessionListApi();

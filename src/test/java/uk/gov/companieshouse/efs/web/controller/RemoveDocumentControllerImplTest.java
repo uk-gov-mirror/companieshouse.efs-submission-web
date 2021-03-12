@@ -68,7 +68,7 @@ class RemoveDocumentControllerImplTest extends BaseControllerImplTest {
 
     @BeforeEach
     protected void setUp() {
-        super.setUp();
+        setUpHeaders();
         testController = new RemoveDocumentControllerImpl(fileTransferApiClient, logger, sessionService,
                 apiClientService, removeDocumentAttribute);
     }
