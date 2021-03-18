@@ -15,6 +15,7 @@ public enum ViewConstants {
     NEW_SUBMISSION("new-submission", null),
     COMPANY_LOOKUP("companyLookup", null),
     COMPANY_DETAIL("details", "companyDetail"),
+    PROPOSED_COMPANY("proposed-company", "proposedCompany"),
     CATEGORY_SELECTION("category-selection", "categorySelection"),
     DOCUMENT_SELECTION("document-selection", "documentSelection"),
     RESOLUTIONS_INFO("resolutions-info", "resolutionsInfo"),
