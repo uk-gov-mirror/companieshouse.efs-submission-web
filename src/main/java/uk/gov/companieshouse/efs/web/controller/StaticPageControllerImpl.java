@@ -67,7 +67,7 @@ public class StaticPageControllerImpl extends BaseControllerImpl implements Stat
         final RedirectAttributes attributes) {
         attributes.addAttribute("forward", String.format("/efs-submission/%s/company/{companyNumber}/details", id));
 
-        return UrlBasedViewResolver.REDIRECT_URL_PREFIX + chsUrl + "/company-lookup/search?serviceUrl=/efs-submission/proposed-company";
+        return UrlBasedViewResolver.REDIRECT_URL_PREFIX + chsUrl + "/company-lookup/search?noCompanyOption=1";
     }
 
 }

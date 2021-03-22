@@ -15,11 +15,11 @@ import uk.gov.companieshouse.efs.web.model.ProposedCompanyModel;
 @RequestMapping(BaseControllerImpl.SERVICE_URI)
 public interface ProposedCompanyController {
 
-    @GetMapping("proposed-company")
+    @GetMapping("{id}/company/noCompany/proposed-company")
     String prepare(@ModelAttribute(ATTRIBUTE_NAME) ProposedCompanyModel proposedCompanyModel,
         Model model, HttpServletRequest request);
 
-    @PostMapping("proposed-company")
+    @PostMapping("{id}/company/noCompany/proposed-company")
     String process(@ModelAttribute(ATTRIBUTE_NAME) ProposedCompanyModel proposedCompanyModel,
         BindingResult binding, Model model, HttpServletRequest request, HttpSession session);
 
