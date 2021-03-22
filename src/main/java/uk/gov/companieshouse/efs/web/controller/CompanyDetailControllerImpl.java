@@ -4,6 +4,7 @@ import static uk.gov.companieshouse.efs.web.controller.CompanyDetailControllerIm
 
 import java.text.MessageFormat;
 import javax.servlet.http.HttpServletRequest;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -67,6 +68,9 @@ public class CompanyDetailControllerImpl extends BaseControllerImpl implements C
     public String getCompanyDetail(final String id, final String companyNumber,
         final CompanyDetail companyDetailAttribute, final Model model, final HttpServletRequest request) {
 
+            if (StringUtils.equals(companyNumber, "noCompany")) {
+                return ViewConstants.PROPOSED_COMPANY.asRedirectUri(chsUrl, id, "noCompany");
+            }
             companyDetailAttribute.setSubmissionId(id);
             companyService.getCompanyDetail(companyDetailAttribute, companyNumber);
 
