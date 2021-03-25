@@ -32,7 +32,7 @@
                 <div id="file-upload-panel" th:unless="*{maximumUploadLimitReached}">
                     <div id="file-upload-wrapper" class="govuk-form-group" th:classappend="${#fields.hasErrors('*')} ? 'govuk-form-group--error' : ''">
                         <label class="govuk-label" for="file-uploader" th:text="#{documentUpload.header}"></label>
-                        <ul class="govuk-list govuk-error-summary__list">
+                        <ul class="govuk-list">
                             <li th:each="e: ${#lists.sort(#fields.detailedErrors(), errorComparator)}">
                                 <span id="selectedFiles-error" th:text="${e.message}" class="govuk-error-message"></span>
                             </li>
