@@ -235,7 +235,7 @@ class DocumentUploadValidatorTest {
         when(fileUploadConfiguration.getDistinctMimeTypes()).thenReturn(
                 allowedTypes.stream().map(FileUploadConfiguration.FileType::getMime).collect(Collectors.toSet()));
         when(resourceBundle.getString("max_file_size_exceeded.documentUpload"))
-                .thenReturn("The selected file must be smaller than {0}");
+                .thenReturn("The file you uploaded is {0}, which is too large. It must be smaller than {1}");
 
         String fileContent = createContent(4 * KILOBYTE * KILOBYTE + 1);
 
@@ -254,7 +254,7 @@ class DocumentUploadValidatorTest {
         FieldError fieldError = binding.getFieldError("selectedFiles");
         assert fieldError != null;
         assertThat(fieldError.getDefaultMessage(),
-                is("The selected file must be smaller than 4MB"));
+                is("The file you uploaded is 4.00MB, which is too large. It must be smaller than 4MB"));
     }
 
     @Test

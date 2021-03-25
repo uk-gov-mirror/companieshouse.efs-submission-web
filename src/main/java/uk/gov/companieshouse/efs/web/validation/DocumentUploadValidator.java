@@ -27,6 +27,7 @@ import uk.gov.companieshouse.efs.web.model.DocumentUploadModel;
 public class DocumentUploadValidator implements BiFunction<DocumentUploadModel, BindingResult, List<MultipartFile>> {
 
     private static final String SELECTED_FILES_FIELD    = "selectedFiles";
+    private static final int KILOBYTE = 1024;
 
     private ResourceBundle bundle;
     private FileUploadConfiguration configuration;
@@ -80,7 +81,9 @@ public class DocumentUploadValidator implements BiFunction<DocumentUploadModel, 
                 // Check that the file content doesn't exceed the maximum allowed.
                 String pattern = bundle.getString("max_file_size_exceeded.documentUpload");
                 MessageFormat formatter = new MessageFormat(pattern, Locale.UK);
-                String errorText = formatter.format(new Object[]{configuration.getMaximumFilesize()});
+                String errorText = formatter.format(
+                    new Object[]{String.format("%.2f",toMegabyteCount(file.getSize())) + "MB",
+                        configuration.getMaximumFilesize()});
                 binding.rejectValue(SELECTED_FILES_FIELD, "error.file-size-exceeded", errorText);
 
             } else if (filesAlreadyUploaded > 0 && model.getDetails().getFiles().stream()
@@ -103,7 +106,6 @@ public class DocumentUploadValidator implements BiFunction<DocumentUploadModel, 
     }
 
     private long toByteCount(final String sizeHuman) {
-        final int KILOBYTE = 1024;
 
         long returnValue = Long.MAX_VALUE;
 
@@ -126,6 +128,11 @@ public class DocumentUploadValidator implements BiFunction<DocumentUploadModel, 
         }
 
         return returnValue;
+    }
+
+    private float toMegabyteCount(final long byteSize) {
+        float size = (float) byteSize;
+        return size / (KILOBYTE * KILOBYTE);
     }
 
     private String getAllowedFileExtensions() {
