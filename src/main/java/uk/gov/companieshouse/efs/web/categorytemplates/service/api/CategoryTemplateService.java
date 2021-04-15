@@ -33,6 +33,14 @@ public interface CategoryTemplateService {
     /**
      * Category template list response object.
      *
+     * @param id the form category family
+     * @return the form category list for the json response
+     */
+    ApiResponse<CategoryTemplateListApi> getCategoryTemplatesByFamily(String id);
+
+    /**
+     * Category template list response object.
+     *
      * @param id the form category
      * @return the form category list for the json response
      */

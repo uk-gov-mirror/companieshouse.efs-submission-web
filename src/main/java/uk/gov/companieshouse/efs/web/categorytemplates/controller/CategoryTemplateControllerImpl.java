@@ -50,6 +50,7 @@ public class CategoryTemplateControllerImpl extends BaseControllerImpl implement
      * Define the model name for this action.
      */
     public static final String ATTRIBUTE_NAME = "categoryTemplate";
+    public static final String TEMP_COMPANY_NUMBER = "99999999";
 
     private CategoryTemplateModel categoryTemplateAttribute;
 
@@ -100,9 +101,12 @@ public class CategoryTemplateControllerImpl extends BaseControllerImpl implement
         final boolean sequenceHasInsolvency =
                 categorySequenceList != null && categorySequenceList.contains(
                         INSOLVENCY.getValue());
-        final CategoryTemplateListApi allCategoryTemplates =
-                categoryTemplateService.getCategoryTemplates().getData();
-        final List<String> categoryTypesList = Optional.ofNullable(allCategoryTemplates.getList())
+        final CategoryFamilyConstants family = TEMP_COMPANY_NUMBER.equals(companyNumber)
+            ? CategoryFamilyConstants.INC
+            : CategoryFamilyConstants.FILE;
+        final CategoryTemplateListApi familyCategoryTemplates =
+            categoryTemplateService.getCategoryTemplatesByFamily(family.name()).getData();
+        final List<String> categoryTypesList = Optional.ofNullable(familyCategoryTemplates.getList())
                 .orElseGet(ArrayList::new).stream().map(CategoryTemplateApi::getCategoryType)
                 .collect(Collectors.toList());
         final boolean sequenceValid = categorySequenceList == null || categoryTypesList.containsAll(

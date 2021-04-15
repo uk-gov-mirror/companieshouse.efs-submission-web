@@ -30,6 +30,7 @@ public class CategoryTemplateServiceImpl extends BaseApiClientServiceImpl
 
     public static final String CATEGORY_TEMPLATES_FRAGMENT = "/category-templates";
     public static final String CATEGORY_TEMPLATE_FRAGMENT = "/category-template";
+    private static final String FAMILY_TEMPLATE = "family={family}";
     private static final String PARENT_TEMPLATE = "parent={parent}";
 
     private ApiClientService apiClientService;
@@ -70,6 +71,21 @@ public class CategoryTemplateServiceImpl extends BaseApiClientServiceImpl
 
         return executeOp("getCategoryTemplate", uri,
             getApiClient().privateEfsResourceHandler().categoryTemplates().categoryTemplate().get(uri));
+    }
+
+    @Override
+    @Cacheable(value = DataCacheConfig.CATEGORY_BY_FAMILY, sync = true)
+    public ApiResponse<CategoryTemplateListApi> getCategoryTemplatesByFamily(final String id) {
+
+        final String path = BaseApiClientServiceImpl.ROOT_URI + CATEGORY_TEMPLATES_FRAGMENT;
+        final UriComponents components = UriComponentsBuilder.fromPath(path).query(FAMILY_TEMPLATE)
+                .buildAndExpand(id).encode();
+
+        final String uri = components.toUriString();
+
+        return executeOp("getCategoryTemplateByFamily", uri,
+                getApiClient().privateEfsResourceHandler().categoryTemplates()
+                        .categoryTemplatesByFamily().get(uri));
     }
 
     @Override

@@ -47,15 +47,15 @@ class FormTemplateControllerTest extends BaseControllerImplTest {
      *           /             \
      *     CAT1_SUB_LEVEL2   CAT2_SUB_LEVEL2
      */
-    public static final CategoryTemplateApi INSOLVENCY = new CategoryTemplateApi("INS",
+    public static final CategoryTemplateApi INSOLVENCY = new CategoryTemplateApi("INS", "FAMILY",
             "Insolvency", "", null);
     public static final CategoryTemplateApi CAT1_SUB_LEVEL1 = new CategoryTemplateApi(
-            "CAT1_SUB_LEVEL1", "Dummy category 1, subcategory level 1", "CAT_TOP_LEVEL", null);
+            "CAT1_SUB_LEVEL1", "FAMILY", "Dummy category 1, subcategory level 1", "CAT_TOP_LEVEL", null);
     public static final CategoryTemplateApi CAT2_SUB_LEVEL1 = new CategoryTemplateApi(
-            "CAT2_SUB_LEVEL1", "Dummy category 2, subcategory level 1", "CAT_TOP_LEVEL", null);
+            "CAT2_SUB_LEVEL1", "FAMILY", "Dummy category 2, subcategory level 1", "CAT_TOP_LEVEL", null);
 
     public static final CategoryTemplateApi INS_SUB_LEVEL1 = new CategoryTemplateApi(
-            "INS_SUB_LEVEL1", "Dummy ins category 1, subcategory level 1", "INS", null);
+            "INS_SUB_LEVEL1", "FAMILY", "Dummy ins category 1, subcategory level 1", "INS", null);
 
     public static final FormTemplateApi FORM_TEMPLATE_1 = new FormTemplateApi("CC01", "Test01", "CAT1_SUB_LEVEL1",
             "100", true, true, null);

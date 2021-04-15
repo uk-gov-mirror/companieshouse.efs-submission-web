@@ -25,7 +25,7 @@ import uk.gov.companieshouse.efs.web.categorytemplates.validator.NotBlankCategor
 @SessionScope
 public class CategoryTemplateModel {
     public static final String ROOT_CATEGORY_ID = "";
-    public static final CategoryTemplateApi ROOT_CATEGORY = new CategoryTemplateApi(ROOT_CATEGORY_ID, "", null, null);
+    public static final CategoryTemplateApi ROOT_CATEGORY = new CategoryTemplateApi(ROOT_CATEGORY_ID, "", "", null, null);
 
     private String submissionId;
     private String companyNumber;

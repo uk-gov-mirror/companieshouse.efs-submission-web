@@ -1,16 +1,15 @@
 package uk.gov.companieshouse.efs.web.categorytemplates.validator;
 
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.MatcherAssert.assertThat;
+
+import javax.validation.ConstraintValidatorContext;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import uk.gov.companieshouse.api.model.efs.categorytemplates.CategoryTemplateApi;
-
-import javax.validation.ConstraintValidatorContext;
-
-import static org.hamcrest.CoreMatchers.*;
-import static org.hamcrest.MatcherAssert.assertThat;
 
 @ExtendWith(MockitoExtension.class)
 class NotBlankCategoryTemplateValidatorTest {
@@ -46,8 +45,7 @@ class NotBlankCategoryTemplateValidatorTest {
     @Test
     void isNotValidWhenValuesBlank() {
 
-        boolean valid = testValidator.isValid(
-                new CategoryTemplateApi("", "", "", ""), context);
+        boolean valid = testValidator.isValid(new CategoryTemplateApi("", "", "", "", ""), context);
         assertThat(valid, is(false));
     }
 
@@ -55,7 +53,7 @@ class NotBlankCategoryTemplateValidatorTest {
     void isValidWhenValuesNotBlank() {
 
         boolean valid = testValidator.isValid(
-                new CategoryTemplateApi("CC01", "Test01", "CC02", "CC01"), context);
+                new CategoryTemplateApi("CC01", "FILE", "Test01", "CC02", "CC01"), context);
         assertThat(valid, is(true));
     }
 

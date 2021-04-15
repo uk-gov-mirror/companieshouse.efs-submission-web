@@ -10,7 +10,7 @@ import static uk.gov.companieshouse.efs.web.categorytemplates.controller.Categor
 import static uk.gov.companieshouse.efs.web.categorytemplates.controller.CategoryTemplateControllerImplTest.INSOLVENCY;
 import static uk.gov.companieshouse.efs.web.categorytemplates.controller.CategoryTemplateControllerImplTest.INS_SUB_LEVEL1;
 import static uk.gov.companieshouse.efs.web.categorytemplates.controller.CategoryTemplateControllerImplTest.INS_SUB_LEVEL2;
-import static uk.gov.companieshouse.efs.web.categorytemplates.controller.CategoryTemplateControllerImplTest.ROOT_LEVEL;
+import static uk.gov.companieshouse.efs.web.categorytemplates.controller.CategoryTemplateControllerImplTest.FAMILY_1_ROOT_LEVEL;
 import static uk.gov.companieshouse.efs.web.categorytemplates.controller.CategoryTypeConstants.OTHER;
 import static uk.gov.companieshouse.efs.web.categorytemplates.controller.CategoryTypeConstants.RESOLUTIONS;
 
@@ -120,14 +120,14 @@ class CategoryTemplateServiceImplTest {
 
     @Test
     void getTopLevelCategoryGivenRootCategory() throws ApiErrorResponseException, URIValidationException {
-        final CategoryTemplateApi category = ROOT_LEVEL;
+        final CategoryTemplateApi category = FAMILY_1_ROOT_LEVEL;
 
         expectGetCategoryTemplate();
         when(categoryTemplateGet.execute()).thenReturn(buildApiResponseOK(category));
 
         final CategoryTypeConstants topLevelCategory = testService.getTopLevelCategory(category.getCategoryType());
 
-        assertThat(topLevelCategory.getValue(), is(ROOT_LEVEL.getCategoryType()));
+        assertThat(topLevelCategory.getValue(), is(FAMILY_1_ROOT_LEVEL.getCategoryType()));
     }
 
     @Test
@@ -156,8 +156,8 @@ class CategoryTemplateServiceImplTest {
 
     @Test
     void getTopLevelCategoryGivenResolutionsCategory() throws ApiErrorResponseException, URIValidationException {
-        final CategoryTemplateApi category = new CategoryTemplateApi("RESOLUTIONS",
-                "RESOLUTIONS", "", null);;
+        final CategoryTemplateApi category =
+            new CategoryTemplateApi("RESOLUTIONS", "FILE", "RESOLUTIONS", "", null);
 
         expectGetCategoryTemplate();
         when(categoryTemplateGet.execute()).thenReturn(buildApiResponseOK(category));

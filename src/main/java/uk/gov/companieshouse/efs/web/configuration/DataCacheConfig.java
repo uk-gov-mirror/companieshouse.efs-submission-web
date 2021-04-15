@@ -15,6 +15,7 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 public class DataCacheConfig {
     public static final String ALL_CATEGORIES = "all-categories";
     public static final String CATEGORY_BY_ID = "category-by-id";
+    public static final String CATEGORY_BY_FAMILY = "category-by-family";
     public static final String CATEGORY_BY_PARENT = "category-by-parent";
     public static final String TOP_LEVEL_CATEGORY = "top-level-category";
     public static final String ALL_FORMS = "all-forms";

@@ -1,13 +1,14 @@
 package uk.gov.companieshouse.efs.web.categorytemplates.model;
 
+import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.nullValue;
+import static org.hamcrest.MatcherAssert.assertThat;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 import uk.gov.companieshouse.api.model.efs.categorytemplates.CategoryTemplateApi;
-
-import static org.hamcrest.CoreMatchers.*;
-import static org.hamcrest.MatcherAssert.assertThat;
 
 @ExtendWith(MockitoExtension.class)
 class CategoryTemplateModelTest {
@@ -18,7 +19,7 @@ class CategoryTemplateModelTest {
 
     @BeforeEach
     void setUp() {
-        categoryTemplate = new CategoryTemplateApi("CC01", "CategoryC01", "INS", "CC01");
+        categoryTemplate = new CategoryTemplateApi("CC01", "FILE", "CategoryC01", "INS", "CC01");
         testCategoryTemplate = new CategoryTemplateModel(categoryTemplate);
     }
 
@@ -26,12 +27,14 @@ class CategoryTemplateModelTest {
     void defaultConstructor() {
         testCategoryTemplate = new CategoryTemplateModel();
 
-        assertThat(testCategoryTemplate.getDetails(), is(new CategoryTemplateApi("", "", null, null)));
+        assertThat(testCategoryTemplate.getDetails(),
+            is(new CategoryTemplateApi("", "", "", null, null)));
     }
 
     @Test
     void setGetDetails() {
-        CategoryTemplateApi expected = new CategoryTemplateApi("CC01", "CategoryC01", "INS", "CC01");
+        CategoryTemplateApi expected =
+            new CategoryTemplateApi("CC01", "FILE", "CategoryC01", "INS", "CC01");
 
         testCategoryTemplate.setDetails(expected);
 
