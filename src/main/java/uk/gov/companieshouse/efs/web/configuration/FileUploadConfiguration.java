@@ -33,7 +33,7 @@ public class FileUploadConfiguration {
      *
      * @param name configuraton name
      * @param allowedTypes allowed file types
-     * @param maximumFileSize maximum file size eg 4MB
+     * @param maximumFileSize maximum file size eg 6MB
      * @param maximumFilesAllowed eg 6
      */
     public FileUploadConfiguration(String name, List<FileType> allowedTypes, String maximumFileSize,
