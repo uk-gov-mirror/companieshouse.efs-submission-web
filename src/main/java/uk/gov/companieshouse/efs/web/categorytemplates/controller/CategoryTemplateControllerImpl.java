@@ -104,12 +104,10 @@ public class CategoryTemplateControllerImpl extends BaseControllerImpl implement
         final CategoryFamilyConstants family = TEMP_COMPANY_NUMBER.equals(companyNumber)
             ? CategoryFamilyConstants.INC
             : CategoryFamilyConstants.FILE;
-        final CategoryTemplateListApi familyCategoryTemplates =
-            categoryTemplateService.getCategoryTemplatesByFamily(family.name()).getData();
-        final List<String> categoryTypesList = Optional.ofNullable(familyCategoryTemplates.getList())
-                .orElseGet(ArrayList::new).stream().map(CategoryTemplateApi::getCategoryType)
-                .collect(Collectors.toList());
-        final boolean sequenceValid = categorySequenceList == null || categoryTypesList.containsAll(
+        final CategoryTemplateListApi allCategoryTemplates =
+            categoryTemplateService.getCategoryTemplates().getData();
+        final List<String> allCategoryTemplateList = getOptionalCategoryTemplateTypes(allCategoryTemplates);
+        final boolean sequenceValid = categorySequenceList == null || allCategoryTemplateList.containsAll(
                 categorySequenceList);
 
         if (!sequenceValid || (sequenceHasInsolvency && !isEmailAllowed)) {
@@ -125,15 +123,25 @@ public class CategoryTemplateControllerImpl extends BaseControllerImpl implement
                 parentCategoryId);
 
         categoryTemplateAttribute.setSubmissionId(submissionApi.getId());
-        categoryTemplateAttribute.setDetails(childTemplate == null
-                ? new CategoryTemplateApi(CategoryTemplateModel.ROOT_CATEGORY)
-                : childTemplate);
+        categoryTemplateAttribute.setDetails(Optional.ofNullable(childTemplate)
+            .orElseGet(() -> new CategoryTemplateApi(CategoryTemplateModel.ROOT_CATEGORY)));
         categoryTemplateAttribute.setCategoryTemplateList(
-                getChildCategoryTemplateList(parentCategoryId,
-                        submissionApi.getPresenter().getEmail()));
+            CategoryTemplateModel.ROOT_CATEGORY_ID.equals(parentCategoryId)
+                ? categoryTemplateService.getCategoryTemplatesByFamily(family.name())
+                .getData()
+                : getChildCategoryTemplateList(parentCategoryId, submissionApi.getPresenter()
+                    .getEmail()));
         addTrackingAttributeToModel(model);
 
         return ViewConstants.CATEGORY_SELECTION.asView();
+    }
+
+    private List<String> getOptionalCategoryTemplateTypes(final CategoryTemplateListApi categoryTemplateListApi) {
+        return Optional.ofNullable(categoryTemplateListApi.getList())
+            .orElseGet(ArrayList::new)
+            .stream()
+            .map(CategoryTemplateApi::getCategoryType)
+            .collect(Collectors.toList());
     }
 
     @Override

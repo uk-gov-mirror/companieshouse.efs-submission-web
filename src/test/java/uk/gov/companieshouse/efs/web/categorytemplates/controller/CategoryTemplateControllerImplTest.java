@@ -13,6 +13,8 @@ import static uk.gov.companieshouse.efs.web.categorytemplates.controller.Categor
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -53,22 +55,22 @@ public class CategoryTemplateControllerImplTest extends BaseControllerImplTest {
     public static final CategoryTemplateApi INSOLVENCY =
         new CategoryTemplateApi("INS", "FAMILY_1", "INSOLVENCY", "", null);
     public static final CategoryTemplateApi INS_SUB_LEVEL1 =
-        new CategoryTemplateApi("INS_SUB_LEVEL1", "FAMILY_1",
+        new CategoryTemplateApi("INS_SUB_LEVEL1", null,
             "Dummy insolvency category 1, subcategory level 1", "INS", null);
     public static final CategoryTemplateApi INS_SUB_LEVEL2 =
-        new CategoryTemplateApi("INS_SUB_LEVEL2", "FAMILY_1",
+        new CategoryTemplateApi("INS_SUB_LEVEL2", null,
             "Dummy insolvency category 1, subcategory level 2", "INS_SUB_LEVEL1", null);
     public static final CategoryTemplateApi CAT1_SUB_LEVEL1 =
-        new CategoryTemplateApi("CAT1_SUB_LEVEL1", "FAMILY_1",
+        new CategoryTemplateApi("CAT1_SUB_LEVEL1", null,
             "Dummy category 1, subcategory level 1", "CAT_TOP_LEVEL", null);
     public static final CategoryTemplateApi CAT2_SUB_LEVEL1 =
-        new CategoryTemplateApi("CAT2_SUB_LEVEL1", "FAMILY",
+        new CategoryTemplateApi("CAT2_SUB_LEVEL1", null,
             "Dummy category 2, subcategory level 1", "CAT_TOP_LEVEL", null);
     public static final CategoryTemplateApi CAT1_SUB_LEVEL2 =
-        new CategoryTemplateApi("CAT1_SUB_LEVEL2", "FAMILY", "Dummy category1, subcategory level 2",
+        new CategoryTemplateApi("CAT1_SUB_LEVEL2", null, "Dummy category1, subcategory level 2",
             "CAT1_SUB_LEVEL1", null);
     public static final CategoryTemplateApi CAT2_SUB_LEVEL2 =
-        new CategoryTemplateApi("CAT2_SUB_LEVEL2", "FAMILY",
+        new CategoryTemplateApi("CAT2_SUB_LEVEL2", null,
             "Dummy category 2, subcategory level 2", "CAT1_SUB_LEVEL1", null);
     public static final List<CategoryTemplateApi> FAMILY_1_CATEGORIES =
         Arrays.asList(CAT_TOP_LEVEL, INSOLVENCY, CAT1_SUB_LEVEL1, CAT2_SUB_LEVEL1, CAT1_SUB_LEVEL2,
@@ -84,15 +86,19 @@ public class CategoryTemplateControllerImplTest extends BaseControllerImplTest {
      *                    /              \
      *             CAT_TOP_LEVEL_1   CAT_TOP_LEVEL_2
      */
-    public static final CategoryTemplateApi FAMILY_2_ROOT_LEVEL =
-        new CategoryTemplateApi("", "FAMILY_2", "Dummy ROOT level category", "", null);
     public static final CategoryTemplateApi CAT_TOP_LEVEL_1 =
         new CategoryTemplateApi("CAT_TOP_LEVEL_1", "FAMILY_2", "Dummy top level category", "",
             null);
     public static final CategoryTemplateApi CAT_TOP_LEVEL_2 =
-        new CategoryTemplateApi("CAT_TOP_LEVEL", "FAMILY_2", "Dummy top level category", "", null);
+        new CategoryTemplateApi("CAT_TOP_LEVEL_2", "FAMILY_2", "Dummy top level category", "",
+            null);
     public static final List<CategoryTemplateApi> FAMILY_2_CATEGORIES =
         Arrays.asList(CAT_TOP_LEVEL_1, CAT_TOP_LEVEL_2);
+
+    public static final List<CategoryTemplateApi> ALL_CATEGORIES =
+        Stream.of(FAMILY_1_CATEGORIES, FAMILY_2_CATEGORIES)
+            .flatMap(List::stream)
+            .collect(Collectors.toList());
 
     private CategoryTemplateController testController;
 
@@ -135,15 +141,17 @@ public class CategoryTemplateControllerImplTest extends BaseControllerImplTest {
     void categoryTemplateTopLevelWhenCategorySequenceListNull() {
         final SubmissionApi submission = createSubmission(SubmissionStatus.OPEN);
         final CategoryTemplateListApi expectedCategoryList =
-            new CategoryTemplateListApi(Arrays.asList(CAT_TOP_LEVEL, INSOLVENCY));
+            new CategoryTemplateListApi(FAMILY_1_CATEGORIES);
 
+        expectGetFamilyCategories(CategoryFamilyConstants.FILE, expectedCategoryList);
         expectInteractionsForGet(submission, true, expectedCategoryList,
-            CategoryFamilyConstants.FILE, CategoryTemplateModel.ROOT_CATEGORY_ID, null);
+            CategoryTemplateModel.ROOT_CATEGORY_ID, null);
 
         final String result = testController.categoryTemplate(SUBMISSION_ID, COMPANY_NUMBER, null,
             categoryTemplateAttribute, model, servletRequest);
 
-        verifyOutcomeForGet(CategoryFamilyConstants.FILE, CategoryTemplateModel.ROOT_CATEGORY,
+        verifyOutcomeForFamilyCategories(CategoryFamilyConstants.FILE);
+        verifyOutcomeForAttributes(CategoryTemplateModel.ROOT_CATEGORY,
             expectedCategoryList);
         assertThat(result, is(ViewConstants.CATEGORY_SELECTION.asView()));
     }
@@ -154,13 +162,15 @@ public class CategoryTemplateControllerImplTest extends BaseControllerImplTest {
         final CategoryTemplateListApi expectedCategoryList =
             new CategoryTemplateListApi(FAMILY_2_CATEGORIES);
 
+        expectGetFamilyCategories(CategoryFamilyConstants.INC, expectedCategoryList);
         expectInteractionsForGet(submission, true, expectedCategoryList,
-            CategoryFamilyConstants.INC, CategoryTemplateModel.ROOT_CATEGORY_ID, null);
+            CategoryTemplateModel.ROOT_CATEGORY_ID, null);
 
         final String result = testController.categoryTemplate(SUBMISSION_ID, TEMP_COMPANY_NUMBER, null,
             categoryTemplateAttribute, model, servletRequest);
 
-        verifyOutcomeForGet(CategoryFamilyConstants.INC, CategoryTemplateModel.ROOT_CATEGORY,
+        verifyOutcomeForFamilyCategories(CategoryFamilyConstants.INC);
+        verifyOutcomeForAttributes(CategoryTemplateModel.ROOT_CATEGORY,
             expectedCategoryList);
         assertThat(result, is(ViewConstants.CATEGORY_SELECTION.asView()));
     }
@@ -170,16 +180,20 @@ public class CategoryTemplateControllerImplTest extends BaseControllerImplTest {
         final SubmissionApi submission = createSubmission(SubmissionStatus.OPEN);
         final CategoryTemplateListApi expectedCategoryList =
             new CategoryTemplateListApi(Arrays.asList(CAT_TOP_LEVEL, INSOLVENCY));
+        final CategoryTemplateListApi expectedChildCategoryList =
+            new CategoryTemplateListApi(Collections.singletonList(INS_SUB_LEVEL1));
+        
 
+        expectGetChildCategories(INSOLVENCY, expectedChildCategoryList);
         expectInteractionsForGet(submission, true, expectedCategoryList,
-            CategoryFamilyConstants.FILE, INSOLVENCY.getCategoryType(), null);
+            INSOLVENCY.getCategoryType(), null);
 
         final String result = testController.categoryTemplate(SUBMISSION_ID, COMPANY_NUMBER,
             Collections.singletonList(INSOLVENCY.getCategoryType()), categoryTemplateAttribute,
             model, servletRequest);
 
-        verifyOutcomeForGet(CategoryFamilyConstants.FILE, CategoryTemplateModel.ROOT_CATEGORY,
-            expectedCategoryList);
+        verifyOutcomeForChildCategories(INSOLVENCY);
+        verifyOutcomeForAttributes(CategoryTemplateModel.ROOT_CATEGORY, expectedChildCategoryList);
         assertThat(result, is(ViewConstants.CATEGORY_SELECTION.asView()));
     }
 
@@ -189,9 +203,8 @@ public class CategoryTemplateControllerImplTest extends BaseControllerImplTest {
 
         when(apiClientService.getSubmission(SUBMISSION_ID)).thenReturn(
             getSubmissionOkResponse(submission));
-        when(categoryTemplateService.getCategoryTemplatesByFamily(
-            CategoryFamilyConstants.FILE.name())).thenReturn(
-            new ApiResponse<>(200, getHeaders(), new CategoryTemplateListApi(FAMILY_1_CATEGORIES)));
+        when(categoryTemplateService.getCategoryTemplates()).thenReturn(
+            new ApiResponse<>(200, getHeaders(), new CategoryTemplateListApi(ALL_CATEGORIES)));
         when(apiClientService.isOnAllowList(anyString())).thenReturn(
             new ApiResponse<>(200, getHeaders(), false));
 
@@ -199,8 +212,6 @@ public class CategoryTemplateControllerImplTest extends BaseControllerImplTest {
             Collections.singletonList(INSOLVENCY.getCategoryType()), categoryTemplateAttribute,
             model, servletRequest);
 
-        verify(categoryTemplateService).getCategoryTemplatesByFamily(
-            CategoryFamilyConstants.FILE.name());
         verifyNoInteractions(model);
         assertThat(result, is(ViewConstants.MISSING.asView()));
     }
@@ -208,22 +219,17 @@ public class CategoryTemplateControllerImplTest extends BaseControllerImplTest {
     @Test
     void categoryTemplateTopLevelWhenCategorySequenceListContainsInvalidCategoryAndEmailNotAllowed() {
         final SubmissionApi submission = createSubmission(SubmissionStatus.OPEN);
-        final CategoryTemplateListApi expectedCategoryList =
-            new CategoryTemplateListApi(Arrays.asList(CAT_TOP_LEVEL, INSOLVENCY));
 
         when(apiClientService.getSubmission(SUBMISSION_ID)).thenReturn(
             getSubmissionOkResponse(submission));
-        when(categoryTemplateService.getCategoryTemplatesByFamily(
-            CategoryFamilyConstants.FILE.name())).thenReturn(
-            new ApiResponse<>(200, getHeaders(), new CategoryTemplateListApi(FAMILY_1_CATEGORIES)));
+        when(categoryTemplateService.getCategoryTemplates()).thenReturn(
+            new ApiResponse<>(200, getHeaders(), new CategoryTemplateListApi(ALL_CATEGORIES)));
         when(apiClientService.isOnAllowList(anyString())).thenReturn(
             new ApiResponse<>(200, getHeaders(), false));
 
         final String result = testController.categoryTemplate(SUBMISSION_ID, COMPANY_NUMBER,
             Collections.singletonList("INVALID"), categoryTemplateAttribute, model, servletRequest);
 
-        verify(categoryTemplateService).getCategoryTemplatesByFamily(
-            CategoryFamilyConstants.FILE.name());
         verifyNoInteractions(model);
         assertThat(result, is(ViewConstants.MISSING.asView()));
     }
@@ -234,15 +240,17 @@ public class CategoryTemplateControllerImplTest extends BaseControllerImplTest {
         final CategoryTemplateListApi expectedCategoryList =
             new CategoryTemplateListApi(Arrays.asList(CAT_TOP_LEVEL, INSOLVENCY));
 
+        expectGetFamilyCategories(CategoryFamilyConstants.FILE, expectedCategoryList);
         expectInteractionsForGet(submission, true, expectedCategoryList,
-            CategoryFamilyConstants.FILE, CategoryTemplateModel.ROOT_CATEGORY_ID, null);
+            CategoryTemplateModel.ROOT_CATEGORY_ID, null);
 
         final List<String> categorySequenceList = Collections.emptyList();
         final String result =
             testController.categoryTemplate(SUBMISSION_ID, COMPANY_NUMBER, categorySequenceList,
                 categoryTemplateAttribute, model, servletRequest);
 
-        verifyOutcomeForGet(CategoryFamilyConstants.FILE, CategoryTemplateModel.ROOT_CATEGORY,
+        verifyOutcomeForFamilyCategories(CategoryFamilyConstants.FILE);
+        verifyOutcomeForAttributes(CategoryTemplateModel.ROOT_CATEGORY,
             expectedCategoryList);
         assertThat(result, is(ViewConstants.CATEGORY_SELECTION.asView()));
     }
@@ -253,8 +261,9 @@ public class CategoryTemplateControllerImplTest extends BaseControllerImplTest {
         final CategoryTemplateListApi expectedCategoryList =
             new CategoryTemplateListApi(Collections.singletonList(CAT_TOP_LEVEL));
 
+        expectGetFamilyCategories(CategoryFamilyConstants.FILE, expectedCategoryList);
         expectInteractionsForGet(submission, false, expectedCategoryList,
-            CategoryFamilyConstants.FILE, CategoryTemplateModel.ROOT_CATEGORY_ID, null);
+            CategoryTemplateModel.ROOT_CATEGORY_ID, null);
         when(apiClientService.isOnAllowList(anyString())).thenReturn(
             new ApiResponse<>(200, getHeaders(), Boolean.FALSE));
 
@@ -263,7 +272,8 @@ public class CategoryTemplateControllerImplTest extends BaseControllerImplTest {
             testController.categoryTemplate(SUBMISSION_ID, COMPANY_NUMBER, categorySequenceList,
                 categoryTemplateAttribute, model, servletRequest);
 
-        verifyOutcomeForGet(CategoryFamilyConstants.FILE, CategoryTemplateModel.ROOT_CATEGORY,
+        verifyOutcomeForFamilyCategories(CategoryFamilyConstants.FILE);
+        verifyOutcomeForAttributes(CategoryTemplateModel.ROOT_CATEGORY,
             expectedCategoryList);
         assertThat(result, is(ViewConstants.CATEGORY_SELECTION.asView()));
     }
@@ -271,51 +281,57 @@ public class CategoryTemplateControllerImplTest extends BaseControllerImplTest {
     @Test
     void categoryTemplateSubLevel1WhenEmailAllowed() {
         final SubmissionApi submission = createSubmission(SubmissionStatus.OPEN);
-        final CategoryTemplateListApi categoryList =
+        final CategoryTemplateListApi expectedCategoryList =
             new CategoryTemplateListApi(Collections.singletonList(CAT1_SUB_LEVEL1));
 
-        expectInteractionsForGet(submission, true, categoryList, CategoryFamilyConstants.FILE,
+        expectGetChildCategories(CAT_TOP_LEVEL, expectedCategoryList);
+        expectInteractionsForGet(submission, true, expectedCategoryList,
             CAT_TOP_LEVEL.getCategoryType(), CAT_TOP_LEVEL);
 
         final String result = testController.categoryTemplate(SUBMISSION_ID, COMPANY_NUMBER,
             Collections.singletonList(CAT_TOP_LEVEL.getCategoryType()), categoryTemplateAttribute,
             model, servletRequest);
 
-        verifyOutcomeForGet(CategoryFamilyConstants.FILE, CAT_TOP_LEVEL, categoryList);
+        verifyOutcomeForChildCategories(CAT_TOP_LEVEL);
+        verifyOutcomeForAttributes(CAT_TOP_LEVEL, expectedCategoryList);
         assertThat(result, is(ViewConstants.CATEGORY_SELECTION.asView()));
     }
 
     @Test
     void categoryTemplateSubLevel1WhenEmailNotAllowed() {
         final SubmissionApi submission = createSubmission(SubmissionStatus.OPEN);
-        final CategoryTemplateListApi categoryList =
+        final CategoryTemplateListApi expectedCategoryList =
             new CategoryTemplateListApi(Collections.singletonList(CAT1_SUB_LEVEL1));
 
-        expectInteractionsForGet(submission, false, categoryList, CategoryFamilyConstants.FILE,
+        expectGetChildCategories(CAT_TOP_LEVEL, expectedCategoryList);
+        expectInteractionsForGet(submission, false, expectedCategoryList,
             CAT_TOP_LEVEL.getCategoryType(), CAT_TOP_LEVEL);
 
         final String result = testController.categoryTemplate(SUBMISSION_ID, COMPANY_NUMBER,
             Collections.singletonList(CAT_TOP_LEVEL.getCategoryType()), categoryTemplateAttribute,
             model, servletRequest);
 
-        verifyOutcomeForGet(CategoryFamilyConstants.FILE, CAT_TOP_LEVEL, categoryList);
+        verifyOutcomeForChildCategories(CAT_TOP_LEVEL);
+        verifyOutcomeForAttributes(CAT_TOP_LEVEL, expectedCategoryList);
         assertThat(result, is(ViewConstants.CATEGORY_SELECTION.asView()));
     }
 
     @Test
     void categoryTemplateWhenSubLevel2() {
         final SubmissionApi submission = createSubmission(SubmissionStatus.OPEN);
-        final CategoryTemplateListApi categoryList =
+        final CategoryTemplateListApi expectedCategoryList =
             new CategoryTemplateListApi(Arrays.asList(CAT1_SUB_LEVEL2, CAT2_SUB_LEVEL2));
 
-        expectInteractionsForGet(submission, true, categoryList, CategoryFamilyConstants.FILE,
+        expectGetChildCategories(CAT1_SUB_LEVEL1, expectedCategoryList);
+        expectInteractionsForGet(submission, true, expectedCategoryList,
             CAT1_SUB_LEVEL1.getCategoryType(), CAT1_SUB_LEVEL1);
 
         final String result = testController.categoryTemplate(SUBMISSION_ID, COMPANY_NUMBER,
             Arrays.asList(CAT_TOP_LEVEL.getCategoryType(), CAT1_SUB_LEVEL1.getCategoryType()),
             categoryTemplateAttribute, model, servletRequest);
 
-        verifyOutcomeForGet(CategoryFamilyConstants.FILE, CAT1_SUB_LEVEL1, categoryList);
+        verifyOutcomeForChildCategories(CAT1_SUB_LEVEL1);
+        verifyOutcomeForAttributes(CAT1_SUB_LEVEL1, expectedCategoryList);
         assertThat(result, is(ViewConstants.CATEGORY_SELECTION.asView()));
     }
 
@@ -400,18 +416,29 @@ public class CategoryTemplateControllerImplTest extends BaseControllerImplTest {
     }
 
     private void expectInteractionsForGet(final SubmissionApi submission, final Boolean isAllowed,
-        final CategoryTemplateListApi categoryList, final CategoryFamilyConstants family,
+        final CategoryTemplateListApi categoryList,
         final String leafCategoryId, final CategoryTemplateApi removedCategoryId) {
         when(apiClientService.getSubmission(SUBMISSION_ID)).thenReturn(
             getSubmissionOkResponse(submission));
+        when(categoryTemplateService.getCategoryTemplates()).thenReturn(
+            new ApiResponse<>(200, getHeaders(), new CategoryTemplateListApi(ALL_CATEGORIES)));
         when(categoryTemplateAttribute.rewindCategoryStack(leafCategoryId)).thenReturn(
             removedCategoryId);
-        when(categoryTemplateService.getCategoryTemplatesByFamily(family.name())).thenReturn(
-            new ApiResponse<>(200, getHeaders(), new CategoryTemplateListApi(FAMILY_1_CATEGORIES)));
-        when(categoryTemplateService.getCategoryTemplatesByParent(leafCategoryId)).thenReturn(
-            new ApiResponse<>(200, getHeaders(), categoryList));
         when(apiClientService.isOnAllowList(anyString())).thenReturn(
             new ApiResponse<>(200, getHeaders(), isAllowed));
+    }
+
+    private void expectGetFamilyCategories(final CategoryFamilyConstants family,
+        final CategoryTemplateListApi categoryList) {
+        when(categoryTemplateService.getCategoryTemplatesByFamily(family.name())).thenReturn(
+            new ApiResponse<>(200, getHeaders(), categoryList));
+
+    }
+    private void expectGetChildCategories(final CategoryTemplateApi parent, 
+        final CategoryTemplateListApi categoryList) {
+        when(categoryTemplateService.getCategoryTemplatesByParent(
+            parent.getCategoryType())).thenReturn(
+            new ApiResponse<>(200, getHeaders(), categoryList));
     }
 
     private void expectInteractionsForPost(final CategoryTemplateApi details,
@@ -425,13 +452,20 @@ public class CategoryTemplateControllerImplTest extends BaseControllerImplTest {
             new ApiResponse<>(200, getHeaders(), subcategories));
     }
 
-    private void verifyOutcomeForGet(final CategoryFamilyConstants family,
-        final CategoryTemplateApi detailsCategory, final CategoryTemplateListApi categoryList) {
-        verify(categoryTemplateService).getCategoryTemplatesByFamily(family.name());
+    private void verifyOutcomeForAttributes(final CategoryTemplateApi detailsCategory,
+        final CategoryTemplateListApi categoryList) {
         verify(categoryTemplateAttribute).setSubmissionId(SUBMISSION_ID);
         verify(categoryTemplateAttribute).setDetails(new CategoryTemplateApi(detailsCategory));
         verify(categoryTemplateAttribute).setCategoryTemplateList(categoryList);
         verify(model).addAttribute(TEMPLATE_NAME, ViewConstants.CATEGORY_SELECTION.asView());
+    }
+
+    private void verifyOutcomeForFamilyCategories(final CategoryFamilyConstants family) {
+        verify(categoryTemplateService).getCategoryTemplatesByFamily(family.name());
+    }
+
+    private void verifyOutcomeForChildCategories(final CategoryTemplateApi parent) {
+        verify(categoryTemplateService).getCategoryTemplatesByParent(parent.getCategoryType());
     }
 
     private void verifyOutcomeForPost(final CategoryTemplateApi pushedCategory) {
