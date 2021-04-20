@@ -1,16 +1,16 @@
 package uk.gov.companieshouse.efs.web.categorytemplates.service.api.impl;
 
 import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
-import static uk.gov.companieshouse.efs.web.categorytemplates.controller.CategoryTemplateControllerImplTest.CAT1_SUB_LEVEL1;
-import static uk.gov.companieshouse.efs.web.categorytemplates.controller.CategoryTemplateControllerImplTest.CAT2_SUB_LEVEL1;
-import static uk.gov.companieshouse.efs.web.categorytemplates.controller.CategoryTemplateControllerImplTest.CAT_TOP_LEVEL;
-import static uk.gov.companieshouse.efs.web.categorytemplates.controller.CategoryTemplateControllerImplTest.INSOLVENCY;
-import static uk.gov.companieshouse.efs.web.categorytemplates.controller.CategoryTemplateControllerImplTest.INS_SUB_LEVEL1;
-import static uk.gov.companieshouse.efs.web.categorytemplates.controller.CategoryTemplateControllerImplTest.INS_SUB_LEVEL2;
-import static uk.gov.companieshouse.efs.web.categorytemplates.controller.CategoryTemplateControllerImplTest.FAMILY_1_ROOT_LEVEL;
+import static uk.gov.companieshouse.efs.web.categorytemplates.controller.CategoryTemplateTestFixture.CAT1_SUB_LEVEL1;
+import static uk.gov.companieshouse.efs.web.categorytemplates.controller.CategoryTemplateTestFixture.CAT2_SUB_LEVEL1;
+import static uk.gov.companieshouse.efs.web.categorytemplates.controller.CategoryTemplateTestFixture.CAT_TOP_LEVEL;
+import static uk.gov.companieshouse.efs.web.categorytemplates.controller.CategoryTemplateTestFixture.FAMILY_1_ROOT_LEVEL;
+import static uk.gov.companieshouse.efs.web.categorytemplates.controller.CategoryTemplateTestFixture.INSOLVENCY;
+import static uk.gov.companieshouse.efs.web.categorytemplates.controller.CategoryTemplateTestFixture.INS_SUB_LEVEL1;
+import static uk.gov.companieshouse.efs.web.categorytemplates.controller.CategoryTemplateTestFixture.INS_SUB_LEVEL2;
 import static uk.gov.companieshouse.efs.web.categorytemplates.controller.CategoryTypeConstants.OTHER;
 import static uk.gov.companieshouse.efs.web.categorytemplates.controller.CategoryTypeConstants.RESOLUTIONS;
 
@@ -98,8 +98,8 @@ class CategoryTemplateServiceImplTest {
         expectGetCategoryTemplate();
         when(categoryTemplateGet.execute()).thenReturn(expected);
 
-        final ApiResponse<CategoryTemplateApi> result = testService.getCategoryTemplate(
-            CAT1_SUB_LEVEL1.getCategoryType());
+        final ApiResponse<CategoryTemplateApi> result =
+            testService.getCategoryTemplate(CAT1_SUB_LEVEL1.getCategoryType());
 
         assertThat(result, is(expected));
     }
@@ -146,10 +146,10 @@ class CategoryTemplateServiceImplTest {
     void getTopLevelCategoryGivenLevel1SubCategory() throws ApiErrorResponseException, URIValidationException {
         expectGetCategoryTemplate();
         when(categoryTemplateGet.execute()).thenReturn(buildApiResponseOK(CAT1_SUB_LEVEL1))
-                .thenReturn(buildApiResponseOK(CAT_TOP_LEVEL));
+            .thenReturn(buildApiResponseOK(CAT_TOP_LEVEL));
 
         final CategoryTypeConstants topLevelCategory =
-                testService.getTopLevelCategory(CAT1_SUB_LEVEL1.getCategoryType());
+            testService.getTopLevelCategory(CAT1_SUB_LEVEL1.getCategoryType());
 
         assertThat(topLevelCategory.getValue(), is(OTHER.getValue()));
     }
@@ -184,11 +184,11 @@ class CategoryTemplateServiceImplTest {
     @Test
     void getTopLevelCategoryGivenInsolvencySubCategory() throws ApiErrorResponseException, URIValidationException {
         expectGetCategoryTemplate();
-        when(categoryTemplateGet.execute()).thenReturn(buildApiResponseOK(INS_SUB_LEVEL1)).thenReturn(
-                buildApiResponseOK(INSOLVENCY));
+        when(categoryTemplateGet.execute()).thenReturn(buildApiResponseOK(INS_SUB_LEVEL1))
+            .thenReturn(buildApiResponseOK(INSOLVENCY));
 
         final CategoryTypeConstants topLevelCategory =
-                testService.getTopLevelCategory(INS_SUB_LEVEL1.getCategoryType());
+            testService.getTopLevelCategory(INS_SUB_LEVEL1.getCategoryType());
 
         assertThat(topLevelCategory.getValue(), is(INSOLVENCY.getCategoryType()));
     }
@@ -197,11 +197,11 @@ class CategoryTemplateServiceImplTest {
     void getTopLevelCategoryGivenInsolvencySubSubCategory() throws ApiErrorResponseException, URIValidationException {
         expectGetCategoryTemplate();
         when(categoryTemplateGet.execute()).thenReturn(buildApiResponseOK(INS_SUB_LEVEL2))
-                .thenReturn(buildApiResponseOK(INS_SUB_LEVEL1)).thenReturn(
-                buildApiResponseOK(INSOLVENCY));
+            .thenReturn(buildApiResponseOK(INS_SUB_LEVEL1))
+            .thenReturn(buildApiResponseOK(INSOLVENCY));
 
         final CategoryTypeConstants topLevelCategory =
-                testService.getTopLevelCategory(INS_SUB_LEVEL2.getCategoryType());
+            testService.getTopLevelCategory(INS_SUB_LEVEL2.getCategoryType());
 
         assertThat(topLevelCategory.getValue(), is(INSOLVENCY.getCategoryType()));
     }

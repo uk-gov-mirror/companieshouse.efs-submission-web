@@ -9,12 +9,20 @@ import static org.mockito.Mockito.verifyNoInteractions;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 import static uk.gov.companieshouse.efs.web.categorytemplates.controller.CategoryTemplateControllerImpl.TEMP_COMPANY_NUMBER;
+import static uk.gov.companieshouse.efs.web.categorytemplates.controller.CategoryTemplateTestFixture.ALL_CATEGORIES;
+import static uk.gov.companieshouse.efs.web.categorytemplates.controller.CategoryTemplateTestFixture.CAT1_SUB_LEVEL1;
+import static uk.gov.companieshouse.efs.web.categorytemplates.controller.CategoryTemplateTestFixture.CAT1_SUB_LEVEL2;
+import static uk.gov.companieshouse.efs.web.categorytemplates.controller.CategoryTemplateTestFixture.CAT2_SUB_LEVEL1;
+import static uk.gov.companieshouse.efs.web.categorytemplates.controller.CategoryTemplateTestFixture.CAT2_SUB_LEVEL2;
+import static uk.gov.companieshouse.efs.web.categorytemplates.controller.CategoryTemplateTestFixture.CAT_TOP_LEVEL;
+import static uk.gov.companieshouse.efs.web.categorytemplates.controller.CategoryTemplateTestFixture.FAMILY_1_CATEGORIES;
+import static uk.gov.companieshouse.efs.web.categorytemplates.controller.CategoryTemplateTestFixture.FAMILY_2_CATEGORIES;
+import static uk.gov.companieshouse.efs.web.categorytemplates.controller.CategoryTemplateTestFixture.INSOLVENCY;
+import static uk.gov.companieshouse.efs.web.categorytemplates.controller.CategoryTemplateTestFixture.INS_SUB_LEVEL1;
 
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -30,75 +38,7 @@ import uk.gov.companieshouse.efs.web.controller.BaseControllerImplTest;
 import uk.gov.companieshouse.efs.web.controller.ViewConstants;
 
 @ExtendWith(MockitoExtension.class)
-public class CategoryTemplateControllerImplTest extends BaseControllerImplTest {
-    /*
-     *   //////////////
-     *  // FAMILY_1 //
-     * //////////////
-     *                     ROOT_CATEGORY
-     *                      /          \
-     *                     /            \
-     *                    /              \
-     *                   CAT_TOP_LEVEL   INSOLVENCY
-     *                   /        \        \ _ _ _ _ _ _
-     *                  /          \                    \
-     *           CAT1_SUB_LEVEL1   CAT2_SUB_LEVEL1  INS_SUB_LEVEL1
-     *               /        \                          \
-     *              /          \                          \
-     *     CAT1_SUB_LEVEL2   CAT2_SUB_LEVEL2          INS_SUB_LEVEL2
-     *
-     */
-    public static final CategoryTemplateApi FAMILY_1_ROOT_LEVEL =
-        new CategoryTemplateApi("", "FAMILY_1", "Dummy ROOT level category", "", null);
-    public static final CategoryTemplateApi CAT_TOP_LEVEL =
-        new CategoryTemplateApi("CAT_TOP_LEVEL", "FAMILY_1", "Dummy top level category", "", null);
-    public static final CategoryTemplateApi INSOLVENCY =
-        new CategoryTemplateApi("INS", "FAMILY_1", "INSOLVENCY", "", null);
-    public static final CategoryTemplateApi INS_SUB_LEVEL1 =
-        new CategoryTemplateApi("INS_SUB_LEVEL1", null,
-            "Dummy insolvency category 1, subcategory level 1", "INS", null);
-    public static final CategoryTemplateApi INS_SUB_LEVEL2 =
-        new CategoryTemplateApi("INS_SUB_LEVEL2", null,
-            "Dummy insolvency category 1, subcategory level 2", "INS_SUB_LEVEL1", null);
-    public static final CategoryTemplateApi CAT1_SUB_LEVEL1 =
-        new CategoryTemplateApi("CAT1_SUB_LEVEL1", null,
-            "Dummy category 1, subcategory level 1", "CAT_TOP_LEVEL", null);
-    public static final CategoryTemplateApi CAT2_SUB_LEVEL1 =
-        new CategoryTemplateApi("CAT2_SUB_LEVEL1", null,
-            "Dummy category 2, subcategory level 1", "CAT_TOP_LEVEL", null);
-    public static final CategoryTemplateApi CAT1_SUB_LEVEL2 =
-        new CategoryTemplateApi("CAT1_SUB_LEVEL2", null, "Dummy category1, subcategory level 2",
-            "CAT1_SUB_LEVEL1", null);
-    public static final CategoryTemplateApi CAT2_SUB_LEVEL2 =
-        new CategoryTemplateApi("CAT2_SUB_LEVEL2", null,
-            "Dummy category 2, subcategory level 2", "CAT1_SUB_LEVEL1", null);
-    public static final List<CategoryTemplateApi> FAMILY_1_CATEGORIES =
-        Arrays.asList(CAT_TOP_LEVEL, INSOLVENCY, CAT1_SUB_LEVEL1, CAT2_SUB_LEVEL1, CAT1_SUB_LEVEL2,
-            CAT2_SUB_LEVEL2);
-
-    /*
-     *   //////////////
-     *  // FAMILY_2 //
-     * //////////////
-     *                     ROOT_CATEGORY
-     *                      /          \
-     *                     /            \
-     *                    /              \
-     *             CAT_TOP_LEVEL_1   CAT_TOP_LEVEL_2
-     */
-    public static final CategoryTemplateApi CAT_TOP_LEVEL_1 =
-        new CategoryTemplateApi("CAT_TOP_LEVEL_1", "FAMILY_2", "Dummy top level category", "",
-            null);
-    public static final CategoryTemplateApi CAT_TOP_LEVEL_2 =
-        new CategoryTemplateApi("CAT_TOP_LEVEL_2", "FAMILY_2", "Dummy top level category", "",
-            null);
-    public static final List<CategoryTemplateApi> FAMILY_2_CATEGORIES =
-        Arrays.asList(CAT_TOP_LEVEL_1, CAT_TOP_LEVEL_2);
-
-    public static final List<CategoryTemplateApi> ALL_CATEGORIES =
-        Stream.of(FAMILY_1_CATEGORIES, FAMILY_2_CATEGORIES)
-            .flatMap(List::stream)
-            .collect(Collectors.toList());
+class CategoryTemplateControllerImplTest extends BaseControllerImplTest {
 
     private CategoryTemplateController testController;
 
@@ -338,15 +278,15 @@ public class CategoryTemplateControllerImplTest extends BaseControllerImplTest {
     @Test
     void postCategoryTemplateWhenCategorySelectedHasSubCategories() {
         final CategoryTemplateApi details = new CategoryTemplateApi();
-        final CategoryTemplateListApi subcategories = new CategoryTemplateListApi(
-                Arrays.asList(CAT1_SUB_LEVEL2, CAT2_SUB_LEVEL2));
+        final CategoryTemplateListApi subcategories =
+            new CategoryTemplateListApi(Arrays.asList(CAT1_SUB_LEVEL2, CAT2_SUB_LEVEL2));
 
         details.setCategoryType(CAT1_SUB_LEVEL1.getCategoryType());
         expectInteractionsForPost(details, subcategories,
-                Arrays.asList(CAT1_SUB_LEVEL1, CAT2_SUB_LEVEL1), CAT1_SUB_LEVEL1);
+            Arrays.asList(CAT1_SUB_LEVEL1, CAT2_SUB_LEVEL1), CAT1_SUB_LEVEL1);
 
         final String catSequence =
-                CAT1_SUB_LEVEL1.getCategoryType() + "," + CAT1_SUB_LEVEL2.getCategoryType();
+            CAT1_SUB_LEVEL1.getCategoryType() + "," + CAT1_SUB_LEVEL2.getCategoryType();
 
         when(categoryTemplateAttribute.getCategorySequence()).thenReturn(catSequence);
 
@@ -366,7 +306,7 @@ public class CategoryTemplateControllerImplTest extends BaseControllerImplTest {
 
         details.setCategoryType(CAT2_SUB_LEVEL1.getCategoryType());
         expectInteractionsForPost(details, subcategories,
-                Collections.singletonList(CAT2_SUB_LEVEL1), CAT2_SUB_LEVEL1);
+            Collections.singletonList(CAT2_SUB_LEVEL1), CAT2_SUB_LEVEL1);
 
 
         final String result = testController.postCategoryTemplate(SUBMISSION_ID, COMPANY_NUMBER,
@@ -394,8 +334,8 @@ public class CategoryTemplateControllerImplTest extends BaseControllerImplTest {
     @Test
     void postCategoryTemplateWhenAttributeSelectionNull() {
         final CategoryTemplateApi details = new CategoryTemplateApi();
-        final CategoryTemplateListApi categoryList = new CategoryTemplateListApi(
-                Arrays.asList(CAT1_SUB_LEVEL2, CAT2_SUB_LEVEL2));
+        final CategoryTemplateListApi categoryList =
+            new CategoryTemplateListApi(Arrays.asList(CAT1_SUB_LEVEL2, CAT2_SUB_LEVEL2));
 
         when(categoryTemplateAttribute.getDetails()).thenReturn(details);
         when(categoryTemplateService.getCategoryTemplatesByParent(null)).thenReturn(
