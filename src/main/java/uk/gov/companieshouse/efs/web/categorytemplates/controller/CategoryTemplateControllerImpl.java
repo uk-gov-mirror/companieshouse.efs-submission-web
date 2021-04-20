@@ -2,6 +2,7 @@ package uk.gov.companieshouse.efs.web.categorytemplates.controller;
 
 import static uk.gov.companieshouse.efs.web.categorytemplates.controller.CategoryTemplateControllerImpl.ATTRIBUTE_NAME;
 import static uk.gov.companieshouse.efs.web.categorytemplates.controller.CategoryTypeConstants.INSOLVENCY;
+import static uk.gov.companieshouse.efs.web.controller.ProposedCompanyControllerImpl.TEMP_COMPANY_NUMBER;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -50,7 +51,6 @@ public class CategoryTemplateControllerImpl extends BaseControllerImpl implement
      * Define the model name for this action.
      */
     public static final String ATTRIBUTE_NAME = "categoryTemplate";
-    public static final String TEMP_COMPANY_NUMBER = "99999999";
 
     private CategoryTemplateModel categoryTemplateAttribute;
 
@@ -132,6 +132,7 @@ public class CategoryTemplateControllerImpl extends BaseControllerImpl implement
                 : getChildCategoryTemplateList(parentCategoryId, submissionApi.getPresenter()
                     .getEmail()));
         addTrackingAttributeToModel(model);
+        model.addAttribute("noCompany", CategoryFamilyConstants.INC == family);
 
         return ViewConstants.CATEGORY_SELECTION.asView();
     }

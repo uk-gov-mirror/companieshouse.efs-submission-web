@@ -10,6 +10,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.SessionAttributes;
 import uk.gov.companieshouse.efs.web.model.ProposedCompanyModel;
 import uk.gov.companieshouse.efs.web.service.api.ApiClientService;
@@ -24,7 +25,8 @@ public class ProposedCompanyControllerImpl extends BaseControllerImpl implements
      * Define the model name for this action.
      */
     public static final String ATTRIBUTE_NAME = "proposedCompany";
-
+    public static final String TEMP_COMPANY_NUMBER = "99999999";
+    
     private ProposedCompanyModel proposedCompanyAttribute;
 
     @Autowired
@@ -46,17 +48,20 @@ public class ProposedCompanyControllerImpl extends BaseControllerImpl implements
     }
 
     @Override
-    public String prepare(@ModelAttribute(ATTRIBUTE_NAME) ProposedCompanyModel proposedCompanyModel, Model model,
+    public String prepare(@PathVariable final String id,
+        @ModelAttribute(ATTRIBUTE_NAME) ProposedCompanyModel proposedCompanyModel, Model model,
         HttpServletRequest request) {
 
         // Assign our previously saved response to our model.
+        proposedCompanyModel.setSubmissionId(id);
         proposedCompanyModel.setName(proposedCompanyAttribute.getName());
 
         return getViewName();
     }
 
     @Override
-    public String process(@Valid @ModelAttribute(ATTRIBUTE_NAME) ProposedCompanyModel proposedCompanyModel,
+    public String process(@PathVariable final String id,
+        @Valid @ModelAttribute(ATTRIBUTE_NAME) ProposedCompanyModel proposedCompanyModel,
         BindingResult binding, Model model, HttpServletRequest request, HttpSession session) {
 
         if (binding.hasErrors()) {
@@ -66,6 +71,6 @@ public class ProposedCompanyControllerImpl extends BaseControllerImpl implements
         // Update our persistent model with the latest response.
         proposedCompanyAttribute.setName(proposedCompanyModel.getName());
 
-        return ViewConstants.PROPOSED_COMPANY.asRedirectUri(chsUrl);
+        return ViewConstants.CATEGORY_SELECTION.asRedirectUri(chsUrl, id, TEMP_COMPANY_NUMBER);
     }
 }

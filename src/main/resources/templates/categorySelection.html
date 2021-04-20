@@ -11,8 +11,11 @@
     <body class="govuk-template__body" layout:fragment="content">
         <form class="categoryTemplate" th:object="${categoryTemplate}"
               th:action="@{/efs-submission/{id}/company/{companyNumber}/category-selection(id=*{submissionId}, companyNumber=*{companyNumber})}" method="post">
-            <a class="govuk-back-link" th:if="*{#strings.isEmpty(parentCategory.categoryName)}"
+            <a class="govuk-back-link" th:if="*{#strings.isEmpty(parentCategory.categoryName)} and not ${noCompany}"
                th:href="@{/efs-submission/{id}/company/{companyNumber}/details(id=*{submissionId},companyNumber=*{companyNumber})}"
+               th:text="#{link.back}"></a>
+            <a class="govuk-back-link" th:if="*{#strings.isEmpty(parentCategory.categoryName)} and ${noCompany}"
+               th:href="@{/efs-submission/{id}/company/noCompany/proposed-company(id=*{submissionId})}"
                th:text="#{link.back}"></a>
             <a class="govuk-back-link" th:unless="*{#strings.isEmpty(parentCategory.categoryName)}"
                th:href="@{/efs-submission/{id}/company/{companyNumber}/category-selection?category={sequence}(id=*{submissionId},companyNumber=*{companyNumber},sequence=*{parentCategorySequence})}"

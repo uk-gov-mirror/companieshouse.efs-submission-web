@@ -9,7 +9,7 @@
 </head>
 <body class="govuk-template__body" layout:fragment="content">
 
-<form th:action="@{/efs-submission/proposed-company}" th:object="${proposedCompany}" method="post">
+<form th:action="@{/efs-submission/{id}/company/noCompany/proposed-company(id=*{submissionId})}" th:object="${proposedCompany}" method="post">
 
     <!-- Back Link -->
     <a class="govuk-back-link" th:href="@{/efs-submission/start}" th:text="#{link.back}"></a>
@@ -37,7 +37,7 @@
 
                         <!-- Display Answers -->
                         <div class="govuk-form-group">
-                            <input class="govuk-input" id="name" name="name" type="text">
+                            <input class="govuk-input govuk-!-width-three-quarters" id="name" name="name" type="text">
                         </div>
 
                     </fieldset>

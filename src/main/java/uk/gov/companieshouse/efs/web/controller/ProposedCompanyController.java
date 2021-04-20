@@ -8,6 +8,7 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import uk.gov.companieshouse.efs.web.model.ProposedCompanyModel;
@@ -16,11 +17,13 @@ import uk.gov.companieshouse.efs.web.model.ProposedCompanyModel;
 public interface ProposedCompanyController {
 
     @GetMapping("{id}/company/noCompany/proposed-company")
-    String prepare(@ModelAttribute(ATTRIBUTE_NAME) ProposedCompanyModel proposedCompanyModel,
-        Model model, HttpServletRequest request);
+    String prepare(@PathVariable final String id,
+        @ModelAttribute(ATTRIBUTE_NAME) ProposedCompanyModel proposedCompanyModel, Model model,
+        HttpServletRequest request);
 
     @PostMapping("{id}/company/noCompany/proposed-company")
-    String process(@ModelAttribute(ATTRIBUTE_NAME) ProposedCompanyModel proposedCompanyModel,
+    String process(@PathVariable final String id,
+        @ModelAttribute(ATTRIBUTE_NAME) ProposedCompanyModel proposedCompanyModel,
         BindingResult binding, Model model, HttpServletRequest request, HttpSession session);
 
 }

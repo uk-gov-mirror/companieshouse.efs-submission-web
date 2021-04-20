@@ -11,11 +11,10 @@ import org.springframework.web.context.annotation.SessionScope;
 @SessionScope
 public class ProposedCompanyModel {
 
+    private String submissionId;
     private String name;
 
     public ProposedCompanyModel() {
-        super();
-
         this.name = "";
     }
 
@@ -25,7 +24,16 @@ public class ProposedCompanyModel {
      * @param original the {@link ProposedCompanyModel}
      */
     public ProposedCompanyModel(final ProposedCompanyModel original) {
+        this.submissionId = original.getSubmissionId();
         this.name = original.getName();
+    }
+
+    public String getSubmissionId() {
+        return submissionId;
+    }
+
+    public void setSubmissionId(final String submissionId) {
+        this.submissionId = submissionId;
     }
 
     @NotBlank(message = "{proposedCompany.error}")
@@ -46,17 +54,19 @@ public class ProposedCompanyModel {
             return false;
         }
         final ProposedCompanyModel that = (ProposedCompanyModel) o;
-        return Objects.equals(getName(), that.getName());
+        return Objects.equals(getSubmissionId(), that.getSubmissionId()) && Objects.equals(
+            getName(), that.getName());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getName());
+        return Objects.hash(getSubmissionId(), getName());
     }
 
     @Override
     public String toString() {
         return new ToStringBuilder(this, ToStringStyle.SHORT_PREFIX_STYLE)
+            .append("submissionId", submissionId)
             .append("name", name)
             .toString();
     }
