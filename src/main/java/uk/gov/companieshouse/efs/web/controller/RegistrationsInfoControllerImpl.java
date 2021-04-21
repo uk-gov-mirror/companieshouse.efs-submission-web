@@ -4,6 +4,7 @@ import java.util.Objects;
 import javax.servlet.ServletRequest;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -19,6 +20,9 @@ import uk.gov.companieshouse.logging.Logger;
 
 @Controller
 public class RegistrationsInfoControllerImpl extends BaseControllerImpl implements RegistrationsInfoController {
+    @Value("${registrations.enabled:false}")
+    private boolean registrationEnabled;
+
 
 
     /**
@@ -41,16 +45,21 @@ public class RegistrationsInfoControllerImpl extends BaseControllerImpl implemen
     public String registrationsInfo(@PathVariable String id, @PathVariable String companyNumber,
         CategoryTemplateModel categoryTemplateAttribute, Model model, HttpServletRequest servletRequest) {
 
-        final SubmissionApi submissionApi = Objects.requireNonNull(getSubmission(id));
-        categoryTemplateAttribute.setSubmissionId(submissionApi.getId());
+        if (registrationEnabled) {
+            final SubmissionApi submissionApi = Objects.requireNonNull(getSubmission(id));
+            categoryTemplateAttribute.setSubmissionId(submissionApi.getId());
 
-        if (submissionApi.getStatus() != SubmissionStatus.OPEN) {
-            return ViewConstants.GONE.asView();
+            if (submissionApi.getStatus() != SubmissionStatus.OPEN) {
+                return ViewConstants.GONE.asView();
+            }
+
+            addTrackingAttributeToModel(model);
+
+            return ViewConstants.REGISTRATIONS_INFO.asView();
         }
-
-        addTrackingAttributeToModel(model);
-
-        return ViewConstants.REGISTRATIONS_INFO.asView();
+        else {
+            return ViewConstants.MISSING.asView();
+        }
     }
 
 }
