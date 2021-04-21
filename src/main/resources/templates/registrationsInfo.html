@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout" layout:decorate="~{layouts/baseLayout}" lang="en">
+<head>
+    <title th:text="#{registrationsInfo.title}"></title>
+</head>
+<body class="govuk-template__body js-enabled" layout:fragment="content">
+<div class="govuk-width-container">
+    <a class="govuk-back-link" th:href="@{/efs-submission/{id}/company/noCompany/proposed-company(id=*{submissionId})}"
+       th:text="#{link.back}"></a>
+    <main class=" govuk-main-wrapper govuk-main-wrapper--auto-spacing" id="main-content" role="main">
+    <div class="govuk-grid-row">
+        <div class="govuk-grid-column-two-thirds-from-desktop">
+
+            <div class="govuk-panel grey-box">
+                <h1 class="govuk-panel__title" th:text="#{registrationsInfo.header}"></h1>
+            </div>
+            <p class="govuk-body" th:text="#{registrationsInfo.guidance.para1}"></p>
+            <p class="govuk-body govuk-!-margin-top-7">
+                <span th:text="#{registrationsInfo.guidance.para2}"></span>
+                <a class="govuk-link" th:href="${@environment.getProperty('registrations.service.url')}" target="_blank">
+                    <span class="govuk-visually-hidden" th:text="#{registrationsInfo.guidance.para2}"></span>
+                    <span th:text="#{registrationsInfo.guidance.link}"></span>
+                </a>
+                <span th:text="."></span>
+            </p> 
+        </div>
+    </div>
+    </main>
+</div>
+</body>
+</html>

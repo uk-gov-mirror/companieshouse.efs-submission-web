@@ -17,6 +17,9 @@
     <link
         th:href="@{{cdnUrl}/images/favicon.ico(cdnUrl=${@environment.getProperty('cdn.url')})}"
         rel="icon" type="image/x-icon" />
+    <link
+        th:href="@{{cdnUrl}/stylesheets/services/efs-submission/app.css(cdnUrl=${@environment.getProperty('cdn.url')})}"
+        media="all" rel="stylesheet" type="text/css" />
     <meta charset="UTF-8" name="viewport" content="width=device-width, initial-scale=1.0">
     <title layout:title-pattern="$CONTENT_TITLE"></title>
     <div id="templateName" th:attr="data-id=${templateName}" hidden></div>
