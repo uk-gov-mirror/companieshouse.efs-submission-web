@@ -47,7 +47,7 @@ public class RegistrationsInfoControllerImpl extends BaseControllerImpl implemen
 
         if (registrationEnabled) {
             final SubmissionApi submissionApi = Objects.requireNonNull(getSubmission(id));
-            categoryTemplateAttribute.setSubmissionId(submissionApi.getId());
+            model.addAttribute("submissionId", submissionApi.getId());
 
             if (submissionApi.getStatus() != SubmissionStatus.OPEN) {
                 return ViewConstants.GONE.asView();
