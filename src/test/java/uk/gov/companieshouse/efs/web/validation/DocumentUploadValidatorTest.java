@@ -138,7 +138,7 @@ class DocumentUploadValidatorTest {
     @Test
     void testMaximumFilesAlreadyUploaded() {
         when(fileUploadConfiguration.getMaximumFilesAllowed()).thenReturn(MAXIMUM_UPLOADS_ALLOWED);
-        when(fileUploadConfiguration.getMaximumFilesize()).thenReturn("6MB");
+        when(fileUploadConfiguration.getMaximumFilesize()).thenReturn("4MB");
         when(resourceBundle.getString("max_files_exceeded.documentUpload"))
                 .thenReturn("The selected file could not be uploaded. You can only attach up to {1} files");
 
@@ -166,7 +166,7 @@ class DocumentUploadValidatorTest {
         allowedTypes.add("PDF");
 
         when(fileUploadConfiguration.getMaximumFilesAllowed()).thenReturn(MAXIMUM_UPLOADS_ALLOWED);
-        when(fileUploadConfiguration.getMaximumFilesize()).thenReturn("6MB");
+        when(fileUploadConfiguration.getMaximumFilesize()).thenReturn("4MB");
         when(fileUploadConfiguration.getDistinctExtensions()).thenReturn(allowedTypes);
         when(resourceBundle.getString("invalid_file_type.documentUpload"))
                 .thenReturn("The selected file, {0}, must be {1}");
@@ -198,7 +198,7 @@ class DocumentUploadValidatorTest {
         allowedTypes.add(new FileUploadConfiguration.FileType(APPLICATION_PDF_VALUE, Arrays.asList(PDF_VALUE)));
 
         when(fileUploadConfiguration.getMaximumFilesAllowed()).thenReturn(MAXIMUM_UPLOADS_ALLOWED);
-        when(fileUploadConfiguration.getMaximumFilesize()).thenReturn("6MB");
+        when(fileUploadConfiguration.getMaximumFilesize()).thenReturn("4MB");
         when(fileUploadConfiguration.getDistinctMimeTypes()).thenReturn(
                 allowedTypes.stream().map(FileUploadConfiguration.FileType::getMime).collect(Collectors.toSet()));
         when(resourceBundle.getString("min_file_size_exceeded.documentUpload"))
@@ -231,13 +231,13 @@ class DocumentUploadValidatorTest {
         allowedTypes.add(new FileUploadConfiguration.FileType(APPLICATION_PDF_VALUE, Arrays.asList(PDF_VALUE)));
 
         when(fileUploadConfiguration.getMaximumFilesAllowed()).thenReturn(MAXIMUM_UPLOADS_ALLOWED);
-        when(fileUploadConfiguration.getMaximumFilesize()).thenReturn("6MB");
+        when(fileUploadConfiguration.getMaximumFilesize()).thenReturn("4MB");
         when(fileUploadConfiguration.getDistinctMimeTypes()).thenReturn(
                 allowedTypes.stream().map(FileUploadConfiguration.FileType::getMime).collect(Collectors.toSet()));
         when(resourceBundle.getString("max_file_size_exceeded.documentUpload"))
                 .thenReturn("The selected file must be smaller than {0}");
 
-        String fileContent = createContent(6 * KILOBYTE * KILOBYTE + 1);
+        String fileContent = createContent(4 * KILOBYTE * KILOBYTE + 1);
 
         DocumentUploadModel model = new DocumentUploadModel(fileUploadConfiguration);
         model.setDetails(createFiles(MINIMUM_UPLOADS_ALLOWED));
@@ -254,7 +254,7 @@ class DocumentUploadValidatorTest {
         FieldError fieldError = binding.getFieldError("selectedFiles");
         assert fieldError != null;
         assertThat(fieldError.getDefaultMessage(),
-                is("The selected file must be smaller than 6MB"));
+                is("The selected file must be smaller than 4MB"));
     }
 
     @Test
@@ -266,7 +266,7 @@ class DocumentUploadValidatorTest {
         allowedTypes.add(new FileUploadConfiguration.FileType(APPLICATION_PDF_VALUE, Arrays.asList(PDF_VALUE)));
 
         when(fileUploadConfiguration.getMaximumFilesAllowed()).thenReturn(MAXIMUM_UPLOADS_ALLOWED);
-        when(fileUploadConfiguration.getMaximumFilesize()).thenReturn("6MB");
+        when(fileUploadConfiguration.getMaximumFilesize()).thenReturn("4MB");
         when(fileUploadConfiguration.getDistinctMimeTypes()).thenReturn(
                 allowedTypes.stream().map(FileUploadConfiguration.FileType::getMime).collect(Collectors.toSet()));
         when(resourceBundle.getString("duplicate_file.documentUpload"))
