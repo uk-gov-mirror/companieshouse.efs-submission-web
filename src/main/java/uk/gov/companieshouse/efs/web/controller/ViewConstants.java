@@ -18,6 +18,7 @@ public enum ViewConstants {
     CATEGORY_SELECTION("category-selection", "categorySelection"),
     DOCUMENT_SELECTION("document-selection", "documentSelection"),
     RESOLUTIONS_INFO("resolutions-info", "resolutionsInfo"),
+    REGISTRATIONS_INFO("registrations-info", "registrationsInfo"),
     ACCESSIBILITY("accessibilityStatement", "accessibilityStatement"),
     DOCUMENT_UPLOAD("document-upload", "documentUpload"),
     REMOVE_DOCUMENT("removeDocument", "removeDocument"),
